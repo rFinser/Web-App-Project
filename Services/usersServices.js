@@ -1,22 +1,22 @@
-const Users = require('../Models/usersModel')//change to ../Models/usersModel
+const Users = require('../Models/usersModel')
 
-async function login(id) {
-    const user = findUser(id)
-    //user not exsist, need to register
-    if (user == null) {
-        //TODO
-    }
+async function login(email) {
+    const user = findUser(email)
     return user
 }
 
-async function register(id, username, email, password, birthdate, admin) {
+async function register(username, email, password, birthdate, admin) {
     new user = new Users({
-        id, username, email, birthdate, password, admin
+        username, email, birthdate, password, admin
     })
     await user.save()
 }
 
-async function findUser(id) {
-    const user = await Users.findOne({ id: id });
+async function findUser(email) {
+    const user = await Users.findOne({ email: email });
     return user
+}
+
+module.exports = {
+    findUser, register, login
 }
