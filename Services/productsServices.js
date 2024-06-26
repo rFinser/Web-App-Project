@@ -28,19 +28,21 @@ async function getAllProducts() {
 }
 
 async function updateProduct(id_to_update, name, price, desc) {
-    let product = await findProductById(id_to_update);
-    if (product == null)
+    if (await findProductById(id_to_update) == null)
         throw Error(`No product for ${id_to_update} was found.`);
-    //TODO read the updateOne doc to make sure it is used correctly in this context
     await Product.updateOne({ id: id_to_update }, { id: id_to_update, p_name: name, p_price: price, p_description: desc });
 }
 
-//TODO Add the delete function
-
+async function deleteProduct(id_to_delete) {
+    if (await findProductById(id_to_delete) == null)
+        throw Error(`No Product for ${id_to_delete} was found.`);
+    await Product.deleteOne({ id: id_to_delete });
+}
 
 module.exports = {
     createProduct,
     findProductById,
     getAllProducts,
-    updateProduct
+    updateProduct,
+    deleteProduct
 }
