@@ -34,6 +34,7 @@ async function findUser(email) {
     const user = await Users.findOne({u_email: email });
     return user
 }
+
 async function findUserByAge(age){
     
     const users = await showAllUsers()
@@ -46,9 +47,11 @@ async function findUserByAge(age){
     }
     return usersFound
 }
+
 async function showAllUsers(){
     return await Users.find({})
 }
+
 async function deleteUser(email){
     const u = await findUser(email)
     if(u != null){
@@ -58,6 +61,7 @@ async function deleteUser(email){
         throw Error(`user not exist, id: ${email} `)
     }
 }
+
 async function updateUser(username, email, birthday, password){
     const u = await findUser(email)
     if(u != null){
