@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const Restaurant = new mongoose.Schema({
+const Restaurant = new Schema({
     r_name: { type: String, required: true },
     r_description: { type: String, required: true },
     r_icon: String, //path to the image
