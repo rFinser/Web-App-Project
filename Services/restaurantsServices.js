@@ -1,9 +1,9 @@
 const Restaurant = require("../Models/Restaurant");
 
-async function createRestaurant(name, desc, iconPath, tags, address, location) {
+async function createRestaurant(name, desc, iconPath, tags, address, location, products) {
     if (await findRestaurantByName(name) != null)
         throw Error(`A restaurant with the given name "${name}" already exists.`);
-    let rest = new Restaurant({ r_name: name, r_description: desc, r_icon: iconPath, r_tags: tags, r_address: address, r_geolocation: location });
+    let rest = new Restaurant({ r_name: name, r_description: desc, r_icon: iconPath, r_tags: tags, r_address: address, r_geolocation: location, r_productsId: products });
     await rest.save();
 }
 
@@ -16,10 +16,10 @@ async function listAllRestaurants() {
     return await Restaurant.find();
 }
 
-async function updateRestaurant(restaurant_to_update, newName, newDesc, newIcon, newTags, newAddress, newLocation) {
+async function updateRestaurant(restaurant_to_update, newName, newDesc, newIcon, newTags, newAddress, newLocation, newProducts) {
     if (await findRestaurantByName(restaurant_to_update) == null)
         throw Error(`No restaurant with the name "${restaurant_to_update}" was found.`);
-    await Restaurant.updateOne({ r_name: restaurant_to_update }, { r_name: newName, r_description: newDesc, r_icon: newIcon, r_tags: newTags, r_address: newAddress, r_geolocation: newLocation });
+    await Restaurant.updateOne({ r_name: restaurant_to_update }, { r_name: newName, r_description: newDesc, r_icon: newIcon, r_tags: newTags, r_address: newAddress, r_geolocation: newLocation, r_productsId: newProducts });
 }
 
 async function deleteRestaurant(restaurant_to_delete) {
