@@ -1,14 +1,15 @@
 const Restaurant = require("../Models/Restaurant");
 
 async function createRestaurant(name, desc, iconPath, tags, address, location) {
-    if (findRestaurantByName(name) != null)
+    if (await findRestaurantByName(name) != null)
         throw Error(`A restaurant with the given name "${name}" already exists.`);
-    const rest = new Restaurant({ r_name: name, r_description: desc, r_icon: iconPath, r_tags: tags, r_address: address, r_geolocation: location });
+    let rest = new Restaurant({ r_name: name, r_description: desc, r_icon: iconPath, r_tags: tags, r_address: address, r_geolocation: location });
     await rest.save();
 }
 
 async function findRestaurantByName(name) {
-    return await Restaurant.find({ r_name: name });
+    const rest = await Restaurant.findOne({ r_name: name })
+    return rest; //either null or the actual restaurant
 }
 
 async function listAllRestaurants() {
@@ -37,7 +38,7 @@ function isSubArray(array, subArray) {
 
 async function searchByTags(tags) {
     let foundRestaurant = new Set();
-    let restaurants = listAllRestaurants();
+    let restaurants = await listAllRestaurants();
     for (rest of restaurants) {
         if (rest.r_tags == null)
             continue;
