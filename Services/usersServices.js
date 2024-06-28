@@ -65,7 +65,7 @@ async function deleteUser(email){
 async function updateUser(username, email, birthday, password){
     const u = await findUser(email)
     if(u != null){
-        await  Users.updateOne({u_username:username, u_email:email, u_birthday:birthday, u_password:password}) 
+        await  Users.updateOne({u_email: email}, {u_username:username, u_email:email, u_birthday:birthday, u_password:password}) 
     }
     else{
         throw Error(`user not exist, id: ${email}`)
