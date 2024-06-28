@@ -8,7 +8,7 @@ const Restaurant = new Schema({
     r_tags: Array,
     r_address: { type: String, required: true },
     r_geolocation: { type: Array, required: true }, //coordinates (longitude, latitude), would be helpful when using maps api
-    r_productsId: { type: Array, required: true },
+    r_productsId: { type: Array, required: true, default: [] },
 })
 
 module.exports = mongoose.model("Restaurant", Restaurant);

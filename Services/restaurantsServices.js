@@ -1,9 +1,11 @@
 const Restaurant = require("../Models/Restaurant");
+const Product = require("./productsServices");
 
-async function createRestaurant(name, desc, iconPath, tags, address, location, products) {
+async function createRestaurant(name, desc, iconPath, tags, address, location) {
     if (await findRestaurantByName(name) != null)
         throw Error(`A restaurant with the given name "${name}" already exists.`);
-    let rest = new Restaurant({ r_name: name, r_description: desc, r_icon: iconPath, r_tags: tags, r_address: address, r_geolocation: location, r_productsId: products });
+
+    let rest = new Restaurant({ r_name: name, r_description: desc, r_icon: iconPath, r_tags: tags, r_address: address, r_geolocation: location });
     await rest.save();
 }
 
@@ -48,6 +50,36 @@ async function searchByTags(tags) {
     return foundRestaurant;
 }
 
+async function addProduct(restaurantName, productId) {
+    let rest = await findRestaurantByName(restaurantName);
+    if (rest == null)
+        throw Error(`No restaurant "${restaurantName}"`);
+
+    if (await Product.findProductById(productId) == null)
+        throw Error(`No such product with the id: "${productId}"`);
+
+    if (rest.r_productsId.includes(productId))
+        throw Error(`The product: "${productId}" is already in the restaurant: "${restaurantName}"`);
+
+    rest.r_productsId.push(productId);
+    await updateRestaurant(restaurantName, restaurantName, rest.r_description, rest.r_icon, rest.r_tags, rest.r_address, rest.r_geolocation, rest.r_productsId);
+}
+
+async function removeProduct(restaurantName, productId) {
+    let rest = await findRestaurantByName(restaurantName);
+    if (rest == null)
+        throw Error(`No restaurant "${restaurantName}"`);
+
+    if (await Product.findProductById(productId) == null)
+        throw Error(`No such product with the id: "${productId}"`);
+
+    if (!rest.r_productsId.includes(productId))
+        throw Error(`The product: "${productId}" is not in the restaurant: "${restaurantName}"`);
+
+    rest.r_productsId = rest.r_productsId.filter(val => val !== productId);
+    await updateRestaurant(restaurantName, restaurantName, rest.r_description, rest.r_icon, rest.r_tags, rest.r_address, rest.r_geolocation, rest.r_productsId);
+}
+
 module.exports = {
     createRestaurant,
     findRestaurantByName,
@@ -55,4 +87,6 @@ module.exports = {
     updateRestaurant,
     deleteRestaurant,
     searchByTags,
+    addProduct,
+    removeProduct,
 }
