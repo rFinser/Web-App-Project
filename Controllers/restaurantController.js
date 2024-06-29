@@ -1,11 +1,17 @@
 const restServices = require("../Services/restaurantsServices");
+const prodServices = require("../Services/productsServices")
 
 async function getRestaurant(req, res) {
-    if (await restServices.findRestaurantByName(req.params.name) == null) {
+    const restaurant = await restServices.findRestaurantByName(req.params.name);
+    if (restaurant == null) {
         res.render('restaurantNotFound', { restName: req.params.name });
     }
     else {
-        res.render('restaurantView', { restaurant: restServices.findRestaurantByName(req.params.name) });
+        let restProducts = [];
+        for (productId of restaurant.r_productsId) {
+            restProducts.push(await prodServices.findProductById(productId));
+        }
+        res.render('restaurantView', { restaurant: await restServices.findRestaurantByName(req.params.name), products: restProducts });
     }
 }
 
