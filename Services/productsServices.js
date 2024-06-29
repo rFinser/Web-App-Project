@@ -1,10 +1,10 @@
 const Product = require("../Models/Products");
 
-async function createProduct(id, name, price, desc, tags, restaurantName) {
+async function createProduct(id, name, price, desc, tags) {
     //id is key
     if (await findProductById(id) != null)
         throw Error(`A product already exists for ${id}`);
-    let product = new Product({ p_id: id, p_name: name, p_price: price, p_description: desc, p_tags: tags, p_restaurantName: restaurantName });
+    let product = new Product({ p_id: id, p_name: name, p_price: price, p_description: desc, p_tags: tags });
     await product.save();
 }
 
@@ -17,10 +17,10 @@ async function getAllProducts() {
     return await Product.find();
 }
 
-async function updateProduct(id_to_update, name, price, desc, tags, restaurantName) {
+async function updateProduct(id_to_update, name, price, desc, tags) {
     if (await findProductById(id_to_update) == null)
         throw Error(`No product for ${id_to_update} was found.`);
-    await Product.updateOne({ p_id: id_to_update }, { p_id: id_to_update, p_name: name, p_price: price, p_description: desc, p_tags: tags, p_restaurantName: restaurantName });
+    await Product.updateOne({ p_id: id_to_update }, { p_id: id_to_update, p_name: name, p_price: price, p_description: desc, p_tags: tags });
 }
 
 async function deleteProduct(id_to_delete) {
@@ -61,5 +61,5 @@ module.exports = {
     updateProduct,
     deleteProduct,
     findByTags,
-    findByPrice
+    findByPrice,
 }
