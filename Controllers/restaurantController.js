@@ -11,7 +11,7 @@ async function getRestaurant(req, res) {
         for (productId of restaurant.r_productsId) {
             restProducts.push(await prodServices.findProductById(productId));
         }
-        res.render('restaurantView', { restaurant: await restServices.findRestaurantByName(req.params.name), products: restProducts });
+        res.render('restaurantView', { restaurant, products: restProducts });
     }
 }
 
