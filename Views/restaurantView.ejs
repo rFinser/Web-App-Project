@@ -1,0 +1,45 @@
+<head>
+    <title>Hello World!</title>
+</head>
+
+<body>
+
+    <h1>
+        <%= restaurant.r_name %>
+    </h1>
+    <h2>
+        <%= restaurant.r_description %>
+    </h2>
+    <h4>
+        <%= restaurant.r_address %>
+    </h4>
+    <img src=<%=restaurant.r_icon %> alt="No Image Found">
+    <ul>
+        <% for(tag of restaurant.r_tags) { %>
+            <li>
+                <%= tag %>
+            </li>
+            <% } %>
+    </ul>
+
+    <ul>
+        <% for(product of products) { %>
+            <li>
+                <section id=<%=product.p_id%> >
+                    <h5>
+                        <%= product.p_name %>
+                    </h5>
+                    <p>
+                        <%= product.p_description %>
+                    </p>
+                    <p>
+                        <%= product.p_price %>
+                    </p>
+                </section>
+            </li>
+            <% } %>
+    </ul>
+
+</body>
+
+</html>
