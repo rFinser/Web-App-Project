@@ -24,8 +24,18 @@
 
     <ul>
         <% for(product of products) { %>
-            <li id=<%=product.p_id %> >
-                <%= product.p_name%>
+            <li>
+                <section id=<%=product.p_id%> >
+                    <h5>
+                        <%= product.p_name %>
+                    </h5>
+                    <p>
+                        <%= product.p_description %>
+                    </p>
+                    <p>
+                        <%= product.p_price %>
+                    </p>
+                </section>
             </li>
             <% } %>
     </ul>
