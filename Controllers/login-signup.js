@@ -11,6 +11,7 @@ function showLoginPage(req,res){
 async function signup(req,res){
     try{
         await users.register(req.body.username,req.body.email,req.body.password,req.body.birthdate,false)
+        res.json({status:1})
     }
     
     catch(e){
@@ -21,15 +22,16 @@ async function signup(req,res){
 
 async function login(req,res){
     const user = await users.findUser(req.body.email)
-    console.log(req.body)
-    console.log(user)
+
     if(user==null){
         res.json({status:-1})//email not exist
         return;
     }
     if(user.u_password != req.body.password){
         res.json({status:-2})//password doesnt match
+        return;
     }
+    res.json({status:1})
     //redirect to main page
 }
 

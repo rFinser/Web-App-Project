@@ -25,7 +25,8 @@ let flag = 0;
 
 async function validCheck(){
     
-    console.log('a')
+    document.getElementById('statusTooltip').innerText = ""
+
     const username = document.getElementById('username');
     const email = document.getElementById('email');
     const password = document.getElementById('password');
@@ -51,9 +52,18 @@ async function validCheck(){
         headers: { "Content-type": "application/json" }
     });
     
-    const status = await res.json()
+    const status = (await res.json()).status
+    
+    validStatus(status)
 }
-
+function validStatus(status){
+    if (status == -1){
+        document.getElementById('statusTooltip').innerText = "email already in use, please try a diffrent email"
+    }
+    else{
+        document.getElementById('statusTooltip').innerText = ""
+    }
+}
 function validPassword(password){
     const lowercaseL = /[a-z]/;
     const uppercaseL = /[A-Z]/;

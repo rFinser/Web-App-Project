@@ -19,11 +19,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
     checkInputs();
 });
 
-document.getElementById('submitBtn').onclick = validCheck
+document.getElementById('submitBtn').onclick = validCheck;
 
 let flag = 0;
 
 async function validCheck(){
+
+    document.getElementById('statusTooltip').innerText = "";
+
     const email = document.getElementById('email');
     const password = document.getElementById('password');
 
@@ -40,7 +43,27 @@ async function validCheck(){
         headers: { "Content-type": "application/json" }
     });
 
-    console.log(await res.json());
+    const status = (await res.json()).status;
+    
+    validStatus(status);
+}
+
+function validStatus(status){
+    switch(status){
+        case 1:
+            //login succesfully
+            document.getElementById('statusTooltip').innerText = "";
+            break;
+        case -1:
+            document.getElementById('statusTooltip').innerText = "This email doesn't have account";
+            break;
+        case -2:
+            document.getElementById('statusTooltip').innerText = "The email and password don't match";
+            break;
+        default:
+            document.getElementById('statusTooltip').innerText = "";
+    }
+
 }
 
 function validEmail(email){
