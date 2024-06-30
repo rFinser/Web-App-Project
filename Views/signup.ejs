@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Signup</title>
+    <script defer src="signupScript.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Signup</h2>
+        
+            <div class="form-group">
+                <label for="username">Name:</label>
+                <input type="text" id="username" name="username" required>
+                <p id="usernameTooltip"></p>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <p id="emailTooltip"></p>
+                <p id="statusTooltip"></p>
+            </div>
+            <div class="form-group">
+                <label for="date">Birthdate:</label>
+                <ul id="date">
+                    <il>
+                        <label for="day">Day: </label>
+                        <input type="number" id="day" name="day" required>
+                    </il>
+                    <il>
+                        <label for="month">Month: </label>
+                        <input type="number" id="month" name="month" required>
+                    </il>
+                    <il>
+                        <label for="year">Year: </label>
+                        <input type="number" id="year" name="year" required>
+                    </il>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <p id="passwordTooltip"></p>
+            </div>
+            <div class="form-group">
+                <button type="submit" id="submitBtn">Sign Up</button>
+            </div>
+       
+        <div class="login-link">
+            <a href="/login">Already have an account? Log in</a>
+        </div>
+    </div>
+</body>
+</html>

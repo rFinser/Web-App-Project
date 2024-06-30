@@ -1,6 +1,7 @@
 const express = require('express');
 const Mongoose = require('mongoose');
 const bodyparser = require('body-parser');
+const usersRouter = require('./Routes/signup-login')
 
 Mongoose.connect('mongodb://127.0.0.1:27017/storeDB', {
     useNewUrlParser: true,
@@ -14,6 +15,7 @@ app.use(express.static("public"));
 
 app.set('view engine', 'ejs');
 
+app.use(usersRouter)
 
 
 app.listen(80, (err) => {
