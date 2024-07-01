@@ -21,59 +21,58 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 document.getElementById('submitBtn').onclick = validCheck;
 
-let flag = 0;
+let flag1 = 0;
+let flag2 = 0;
 
 async function validCheck(){
 
     document.getElementById('statusTooltip').innerText = "";
 
-    const email = document.getElementById('email');
+    const username = document.getElementById('username');
     const password = document.getElementById('password');
 
-    flag=0;
-    validEmail(email.value)
+    flag1=0;
+    validUsername(username.value)
 
-    if(flag != 0)
+    if(flag1 != 0)
         return;
 
-    body = {email: email.value, password: password.value};
+    body = {username: username.value, password: password.value};
+
     const res = await fetch('/login',{
         method: "post",
         body: JSON.stringify(body),
         headers: { "Content-type": "application/json" }
     });
 
-    const status = (await res.json()).status;
-    
-    validStatus(status);
+    const data = await res.json()
+    validStatus(data.status)
 }
 
 function validStatus(status){
     switch(status){
         case 1:
-            //login succesfully
-            document.getElementById('statusTooltip').innerText = "";
+            flag2 = 1
+            //window.location.href="/";
             break;
         case -1:
-            document.getElementById('statusTooltip').innerText = "This email doesn't have account";
+            document.getElementById('statusTooltip').innerText = "This username doesn't have account";
             break;
         case -2:
-            document.getElementById('statusTooltip').innerText = "The email and password don't match";
+            document.getElementById('statusTooltip').innerText = "The username and password don't match";
             break;
         default:
             document.getElementById('statusTooltip').innerText = "";
     }
-
 }
 
-function validEmail(email){
+function validUsername(username){
+    const letter = /[a-z]/;
 
-    const emailV = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-
-    if(!emailV.test(email)){
-        document.getElementById('emailTooltip').innerText = "invalid email";
-        flag--;
-        return; 
+    if(username.length < 4 || username.length > 20 || !letter.test(username)){
+        document.getElementById('usernameTooltip').innerText = "invalid username, username can be 4 to 20 characters long and must contain at least one letter";
+        flag1--;
+        return;
     }
-    document.getElementById('emailTooltip').innerText = ""
+    document.getElementById('usernameTooltip').innerText = "";
 }

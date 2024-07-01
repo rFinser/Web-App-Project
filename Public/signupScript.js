@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
 
     checkInputs();
+    
 });
 
 document.getElementById('submitBtn').onclick = validCheck;
@@ -52,13 +53,16 @@ async function validCheck(){
         headers: { "Content-type": "application/json" }
     });
     
-    const status = (await res.json()).status
+    const data = (await res.json())
     
-    validStatus(status)
+    validStatus(data.status)
 }
 function validStatus(status){
-    if (status == -1){
-        document.getElementById('statusTooltip').innerText = "email already in use, please try a diffrent email"
+    if(status == 1){
+        //window.location.href = '/'
+    }
+    else if (status == -1){
+        document.getElementById('statusTooltip').innerText = "username already in use, please try a diffrent username"
     }
     else{
         document.getElementById('statusTooltip').innerText = ""

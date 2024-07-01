@@ -11,30 +11,33 @@ function showLoginPage(req,res){
 async function signup(req,res){
     try{
         await users.register(req.body.username,req.body.email,req.body.password,req.body.birthdate,false)
+        req.session.username = req.body.username
         res.json({status:1})
     }
     
     catch(e){
         console.log(e)
-        res.json({status:-1})//email already exist
+        res.json({status:-1})//username already exist
     }
 }
 
 async function login(req,res){
-    const user = await users.findUser(req.body.email)
+    console.log(req.body)
+    const user = await users.findUser(req.body.username)
 
     if(user==null){
         res.json({status:-1})//email not exist
-        return;
     }
-    if(user.u_password != req.body.password){
+    else if(user.u_password != req.body.password){
         res.json({status:-2})//password doesnt match
-        return;
     }
-    res.json({status:1})
-    //redirect to main page
+    else{
+        req.session.username = req.body.username
+        res.json({status:1})
+    }
 }
 
+
 module.exports={
-    showSignupPage,showLoginPage,signup,login
+    showSignupPage,showLoginPage,signup,login,
 }

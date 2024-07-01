@@ -26,12 +26,12 @@ async function register(username, email, password, birthdate, admin) {
         await user.save()
     }
     else{
-        throw Error(`user exist, id: ${email}`)
+        throw Error(`user exist, id: ${username}`)
     }
 }
 
-async function findUser(email) {
-    const user = await Users.findOne({u_email: email });
+async function findUser(username) {
+    const user = await Users.findOne({u_username: username});
     return user
 }
 
@@ -52,23 +52,23 @@ async function showAllUsers(){
     return await Users.find({})
 }
 
-async function deleteUser(email){
-    const u = await findUser(email)
+async function deleteUser(username){
+    const u = await findUser(username)
     if(u != null){
-        await Users.deleteOne({u_email:email}) 
+        await Users.deleteOne({u_username:username}) 
     }
     else{
-        throw Error(`user not exist, id: ${email} `)
+        throw Error(`user not exist, id: ${username} `)
     }
 }
 
 async function updateUser(username, email, birthday, password){
     const u = await findUser(email)
     if(u != null){
-        await  Users.updateOne({u_email: email}, {u_username:username, u_email:email, u_birthday:birthday, u_password:password}) 
+        await  Users.updateOne({u_username: username}, {u_username:username, u_email:email, u_birthday:birthday, u_password:password}) 
     }
     else{
-        throw Error(`user not exist, id: ${email}`)
+        throw Error(`user not exist, id: ${username}`)
     }
 }
 

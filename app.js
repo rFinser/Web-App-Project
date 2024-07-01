@@ -2,8 +2,11 @@ const express = require('express');
 const Mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const usersRouter = require('./Routes/signup-login')
+const session = require('express-session')
+const newLocal = require('custom-env');
 
-Mongoose.connect('mongodb://127.0.0.1:27017/storeDB', {
+newLocal.env(process.env.NODE_ENV, './config');
+Mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -15,10 +18,14 @@ app.use(express.static("public"));
 
 app.set('view engine', 'ejs');
 
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false,
+    resave: false
+}))
 app.use(usersRouter)
 
-
-app.listen(80, (err) => {
+app.listen(process.env.PORT, (err) => {
     if (err) console.error(err)
     console.log("Server Running on Port 80...");
 });
