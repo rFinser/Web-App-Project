@@ -23,7 +23,11 @@ app.use(session({
     saveUninitialized: false,
     resave: false
 }))
-app.use(usersRouter)
+const usersRouter = require('./Routes/signup-login');
+const restRouter = require("./Routes/restaurantRoutes");
+
+app.use(usersRouter);
+app.use(restRouter);
 
 app.listen(process.env.PORT, (err) => {
     if (err) console.error(err)
