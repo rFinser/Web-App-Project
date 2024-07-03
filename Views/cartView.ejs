@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    <title>Your Cart</title>
+</head>
+
+<body>
+    <h1>Hello, <%= user.u_username %>
+    </h1>
+
+    <h3>Here is your cart:</h3>
+
+    <ul>
+        <% for (product of userProducts){ %>
+            <li id=<%=product.p_id%> >
+                <%= product.p_name %>
+            </li>
+            <% } %>
+    </ul>
+
+</body>
+
+</html>
