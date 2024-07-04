@@ -18,7 +18,7 @@ function getAge(user, age){
 }
 
 async function register(username, email, password, birthdate, admin) {
-    const u = await findUser(email)
+    const u = await findUser(username)
     if(u == null){
         const user = new Users({
             u_username:username, u_email:email, u_birthdate:birthdate, u_password:password, u_admin:admin
@@ -26,7 +26,7 @@ async function register(username, email, password, birthdate, admin) {
         await user.save()
     }
     else{
-        throw Error(`user exist, id: ${username}`)
+        throw Error(`user exist, username: ${username}`)
     }
 }
 
