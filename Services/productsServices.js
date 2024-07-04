@@ -54,6 +54,11 @@ async function findByPrice(minPrice, maxPrice) {
     return foundProducts;
 }
 
+async function findByName(name) {
+    let foundProducts = await Product.find({p_name: {$regex: new RegExp('^.*'+name+'.*$')} });
+    return foundProducts;
+}
+
 module.exports = {
     createProduct,
     findProductById,
@@ -62,4 +67,5 @@ module.exports = {
     deleteProduct,
     findByTags,
     findByPrice,
+    findByName,
 }

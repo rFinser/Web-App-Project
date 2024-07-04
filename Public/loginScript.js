@@ -53,7 +53,7 @@ function validStatus(status){
     switch(status){
         case 1:
             flag2 = 1
-            //window.location.href="/";
+            window.location.href="/";
             break;
         case -1:
             document.getElementById('statusTooltip').innerText = "This username doesn't have account";

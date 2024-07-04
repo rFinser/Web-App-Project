@@ -1,7 +1,7 @@
 const express = require('express');
 const Mongoose = require('mongoose');
 const bodyparser = require('body-parser');
-const usersRouter = require('./Routes/signup-login')
+
 const session = require('express-session')
 const newLocal = require('custom-env');
 
@@ -23,13 +23,15 @@ app.use(session({
     saveUninitialized: false,
     resave: false
 }))
-const usersRouter = require('./Routes/signup-login');
 const restRouter = require("./Routes/restaurantRoutes");
+const usersRouter = require('./Routes/signup-login')
+const mainPageRoutes = require('./Routes/mainPage')
 const cartRouter = require("./Routes/cartRoutes");
 
-app.use(usersRouter);
 app.use(restRouter);
-app.use(cartRouter);
+app.use(usersRouter);
+app.use(mainPageRoutes);
+app.use(usersRouter);
 
 app.listen(process.env.PORT, (err) => {
     if (err) console.error(err)

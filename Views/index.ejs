@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script defer src="mainPage.js"></script>
+</head>
+<body>
+        <nav id="navbar">
+            <img src="" alt="">
+            <button id="settingsBtn">settings</button>
+            <button id="cart">cart</button>
+            <input type="text" id="searchBar" placeholder="Search..." onkeyup="">
+            <div id="results"></div>
+            <%if(username == ""){%>
+                <a href="/signup"><button id="signupBtn">signup</button></a>
+                <a href="/login"><button id="loginBtn">login</button></a>
+            <%}%>
+            <p id="username"><%= username %></p>
+        </nav>
+</body>
+</html>
