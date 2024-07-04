@@ -1,24 +1,19 @@
-$(document).ready(function(){
-    $('#searchBar').keyup(function(){
-        const inputTxt = $('#searchBar');
-        console.log( $('#searchBar').is(":focus"))
-        let results = $('#results');
-        if(inputTxt.val() == "" || !inputTxt.is(":focus")){
-            results.hide();
+$("#searchBar").keyup(function() {
+    if($("#searchBar").val() == "" || !$("#searchBar").is(":focus")){
+        $('#results').hide();
+        return;
+    }
+
+    $('#results').show();
+    $.ajax({
+        type: 'POST',
+        url: '/search',
+        data: {name: $("#searchBar").val()},
+        success: function(products) {
+            $('#results').html('');
+            products.forEach(product => {
+               $("#results").append(`<p>${product}</p>`);
+            });
         }
-        else{
-            results.show();
-        }
-        $.ajax({
-            type: 'POST',
-            url: '/search',
-            data: {name: inputTxt.val()},
-            success: function(products){
-                $('#results').empty();
-                $(products).each(function(i, product){
-                    results.append(`<p>${product}</p>`)
-                });
-            }
-        });
     });
 });

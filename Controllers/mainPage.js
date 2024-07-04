@@ -18,15 +18,16 @@ function getMainPageUser(req,res){
 async function search(req,res){
     const Products = await products.findByName(req.body.name.toLowerCase());
     let results = [];
-    if(Products.length>0){
-        Products.forEach(product => {
-            results.push(product.p_name)
-        });
-        res.json(results)
+    if(Products.length <= 0){
+        res.json(["Not Found"]);
+        return;
     }
-    else{
-        res.json(["not found"])
-    }
+
+    Products.forEach(product => {
+        results.push(product.p_name)
+    });
+    res.json(results)
+   
 }
 
 module.exports = {isLoggedin,getMainPageUser,search}
