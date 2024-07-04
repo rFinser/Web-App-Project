@@ -1,20 +1,33 @@
 document.addEventListener('DOMContentLoaded', ()=>{
+
+
     const inputs = document.querySelectorAll('input[required]');
     const submitButton = document.getElementById('submitBtn');
   
     function checkInputs() {
+      const day = document.getElementById('day');
+      const month = document.getElementById('month');
+      const year = document.getElementById('year');
+      
       let allFilled = true;
 
       inputs.forEach(input => {
         if(input.value == '')
             allFilled = false;
       });
+      if(day.value =='' || month.value=='' || year.value==''){
+        allFilled = false;
+      }
       submitButton.disabled = !allFilled;
     }
   
     inputs.forEach(input => {
       input.addEventListener('input', checkInputs);
     });
+    document.getElementById('day').onchange = checkInputs
+    document.getElementById('month').onchange = checkInputs
+    document.getElementById('year').onchange = checkInputs
+    
 
     checkInputs();
     
@@ -40,6 +53,9 @@ async function validCheck(){
     flag = 0;
     validUsername(username.value);
     validEmail(email.value);
+    if(validDate(day.value, month.value, year.value)){
+       
+    }
     validPassword(password.value);
 
     if(flag!=0){
@@ -101,4 +117,19 @@ function validUsername(username){
         return;
     }
     document.getElementById('usernameTooltip').innerText = "";
+}
+
+function validDate(day,month,year){
+    if(month == 2 && day>28){
+        flag--;
+        document.getElementById("dateTooltip").innerText = "invalid date"
+
+    }
+    else if(['04','06','09','11'].includes(month) && day>30){
+        flag--;
+        document.getElementById("dateTooltip").innerText = "invalid date"
+    }
+    else{
+        document.getElementById("dateTooltip").innerText = ""
+    }
 }
