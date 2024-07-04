@@ -26,11 +26,12 @@ app.use(session({
 const restRouter = require("./Routes/restaurantRoutes");
 const usersRouter = require('./Routes/signup-login')
 const mainPageRoutes = require('./Routes/mainPage')
+const cartRouter = require("./Routes/cartRoutes");
 
-app.use(usersRouter);
 app.use(restRouter);
+app.use(usersRouter);
 app.use(mainPageRoutes);
-
+app.use(usersRouter);
 
 app.listen(process.env.PORT, (err) => {
     if (err) console.error(err)
