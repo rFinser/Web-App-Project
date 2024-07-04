@@ -11,7 +11,9 @@
         <nav id="navbar">
             <img src="" alt="">
             <button id="settingsBtn">settings</button>
-            <button id="cart">cart</button>
+            <form action="/cart" method="get">
+                <button id="cart">cart</button>
+            </form>
             <input type="text" id="searchBar" placeholder="Search..." onkeyup="">
             <div id="results"></div>
             <%if(username == ""){%>
