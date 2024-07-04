@@ -25,7 +25,6 @@ document.getElementById('submitBtn').onclick = validCheck;
 let flag = 0;
 
 async function validCheck(){
-    
     document.getElementById('statusTooltip').innerText = ""
 
     const username = document.getElementById('username');
@@ -59,7 +58,7 @@ async function validCheck(){
 }
 function validStatus(status){
     if(status == 1){
-        //window.location.href = '/'
+        window.location.href = '/'
     }
     else if (status == -1){
         document.getElementById('statusTooltip').innerText = "username already in use, please try a diffrent username"
