@@ -15,9 +15,15 @@ async function getRestaurant(req, res) {
     }
 }
 
+async function getAllRestaurants(req, res){
+    const restaurants = await restServices.listAllRestaurants();
+    res.json(restaurants);
+}
+
 
 
 
 module.exports = {
     getRestaurant,
+    getAllRestaurants
 }
