@@ -12,7 +12,7 @@ $("#searchBar").keyup(function() {
         data: {name: $("#searchBar").val()},
         success: function(products) {
             $('#results').empty();
-            products.forEach(product => {
+            products.results.forEach(product => {
                $("#results").append(`<p>${product}</p>`);
             });
         }

@@ -19,8 +19,11 @@ async function getCartPage(req, res) {
         res.render('cartView', { user, userProducts });
     }
 }
-
+async function deleteProduct(req,res){
+    userServices.deleteFromCart(req.session.username,req.params.id)
+    res.end()
+}
 
 module.exports = {
-    getCartPage,
+    getCartPage,deleteProduct,
 }

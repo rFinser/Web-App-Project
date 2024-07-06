@@ -2,6 +2,8 @@
 
 <head>
     <title>Your Cart</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script defer src="cart.js"></script>
 </head>
 
 <body>
@@ -14,6 +16,7 @@
         <% for (product of userProducts){ %>
             <li id=<%=product.p_id%> >
                 <%= product.p_name %>
+                <button type="submit" class="deleteBtn" id=<%=product.p_id%> >Delete</button>
             </li>
             <% } %>
     </ul>
