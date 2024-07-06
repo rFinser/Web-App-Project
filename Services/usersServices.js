@@ -46,6 +46,10 @@ async function deleteFromCart(username,productId){
     }
 }
 
+async function clearCart(username){
+    await Users.updateOne({u_username: username}, {u_cart: []});
+}
+
 async function register(username, email, password, birthdate, admin) {
     const u = await findUser(username)
     if(u == null){
@@ -102,5 +106,5 @@ async function updateUser(username, email, birthday, password){
 }
 
 module.exports = {
-    findUser, register, deleteUser, updateUser, showAllUsers,findUserByAge,deleteFromCart,addToCart
+    findUser, register, deleteUser, updateUser, showAllUsers,findUserByAge,deleteFromCart,addToCart, clearCart
 }

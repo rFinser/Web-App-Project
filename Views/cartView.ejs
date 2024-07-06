@@ -7,19 +7,11 @@
 </head>
 
 <body>
-    <h1>Hello, <%= user.u_username %>
-    </h1>
-
     <h3>Here is your cart:</h3>
 
-    <ul>
-        <% for (product of userProducts){ %>
-            <li id=<%=product.p_id%> >
-                <%= product.p_name %>
-                <button type="submit" class="deleteBtn" id=<%=product.p_id%> >Delete</button>
-            </li>
-            <% } %>
-    </ul>
+    <ul id="productsList"></ul>
+
+    <input type="button" value="Purchase">
 
 </body>
 
