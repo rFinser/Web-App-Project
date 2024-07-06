@@ -1,5 +1,6 @@
 const userServices = require("../Services/usersServices");
 const prodServices = require("../Services/productsServices");
+const orderServices = require("../Services/ordersServices");
 
 async function getCartPage(req, res) {
     if (req.session.username == null) {
@@ -10,20 +11,36 @@ async function getCartPage(req, res) {
     const user = await userServices.findUser(req.session.username);
     if (user == null)
         res.redirect('/login');
-    // res.json({ status: -1, msg: "Please Login First." });
     else {
-        let userProducts = [];
-        for (productId of user.u_cart) {
-            userProducts.push(await prodServices.findProductById(productId));
-        }
-        res.render('cartView', { user, userProducts });
+        res.render('cartView');
     }
 }
+
+async function getCartProducts(req, res){
+    const user = await userServices.findUser(req.session.username);
+    let userProducts = [];
+    for (productId of user.u_cart) {
+        userProducts.push(await prodServices.findProductById(productId));
+    }
+    res.json({products: userProducts});
+}
+
 async function deleteProduct(req,res){
-    userServices.deleteFromCart(req.session.username,req.params.id)
+    await userServices.deleteFromCart(req.session.username,req.params.id)
     res.end()
 }
 
+async function makePurchase(req, res){
+  if(req.session.username == ''){
+        res.redirect('/login')
+        return;
+    }
+    let user = await userServices.findUser(req.session.username);
+    await orderServices.createOrder(req.session.username, user.u_cart, new Date().getTime().toString());
+    await userServices.clearCart(req.session.username);
+    res.redirect('/cart');
+}
+
 module.exports = {
-    getCartPage,deleteProduct,
+    getCartPage, deleteProduct, makePurchase, getCartProducts,
 }
