@@ -18,15 +18,17 @@ function getMainPageUser(req,res){
 async function search(req,res){
     const Products = await products.findByName(req.body.name.toLowerCase());
     let results = [];
+    let nig = [];
     if(Products.length <= 0){
-        res.json(["Not Found"]);
+        res.json({results:"Not Found"});
         return;
     }
 
     Products.forEach(product => {
         results.push(product.p_name)
+        nig.push(product.p_price)
     });
-    res.json(results)
+    res.json({results})
    
 }
 

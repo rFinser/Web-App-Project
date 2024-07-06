@@ -17,6 +17,35 @@ function getAge(user, age){
 
 }
 
+async function addToCart(username,productId){
+    const u = await findUser(username);
+    if(u!=null){
+        u.u_cart.push(productId)
+        const updateCart= u.u_cart;
+        await Users.updateOne({u_username:username},{u_cart:updateCart});
+    }
+    else{
+        throw Error(`user not exist, id: ${username}`)
+    }
+}
+async function deleteFromCart(username,productId){
+    const u = await findUser(username);
+    if(u!=null){
+        for(i=0; i< u.u_cart.length; i++){
+            if(u.u_cart[i] == productId){
+                u.u_cart.splice(i,1);
+                const updateCart= u.u_cart;
+                await Users.updateOne({u_username:username},{u_cart:updateCart});
+                return;
+            }
+        }
+        throw Error(`product no exist in cart, id:${productId}`)
+    }
+    else{
+        throw Error(`user not exist, id: ${username}`)
+    }
+}
+
 async function register(username, email, password, birthdate, admin) {
     const u = await findUser(username)
     if(u == null){
@@ -73,5 +102,5 @@ async function updateUser(username, email, birthday, password){
 }
 
 module.exports = {
-    findUser, register, deleteUser, updateUser, showAllUsers,findUserByAge
+    findUser, register, deleteUser, updateUser, showAllUsers,findUserByAge,deleteFromCart,addToCart
 }
