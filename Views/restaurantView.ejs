@@ -1,5 +1,7 @@
 <head>
     <title>Hello World!</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script defer src="http://localhost/restaurant.js"></script>
 </head>
 
 <body>
@@ -25,7 +27,7 @@
     <ul>
         <% for(product of products) { %>
             <li>
-                <section id=<%=product.p_id%> >
+                <section>
                     <h5>
                         <%= product.p_name %>
                     </h5>
@@ -35,6 +37,7 @@
                     <p>
                         <%= product.p_price %>
                     </p>
+                    <input id="<%= product.p_id %>" class="addBtn" type="button" value="Add To Cart">
                 </section>
             </li>
             <% } %>
