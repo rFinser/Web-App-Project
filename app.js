@@ -27,12 +27,18 @@ const restRouter = require("./Routes/restaurantRoutes");
 const usersRouter = require('./Routes/signup-login')
 const mainPageRoutes = require('./Routes/mainPage')
 const cartRouter = require("./Routes/cartRoutes");
+const ordersRouter = require('./Routes/ordersRoutes')
 
 app.use(restRouter);
 app.use(usersRouter);
 app.use(mainPageRoutes);
 app.use(cartRouter);
+app.use(ordersRouter);
 
+const res = require('./Services/ordersServices')
+async function get(){
+    await res.createOrder('eyal',[1,2,3,4],'3/3/2000')
+}
 app.listen(process.env.PORT, (err) => {
     if (err) console.error(err)
     console.log("Server Running on Port 80...");
