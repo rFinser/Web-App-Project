@@ -11,6 +11,10 @@ async function findOrderById(orderId){
     return await Orders.findOne({_id: orderId});
 }
 
+async function findOrderByUsername(username){
+    return await Orders.find({o_userId: username});
+}
+
 async function deleteOrder(orderId){
     if(await findOrderById(orderId) == null){
         throw Error(`order: ${orderId} not exists`)
@@ -31,5 +35,5 @@ async function showAllOrders(){
 }
 
 module.exports = {
-    createOrder,findOrderById, deleteOrder, updateOrder, showAllOrders
+    createOrder,findOrderById, deleteOrder, updateOrder, showAllOrders, findOrderByUsername
 }
