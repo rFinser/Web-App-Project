@@ -2,11 +2,18 @@ const userServices = require("../Services/usersServices");
 const prodServices = require("../Services/productsServices");
 const orderServices = require("../Services/ordersServices");
 
-async function getCartPage(req, res) {
-    if (req.session.username == null) {
-        res.redirect("/login");
-        return;
+function isLoggedIn(req,res, next){
+    if(req.session.username != null){
+        next();
     }
+    else{
+        res.status(400)
+        res.json({respondText:"please login first!!!!!!!!!! nigaaaaaaaaaaaaa waaaaaaaaaaaazzzzzzzzzzaaaaaaaaaaa"})
+        res.end()
+    }
+}
+
+async function getCartPage(req, res) {
 
     const user = await userServices.findUser(req.session.username);
     if (user == null)
@@ -47,5 +54,5 @@ async function makePurchase(req, res){
 }
 
 module.exports = {
-    getCartPage, deleteProduct, makePurchase, getCartProducts, addProduct
+    isLoggedIn, getCartPage, deleteProduct, makePurchase, getCartProducts, addProduct
 }

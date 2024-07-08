@@ -6,6 +6,9 @@ $(".addBtn").on('click', function() {
         data: {productId},
         success: function() {
             console.log("added product");
+        },
+        error: function(e){
+            window.location.href = '/login'
         }
     });
 })
