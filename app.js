@@ -23,11 +23,13 @@ app.use(session({
     saveUninitialized: false,
     resave: false
 }))
+
 const restRouter = require("./Routes/restaurantRoutes");
 const usersRouter = require('./Routes/signup-login')
 const mainPageRoutes = require('./Routes/mainPage')
 const cartRouter = require("./Routes/cartRoutes");
 const ordersRouter = require('./Routes/ordersRoutes')
+const productsRouter = require("./Routes/productRoutes");
 
 app.use(restRouter);
 app.use(usersRouter);
