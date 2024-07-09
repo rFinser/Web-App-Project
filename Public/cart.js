@@ -1,9 +1,9 @@
-$(function getProducts(){
+$(function getProducts() {
     const $list = $("#productsList");
     $.ajax({
         url: '/cart/products',
-        success: function (data){
-            for(product of data.products){
+        success: function (data) {
+            for (product of data.products) {
                 $list.append(`
                     <li>
                         ${product.p_name}
@@ -17,14 +17,14 @@ $(function getProducts(){
 
 
 //remove from cart
-$(document).ready(function(){
+$(document).ready(function () {
     const $list = $("#productsList");
-    $list.delegate(".deleteBtn",'click',function(){
+    $list.delegate(".deleteBtn", 'click', function () {
         let $li = $(this).closest('li');
         $.ajax({
             type: 'DELETE',
             url: '/cart' + $(this).attr('id'),
-            success: function(){
+            success: function () {
                 $li.remove();
             }
         });
@@ -35,7 +35,7 @@ $("#purchseBtn").on('click', () => {
     $.ajax({
         type: 'POST',
         url: '/cart/purchase',
-        success: ()=>{
+        success: () => {
             $("#productsList").empty();
         }
     });

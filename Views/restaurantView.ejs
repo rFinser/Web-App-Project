@@ -1,48 +1,21 @@
 <head>
     <title>Hello World!</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script defer src="http://localhost/restaurant.js"></script>
 </head>
 
 <body>
+    <h1 id="name"></h1>
+    <h2 id="desc"></h2>
+    <h4 id="address"></h4>
+    <img id="icon" alt="No Image Found">
 
-    <h1>
-        <%= restaurant.r_name %>
-    </h1>
-    <h2>
-        <%= restaurant.r_description %>
-    </h2>
-    <h4>
-        <%= restaurant.r_address %>
-    </h4>
-    <img src=<%=restaurant.r_icon %> alt="No Image Found">
-    <ul>
-        <% for(tag of restaurant.r_tags) { %>
-            <li>
-                <%= tag %>
-            </li>
-            <% } %>
-    </ul>
+    <div id="graph"></div>
 
-    <ul>
-        <% for(product of products) { %>
-            <li>
-                <section>
-                    <h5>
-                        <%= product.p_name %>
-                    </h5>
-                    <p>
-                        <%= product.p_description %>
-                    </p>
-                    <p>
-                        <%= product.p_price %>
-                    </p>
-                    <input id="<%= product.p_id %>" class="addBtn" type="button" value="Add To Cart">
-                </section>
-            </li>
-            <% } %>
-    </ul>
+    <ul id="tags"></ul>
 
+    <ul id="products"></ul>
 </body>
 
 </html>
