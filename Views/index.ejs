@@ -19,11 +19,9 @@
             </form>
             <input type="text" id="searchBar" placeholder="Search..."> 
             <div id="results"></div>
-            <%if(username == ""){%>
-                <a href="/signup"><button id="signupBtn">signup</button></a>
-                <a href="/login"><button id="loginBtn">login</button></a>
-            <%}%>
-            <p id="username"><%= username %></p>
+            <a href="/signup" id="loginBtn"><button>signup</button></a>
+            <a href="/login" id="signupBtn"><button>login</button></a>
+            <p id="username"></p>
         </nav>
         
         <ul id="restaurantList"></ul>
