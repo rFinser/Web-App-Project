@@ -1,18 +1,17 @@
 const products = require('../Services/productsServices')
 
-function isLoggedin(req,res,next){
-    
-    if(req.session.username != null){
-        return next()
-    }
-    else{
-        res.render('index.ejs',{username:""})
-    }
+function getMainPage(req,res){
+    res.render('index.ejs');
 }
 
 function getMainPageUser(req,res){
-    const username = req.session.username
-    res.render('index.ejs', {username})
+    const username = req.session.username;
+    let isAdmin = false;
+    if(['eyal', 'finser', 'aharoni'].includes(username))
+    {
+        isAdmin = true
+    }
+    res.json({username, isAdmin})
 }
 
 async function search(req,res){
@@ -30,4 +29,4 @@ async function search(req,res){
    
 }
 
-module.exports = {isLoggedin,getMainPageUser,search}
+module.exports = {getMainPageUser,search,getMainPage}

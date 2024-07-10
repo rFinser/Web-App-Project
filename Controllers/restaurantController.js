@@ -30,9 +30,18 @@ async function getAllRestaurants(req, res){
     const restaurants = await restServices.listAllRestaurants();
     res.json(restaurants);
 }
-
+async function addRestaurant(req,res){
+    await restServices.createRestaurant(req.body.r_name,req.body.r_description,req.body.r_icon,[req.body.r_tags],req.body.r_adress)
+    res.end();
+}
+async function deleteRestaurant(req,res){
+    await restServices.deleteRestaurant(req.params.id);
+    res.end();
+}
 module.exports = {
     getRestaurantPage,
     getRestaurant,
     getAllRestaurants,
+    addRestaurant,
+    deleteRestaurant,
 }
