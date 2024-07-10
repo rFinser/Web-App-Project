@@ -8,7 +8,6 @@ function isLoggedIn(req,res, next){
     }
     else{
         res.status(400)
-        res.json({respondText:"please login first!!!!!!!!!! nigaaaaaaaaaaaaa waaaaaaaaaaaazzzzzzzzzzaaaaaaaaaaa"})
         res.end()
     }
 }
