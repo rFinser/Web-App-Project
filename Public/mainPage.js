@@ -53,6 +53,7 @@ $(function (){
         })
         if(isAdmin == true){
             $list.append(`<li id="newRes"><button id="addRes">add restaurant</button></li>`);
+            $('.restaurant').append('<button class="delRes">Delete</button>');
         }
     }
   })
@@ -103,16 +104,15 @@ $('#restaurantList').delegate('.delRes', 'click', function(){
     })
 });
 
-function restaurantScheme(restaurant){    
+function restaurantScheme(restaurant){
     return `
     <li id=${restaurant.r_name}>
     <div class = "restaurant">
         <a href="restaurants/${restaurant.r_name}">
             <p>${restaurant.r_name}</p>
-            <img src=${restaurant.r_icon} alt="no image found">
+            <img src=${restaurant.r_icon} alt="not Found">
             <p>${restaurant.r_description}</p>
         </a>
-        <button class="delRes">Delete</button>
     </div>
     </li>
     `
