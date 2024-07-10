@@ -91,15 +91,28 @@ $('#restaurantList').delegate('#saveRes', 'click', function(){
 
 });
 
+
+$('#restaurantList').delegate('.delRes', 'click', function(){
+    let $li = $(this).closest('li');
+    $.ajax({
+        type: 'DELETE',
+        url: '/delRestaurant'+$li.attr('id'),
+        success: function(){
+            $li.remove();
+        }
+    })
+});
+
 function restaurantScheme(restaurant){    
     return `
-    <li>
-    <div id=${restaurant.r_name}>
+    <li id=${restaurant.r_name}>
+    <div class = "restaurant">
         <a href="restaurants/${restaurant.r_name}">
             <p>${restaurant.r_name}</p>
             <img src=${restaurant.r_icon} alt="no image found">
             <p>${restaurant.r_description}</p>
         </a>
+        <button class="delRes">Delete</button>
     </div>
     </li>
     `
