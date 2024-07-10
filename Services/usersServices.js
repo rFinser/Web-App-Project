@@ -63,6 +63,10 @@ async function register(username, email, password, birthdate, admin) {
     }
 }
 
+async function setAdmin(username){
+    await Users.updateOne({u_username: username}, {u_admin:true})
+}
+
 async function findUser(username) {
     const user = await Users.findOne({u_username: username});
     return user
@@ -106,5 +110,5 @@ async function updateUser(username, email, birthday, password){
 }
 
 module.exports = {
-    findUser, register, deleteUser, updateUser, showAllUsers,findUserByAge,deleteFromCart,addToCart, clearCart
+    findUser, register, deleteUser, updateUser, showAllUsers,findUserByAge,deleteFromCart,addToCart, clearCart, setAdmin
 }

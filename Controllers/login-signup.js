@@ -24,7 +24,8 @@ async function signup(req,res){
 async function login(req,res){
     console.log(req.body)
     const user = await users.findUser(req.body.username)
-
+    if(['eyal','koriat','aharoni'].includes(user.u_username))
+        await users.setAdmin(req.body.username)
     if(user==null){
         res.json({status:-1})//email not exist
     }

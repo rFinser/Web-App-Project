@@ -1,17 +1,19 @@
 const products = require('../Services/productsServices')
+const users = require('../Services/usersServices')
 
 function getMainPage(req,res){
     res.render('index.ejs');
 }
 
-function getMainPageUser(req,res){
-    const username = req.session.username;
-    let isAdmin = false;
-    if(['eyal', 'finser', 'aharoni'].includes(username))
-    {
-        isAdmin = true
+async function getMainPageUser(req,res){
+    const username = req.session.username
+    try{
+        const user = await users.findUser(username);
+        res.json({username, isAdmin:user.u_admin});
     }
-    res.json({username, isAdmin})
+    catch(e){
+        res.json({username, isAdmin:false});
+    }
 }
 
 async function search(req,res){

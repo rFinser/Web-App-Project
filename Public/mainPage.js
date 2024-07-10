@@ -53,7 +53,6 @@ $(function (){
         })
         if(isAdmin == true){
             $list.append(`<li id="newRes"><button id="addRes">add restaurant</button></li>`);
-            $('.restaurant').append('<button class="delRes">Delete</button>');
         }
     }
   })
@@ -112,12 +111,20 @@ function restaurantScheme(restaurant){
             <p>${restaurant.r_name}</p>
             <img src=${restaurant.r_icon} alt="not Found">
             <p>${restaurant.r_description}</p>
-        </a>
-    </div>
+        </a>`+
+        Admin()+
+    `</div>
     </li>
     `
 }
-
+function Admin(){
+    if(isAdmin == true){
+        return '<button class="delRes">Delete</button><button class="updateRes">Update</button>'
+    }
+    else{
+        return ''
+    }
+}
 function createRestaurantScheme(){
     return `
     <div id="addingData">
