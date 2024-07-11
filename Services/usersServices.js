@@ -52,9 +52,13 @@ async function clearCart(username){
 
 async function register(username, email, password, birthdate, admin) {
     const u = await findUser(username)
+
+    const todayDate = new Date();
+    const today = {day: todayDate.getDay(), month: todayDate.getMonth() + 1, year: todayDate.getFullYear()};
+    
     if(u == null){
         const user = new Users({
-            u_username:username, u_email:email, u_birthdate:birthdate, u_password:password, u_admin:admin
+            u_username:username, u_email:email, u_birthdate:birthdate, u_password:password, u_registrationDate: today,  u_admin:admin
         });
         await user.save()
     }
@@ -109,6 +113,17 @@ async function updateUser(username, email, birthday, password){
     }
 }
 
+async function getUsersByRegistrationMonth(month){
+    const users = await showAllUsers();
+    let foundUsers = [];
+    for(u of users){
+        if (u.u_registrationDate.month == month)
+            foundUsers.push(u);
+    }
+
+    return foundUsers;
+}
+
 module.exports = {
-    findUser, register, deleteUser, updateUser, showAllUsers,findUserByAge,deleteFromCart,addToCart, clearCart, setAdmin
+    findUser, register, deleteUser, updateUser, showAllUsers,findUserByAge,deleteFromCart,addToCart, clearCart, setAdmin, getUsersByRegistrationMonth
 }
