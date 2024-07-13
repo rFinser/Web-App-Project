@@ -1,3 +1,5 @@
+let isAdmin = false;
+
 $(document).ready(function () {
     $(document).on("click", ".addBtn", function () {
         const productId = $(this).attr("id")
@@ -27,7 +29,11 @@ $(async function () {
         url: `/restaurant`,
         data: { restaurantName: restName },
         success: function (data) {
-            makeRestaurant(data)
+            if(data.isAdmin){
+                isAdmin = true;
+            }
+            makeRestaurant(data.restData)
+            
         }
     })
 });
@@ -38,91 +44,75 @@ function makeRestaurant(restaurantJson) {
     $("#desc").html(`${restaurant.r_description}`);
     $("#address").html(`${restaurant.r_address}`);
     $("#icon").attr("src", `${restaurant.r_icon}`);
-
     for (tag of restaurant.r_tags) {
         $("#tags").append(`<li>${tag}</li>`)
     }
 
     for (product of products) {
-        makeProduct(product)
+        $("#products").append(makeProduct(product))
+    }
+    if(isAdmin){
+        $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
     }
 }
 
 function makeProduct(product) {
-    $("#products").append(`
+    return `
        <li>
         <section>
          <h5>${product.p_name}</h5>
          <p>${product.p_description}</p>
          <p>${product.p_price}</p>
-         <input id="${product.p_id}" class="addBtn" type="button" value="Add To Cart">
+         <input id="${product._id}" class="addBtn" type="button" value="Add To Cart">
         </section>
        </li> 
-        `)
+        `
+}
+function createProductData(){
+    return `
+    <div class="newProductForm">
+        <label for="p-name">product name:</label>
+        <input id="p-name" /></br>
+        <label for="p-description">description:</label>
+        <input id="p-description" /></br>
+        <label for="p-price">price:</label>
+        <input id="p-price" /></br>
+        <label for="p-tags">tags:</label>
+        <input id="p-tags" /></br>
+        <button class="p-save">save</button>
+        <button class="p-cancel">cancel</button>
+    </div>`
 }
 
-$(async function () {
+$('#products').delegate('#addProduct', 'click', function(){
+    const $li = $(this).closest('li')
+    $('#addProduct').remove();
+    $li.append(createProductData())
+})
+
+$('#products').delegate('.p-cancel', 'click', function(){
+    const $li = $(this).closest('li')
+    $('.newProductForm').remove();
+    $li.append('<li class="newProduct"><button id="addProduct">add product</button></li>')
+})
+
+$('#products').delegate('.p-save', 'click', function(){
+    
+    const p_name = $('#p-name').val();
+    const p_description = $('#p-description').val();
+    const p_price = $('#p-price').val();
+    const p_tags = $('#p-tags').val();
+
     $.ajax({
-        type: 'POST',
-        url: '/restaurantOrders',
-        data: { restaurant: getRestaurantName() },
-        success: data => { renderGraph(data.products) },
-        error: () => { console.error(`Error getting data for: ${getRestaurantName()}`) }
+        type: 'post',
+        url: '/addProduct/' + getRestaurantName(),
+        data: {name: p_name, desc: p_description, price: p_price, tags: p_tags},
+        success: function(){
+
+            $("#products").append(makeProduct({p_name, p_description, p_price, p_tags}))
+            $('.newProductForm').remove();
+            $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
+        }
     })
-});
 
-function renderGraph(productsData) {
-
-    const width = 800;
-    const height = 400;
-    const margin = {top: 50, bottom: 50, left: 50, right: 50};
-
-    const svg = d3.select("#graph")
-       .append("svg")
-       .attr("height", height - margin.top - margin.bottom)
-       .attr("width", width - margin.right - margin.left)
-       .attr("viewBox", [0, 0, width, height]);
-
-    const x = d3.scaleBand()
-        .domain(d3.range(productsData.length))
-        .range([margin.left, width - margin.right])
-        .padding(0.1);
-
-    const y = d3.scaleLinear()
-        .domain([0, findMax(productsData) + 10])
-        .range([height - margin.bottom, margin.top]);
-    
-    svg.append("g")
-        .attr("fill", "royalblue")
-        .selectAll("rect")
-        .data(productsData.sort((a, b) => d3.descending(a.count, b.count)))
-        .join("rect")
-          .attr("x", (d, i) => x(i))
-          .attr("y", d => y(d.count))
-          .attr("height", d => y(0) - y(d.count))
-          .attr("width", x.bandwidth())
-    
-    function xAxis(g){
-        g.attr("transform", `translate(0, ${height - margin.bottom})`);
-        g.call(d3.axisBottom(x).tickFormat(i => productsData[i].name))
-        .attr("font-size", "18px");
-    }
-
-    function yAxis(g){
-        g.attr("transform", `translate(${margin.left}, 0)`)
-         .call(d3.axisLeft(y).ticks(null, productsData.count))
-    }
-    
-    svg.append("g").call(xAxis);
-    svg.append("g").call(yAxis);
-    svg.node();
-}
-
-function findMax(arr){
-    let max = arr[0].count
-    for (element of arr){
-        if (element.count > max)
-            max = element.count
-    }
-    return max;
-}
+})

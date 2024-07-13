@@ -1,5 +1,6 @@
 const restServices = require("../Services/restaurantsServices");
-const prodServices = require("../Services/productsServices")
+const prodServices = require("../Services/productsServices");
+const usersServices = require("../Services/usersServices")
 
 async function getRestaurantPage(req, res) {
     const restaurant = await restServices.findRestaurantByName(req.params.name);
@@ -12,6 +13,13 @@ async function getRestaurantPage(req, res) {
 }
 
 async function getRestaurant(req, res){
+
+    let isAdmin = false
+    if(req.session.username != null){
+        const user = await usersServices.findUser(req.session.username);
+        isAdmin = user.u_admin;
+    }
+
     const restaurant = await restServices.findRestaurantByName(req.body.restaurantName);
     if (restaurant == null){
         res.status(404)
@@ -22,7 +30,7 @@ async function getRestaurant(req, res){
         for(productId of restaurant.r_productsId){
             products.push(await prodServices.findProductById(productId));
         }
-        res.json({restaurant, products});
+        res.json({restData:{restaurant, products} , isAdmin});
     }
 }
 
@@ -49,6 +57,14 @@ async function updateRestaurant(req,res){
     res.end()
 }
 
+async function addProduct(req,res){
+    const newProduct = await prodServices.createProduct(req.body.name, req.body.price, req.body.desc, req.body.tags)
+    const restName = req.params.name;
+    console.log(newProduct);
+    await restServices.addProduct(restName, newProduct._id);
+    res.end()
+}
+
 module.exports = {
     getRestaurantPage,
     getRestaurant,
@@ -57,4 +73,5 @@ module.exports = {
     deleteRestaurant,
     getRestaurantByName,
     updateRestaurant,
+    addProduct,
 }

@@ -9,6 +9,7 @@ router.route("/restaurantName:name").get(restController.getRestaurantByName);
 router.route("/restaurants").get(restController.getAllRestaurants);
 router.route('/addRestaurant').post(restController.addRestaurant);
 router.route('/delRestaurant:id').delete(restController.deleteRestaurant);
-router.route('/restaurant').put(restController.updateRestaurant);
+router.route('/updateRestaurant').put(restController.updateRestaurant);
+router.route('/addProduct/:name').post(restController.addProduct)
 
 module.exports = router;

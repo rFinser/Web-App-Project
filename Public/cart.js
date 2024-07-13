@@ -7,7 +7,7 @@ $(function getProducts() {
                 $list.append(`
                     <li>
                         ${product.p_name}
-                        <button type="submit" class="deleteBtn" id="${product.p_id}">Delete</button>
+                        <button type="submit" class="deleteBtn" id="${product._id}">Delete</button>
                     </li>
                     `)
             }

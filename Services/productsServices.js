@@ -1,15 +1,13 @@
 const Product = require("../Models/Products");
 
-async function createProduct(id, name, price, desc, tags) {
-    //id is key
-    if (await findProductById(id) != null)
-        throw Error(`A product already exists for ${id}`);
-    let product = new Product({ p_id: id, p_name: name, p_price: price, p_description: desc, p_tags: tags });
+async function createProduct(name, price, desc, tags) {
+    let product = new Product({p_name: name, p_price: price, p_description: desc, p_tags: tags });
     await product.save();
+    return product;
 }
 
-async function findProductById(id) {
-    const product = await Product.findOne({ p_id: id });
+async function findProductById(id){
+    const product = await Product.findOne({ _id: id });
     return product; //either null or the actual product, make sure to check
 }
 
@@ -20,13 +18,13 @@ async function getAllProducts() {
 async function updateProduct(id_to_update, name, price, desc, tags) {
     if (await findProductById(id_to_update) == null)
         throw Error(`No product for ${id_to_update} was found.`);
-    await Product.updateOne({ p_id: id_to_update }, { p_id: id_to_update, p_name: name, p_price: price, p_description: desc, p_tags: tags });
+    await Product.updateOne({ _id: id_to_update }, { _id: id_to_update, p_name: name, p_price: price, p_description: desc, p_tags: tags });
 }
 
 async function deleteProduct(id_to_delete) {
     if (await findProductById(id_to_delete) == null)
         throw Error(`No Product for ${id_to_delete} was found.`);
-    await Product.deleteOne({ p_id: id_to_delete });
+    await Product.deleteOne({ _id: id_to_delete });
 }
 
 function isSubArray(array, subArray) {

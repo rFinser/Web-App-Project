@@ -146,7 +146,7 @@ $('#restaurantList').delegate('.u_save','click', function(){
     
     $.ajax({
         type: 'PUT',
-        url: 'restaurant',
+        url: 'updateRestaurant',
         data: {id, name, desc, icon, address, tags, geo},
         success: function(){
             $('#updateData').remove()
@@ -162,7 +162,7 @@ function restaurantScheme(restaurant){
     return `
     <li id=${restaurant.r_name}>
     <div class = "restaurant">
-        <a href="restaurants/${restaurant.r_name} >
+        <a href="restaurants/${restaurant.r_name}">
             <p class="restName">${restaurant.r_name} </p>
             <img class="restImg" src=${restaurant.r_icon} alt="not Found">
             <p class="restDesc">${restaurant.r_description}</p>
