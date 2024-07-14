@@ -1,3 +1,4 @@
+
 //render graph of users registered on each month
 $(async function (){
     const usersData = await getUsersData();
@@ -5,6 +6,7 @@ $(async function (){
     const margin = {top: 50, right: 50, bottom: 50, left: 50};
     const width = 1200 - margin.left - margin.right;
     const height = 500 - margin.top - margin.bottom;
+
 
     const x = d3.scaleBand()
         .domain(d3.range(usersData.length))
@@ -22,6 +24,7 @@ $(async function (){
         .append("g")
             .attr("transform", `translate(${margin.left}, ${margin.top})`)
 
+
     svg.append("g")
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(x)
@@ -29,6 +32,7 @@ $(async function (){
 
 
     svg.append("g")
+
         .call(d3.axisLeft(y)
         .tickFormat(d3.format(".0f")));
 
@@ -41,6 +45,7 @@ $(async function (){
           .attr("y", d => y(d.users))
           .attr("height", d => y(0) - y(d.users))
           .attr("width", x.bandwidth())
+
 })
 
 function getDate(i){

@@ -1,5 +1,6 @@
 const restServices = require("../Services/restaurantsServices");
-const prodServices = require("../Services/productsServices")
+const prodServices = require("../Services/productsServices");
+const usersServices = require("../Services/usersServices");
 
 async function getRestaurantPage(req, res) {
     const restaurant = await restServices.findRestaurantByName(req.params.name);
@@ -12,6 +13,13 @@ async function getRestaurantPage(req, res) {
 }
 
 async function getRestaurant(req, res){
+
+    let isAdmin = false
+    if(req.session.username != null){
+        const user = await usersServices.findUser(req.session.username);
+        isAdmin = user.u_admin;
+    }
+
     const restaurant = await restServices.findRestaurantByName(req.body.restaurantName);
     if (restaurant == null){
         res.status(404)
@@ -22,8 +30,13 @@ async function getRestaurant(req, res){
         for(productId of restaurant.r_productsId){
             products.push(await prodServices.findProductById(productId));
         }
-        res.json({restaurant, products});
+        res.json({restData:{restaurant, products} , isAdmin});
     }
+}
+
+async function getRestaurantByName(req, res){
+    const restaurant = await restServices.findRestaurantByName(req.params.name);
+    res.json(restaurant)
 }
 
 async function getAllRestaurants(req, res){
@@ -31,17 +44,26 @@ async function getAllRestaurants(req, res){
     res.json(restaurants);
 }
 async function addRestaurant(req,res){
-    await restServices.createRestaurant(req.body.r_name,req.body.r_description,req.body.r_icon,[req.body.r_tags],req.body.r_adress)
+    await restServices.createRestaurant(req.body.r_name,req.body.r_description,req.body.r_icon,[req.body.r_tags],req.body.r_address)
     res.end();
 }
 async function deleteRestaurant(req,res){
     await restServices.deleteRestaurant(req.params.id);
     res.end();
 }
+
+async function updateRestaurant(req,res){
+    await restServices.updateRestaurant(req.body.id,req.body.name,req.body.desc,req.body.icon,req.body.tags,req.body.address,req.body.geo)
+    res.end()
+}
+
+
 module.exports = {
     getRestaurantPage,
     getRestaurant,
     getAllRestaurants,
     addRestaurant,
     deleteRestaurant,
+    getRestaurantByName,
+    updateRestaurant,
 }

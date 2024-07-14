@@ -12,13 +12,14 @@ function isLoggedIn(req,res, next){
     }
 }
 
-async function getCartPage(req, res) {
 
-    const user = await userServices.findUser(req.session.username);
-    if (user == null)
-        res.redirect('/login');
-    else {
+async function getCartPage(req, res) {
+    if(req.session.username != null){
         res.render('cartView');
+    }
+    else{
+        res.redirect('/login')
+        res.end()
     }
 }
 
@@ -42,7 +43,7 @@ async function addProduct(req, res){
 }
 
 async function makePurchase(req, res){
-    if(req.session.username == ''){
+    if(req.session.username == null){
         res.redirect('/login')
         return;
     }
