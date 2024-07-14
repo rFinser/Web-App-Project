@@ -7,11 +7,15 @@ $(async function (){
     const width = 1200 - margin.left - margin.right;
     const height = 500 - margin.top - margin.bottom;
 
-    const x = d3.scaleTime()
+
+    const x = d3.scaleBand()
+        .domain(d3.range(usersData.length))
         .range([0, width])
+        .padding(0.1)
 
     const y = d3.scaleLinear()
         .range([height, 0])
+        .domain([0, d3.max(usersData, e => e.users) + 50]) // the *50* here is a placeholder until we will have more data https://stackoverflow.com/questions/13599118/how-to-remove-decimal-point-from-my-y-axis-scale-in-d3js-graph
 
     const svg = d3.select("#graph")
         .append("svg")
@@ -19,9 +23,7 @@ $(async function (){
             .attr("height", height + margin.top + margin.bottom)
         .append("g")
             .attr("transform", `translate(${margin.left}, ${margin.top})`)
-    
-    x.domain(d3.extent(usersData, e => e.month))
-    y.domain([0, d3.max(usersData, e => e.users)])
+
 
     svg.append("g")
         .attr("transform", `translate(0, ${height})`)
@@ -30,18 +32,20 @@ $(async function (){
 
 
     svg.append("g")
-        .call(d3.axisLeft(y));
 
-    const line = d3.line()
-        .x(e => x(e.month))
-        .y(e => y(e.users));
+        .call(d3.axisLeft(y)
+        .tickFormat(d3.format(".0f")));
 
-    svg.append("path")
-        .datum(usersData)
-        .attr("fill", "none")
-        .attr("stroke", "royalblue")
-        .attr("stroke-width", 1)
-        .attr("d", line);
+    svg.append("g")
+        .attr("fill", "royalblue")
+        .selectAll("rect")
+        .data(usersData)
+        .join("rect")
+          .attr("x", (d, i) => x(i))
+          .attr("y", d => y(d.users))
+          .attr("height", d => y(0) - y(d.users))
+          .attr("width", x.bandwidth())
+
 })
 
 function getDate(i){
