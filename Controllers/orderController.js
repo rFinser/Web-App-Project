@@ -52,6 +52,26 @@ async function getProductsAndQuantity(req, res) {
         }
     }
 
+    for(const productId of rest.r_productsId){
+        let found = false
+        for(const productData of productsData){
+            if(productData.productId == productId){
+                found = true
+                break;
+            }
+        }
+
+        if(!found){
+            const prod = await productsServices.findProductById(productId)
+            const product = {
+                productId,
+                count: 0,
+                name: prod.p_name
+            };
+            productsData.push(product);
+        }
+    }
+
     res.json({ products: productsData });
 }
 
