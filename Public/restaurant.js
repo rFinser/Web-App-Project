@@ -41,6 +41,7 @@ $(async function () {
 
 function makeRestaurant(restaurantJson) {
     const { restaurant, products } = restaurantJson;
+    $("#title").html(`Restaurants | ${restaurant.r_name}`);
     $("#name").html(`${restaurant.r_name}`);
     $("#desc").html(`${restaurant.r_description}`);
     $("#address").html(`${restaurant.r_address}`);
