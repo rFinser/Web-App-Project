@@ -2,7 +2,8 @@ let isAdmin = false;
 
 $(document).ready(function () {
     $(document).on("click", ".addBtn", function () {
-        const productId = $(this).attr("id")
+        const $li = $(this).closest('li')
+        const productId = $li.attr("id")
         $.ajax({
             type: 'POST',
             url: `/cart/add`,
@@ -58,15 +59,24 @@ function makeRestaurant(restaurantJson) {
 
 function makeProduct(product) {
     return `
-       <li>
+       <li id="${product._id}">
         <section>
          <h5>${product.p_name}</h5>
          <p>${product.p_description}</p>
          <p>${product.p_price}</p>
-         <input id="${product._id}" class="addBtn" type="button" value="Add To Cart">
+         <input class="addBtn" type="button" value="Add To Cart"></input></br>`
+         +Admin()+`
         </section>
        </li> 
         `
+}
+function Admin(){
+    if(isAdmin){
+        return `<button class="delProduct">Delete</button><button class="updateProduct">Update</button>`
+    }
+    else{
+        return ''
+    }
 }
 function createProductData(){
     return `
@@ -115,4 +125,17 @@ $('#products').delegate('.p-save', 'click', function(){
         }
     })
 
+})
+
+$('#products').delegate('.delProduct', 'click', function(){
+    const $li = $(this).closest('li')
+    
+    $.ajax({
+        type: 'DELETE',
+        url: '/deleteProduct/' + getRestaurantName(),
+        data: {id: $li.attr('id')},
+        success: function(){
+            $li.remove()
+        }
+    })
 })

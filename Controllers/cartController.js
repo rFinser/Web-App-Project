@@ -38,7 +38,6 @@ async function deleteProduct(req,res){
 }
 
 async function addProduct(req, res){
-    console.log(req.body)
     await userServices.addToCart(req.session.username, req.body.productId);
     res.end();
 }

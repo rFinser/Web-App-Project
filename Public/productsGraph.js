@@ -1,3 +1,7 @@
+function getRestaurantName() {
+    return window.location.href.split("/").slice(-1)[0];
+}
+
 $(async function () {
     $.ajax({
         type: 'POST',

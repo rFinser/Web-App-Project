@@ -11,5 +11,6 @@ router.route('/addRestaurant').post(restController.addRestaurant);
 router.route('/delRestaurant:id').delete(restController.deleteRestaurant);
 router.route('/updateRestaurant').put(restController.updateRestaurant);
 router.route('/addProduct/:name').post(restController.addProduct)
+router.route('/deleteProduct/:name').delete(restController.deleteProduct)
 
 module.exports = router;
