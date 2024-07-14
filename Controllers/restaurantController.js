@@ -1,6 +1,6 @@
 const restServices = require("../Services/restaurantsServices");
 const prodServices = require("../Services/productsServices");
-const usersServices = require("../Services/usersServices")
+const usersServices = require("../Services/usersServices");
 
 async function getRestaurantPage(req, res) {
     const restaurant = await restServices.findRestaurantByName(req.params.name);
@@ -57,21 +57,6 @@ async function updateRestaurant(req,res){
     res.end()
 }
 
-async function addProduct(req,res){
-    const newProduct = await prodServices.createProduct(req.body.name, req.body.price, req.body.desc, req.body.tags)
-    const restName = req.params.name;
-    const id = newProduct._id.toString()
-    await restServices.addProduct(restName, id);
-    res.end()
-}
-
-async function deleteProduct(req,res){
-    const restName = req.params.name;
-    await restServices.removeProduct(restName,req.body.id);
-    await prodServices.deleteProduct(req.body.id);
-    res.end();
-
-}
 
 module.exports = {
     getRestaurantPage,
@@ -81,6 +66,4 @@ module.exports = {
     deleteRestaurant,
     getRestaurantByName,
     updateRestaurant,
-    addProduct,
-    deleteProduct,
 }

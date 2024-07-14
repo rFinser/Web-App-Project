@@ -30,7 +30,7 @@ const mainPageRoutes = require('./Routes/mainPage')
 const cartRouter = require("./Routes/cartRoutes");
 const ordersRouter = require('./Routes/ordersRoutes')
 const usersRouter = require("./Routes/usersRouter");
-
+const productsRouter = require("./Routes/productRoutes");
 
 app.use(restRouter);
 app.use(loginSignupRouter);
@@ -38,6 +38,7 @@ app.use(mainPageRoutes);
 app.use(cartRouter);
 app.use(ordersRouter);
 app.use(usersRouter);
+app.use(productsRouter);
 
 
 app.listen(process.env.PORT, (err) => {

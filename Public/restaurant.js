@@ -53,14 +53,14 @@ function makeRestaurant(restaurantJson) {
         $("#products").append(makeProduct(product))
     }
     if(isAdmin){
-        $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
+        $("#products").append('<li class="newProduct adminBtn"><button id="addProduct">add product</button></li>')
     }
 }
 
 function makeProduct(product) {
     return `
        <li id="${product._id}">
-        <section>
+        <section class="product">
          <h5>${product.p_name}</h5>
          <p>${product.p_description}</p>
          <p>${product.p_price}</p>
@@ -72,7 +72,7 @@ function makeProduct(product) {
 }
 function Admin(){
     if(isAdmin){
-        return `<button class="delProduct">Delete</button><button class="updateProduct">Update</button>`
+        return `<button class="delProduct adminBtn">Delete</button><button  class="adminBtn updateProduct" >Update</button>`
     }
     else{
         return ''
@@ -93,7 +93,21 @@ function createProductData(){
         <button class="p-cancel">cancel</button>
     </div>`
 }
-
+function updateProductData(){
+    return `
+    <div class="updateProductForm">
+        <label for="p-name">product name:</label>
+        <input id="p-name" /></br>
+        <label for="p-description">description:</label>
+        <input id="p-description" /></br>
+        <label for="p-price">price:</label>
+        <input id="p-price" /></br>
+        <label for="p-tags">tags:</label>
+        <input id="p-tags" /></br>
+        <button class="u-save">save</button>
+        <button class="u-cancel">cancel</button>
+    </div>`
+}
 $('#products').delegate('#addProduct', 'click', function(){
     const $li = $(this).closest('li')
     $('#addProduct').remove();
@@ -117,9 +131,9 @@ $('#products').delegate('.p-save', 'click', function(){
         type: 'post',
         url: '/addProduct/' + getRestaurantName(),
         data: {name: p_name, desc: p_description, price: p_price, tags: p_tags},
-        success: function(){
+        success: function(data){
 
-            $("#products").append(makeProduct({p_name, p_description, p_price, p_tags}))
+            $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id}))
             $('.newProductForm').remove();
             $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
         }
@@ -136,6 +150,54 @@ $('#products').delegate('.delProduct', 'click', function(){
         data: {id: $li.attr('id')},
         success: function(){
             $li.remove()
+        }
+    })
+})
+
+$('#products').delegate('.updateProduct', 'click', function(){
+    const $li = $(this).closest('li')
+    $li.find('.product').hide()
+    $('.adminBtn').hide()
+
+    $.ajax({
+        type: 'GET',
+        url: '/getProduct'+$li.attr('id'),
+        success: function(data){
+            $li.append(updateProductData());
+            $('#p-name').val(data.p_name);
+            $('#p-description').val(data.p_description);
+            $('#p-price').val(data.p_price);
+            $('#p-tags').val(data.p_tags);
+        }
+    })
+})
+
+$('#products').delegate('.u-cancel', 'click', function(){
+    const $li = $(this).closest('li');
+    $('.updateProductForm').remove();
+    $li.find('.product').show();
+    $('.adminBtn').show();
+})
+
+$('#products').delegate('.u-save', 'click', function(){
+    const $li = $(this).closest('li');
+
+    const name = $('#p-name').val();
+    const desc = $('#p-description').val();
+    const price = $('#p-price').val();
+    const tags = $('#p-tags').val();
+
+    const id = $li.attr('id')
+
+    $.ajax({
+        type: 'PUT',
+        url: '/updateProduct',
+        data: {id,name,desc,price,tags},
+        success: function(){
+            $('.updateProductForm').remove();
+            $li.find('.product').remove();
+            $li.append(makeProduct({_id:id, p_name: name, p_description:desc,p_price: price}));
+            $('.adminBtn').show();
         }
     })
 })
