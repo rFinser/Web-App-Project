@@ -30,6 +30,11 @@ async function getOrders(req, res) {
 }
 
 async function getAllOrders(req, res){
+    const orders = await ordersServices.showAllOrders();
+    res.json({orders});
+}
+
+async function getAllOrdersPage(req, res){
     const requestUser = await userServices.findUser(req.session.username);
     if(requestUser == null || requestUser.u_admin == false){
         res.status(404);
@@ -37,8 +42,7 @@ async function getAllOrders(req, res){
         return;
     }
 
-    const orders = await ordersServices.showAllOrders();
-    res.json({orders});
+    res.render("ordersPage");
 }
 
 async function getProductsAndQuantity(req, res) {
@@ -89,5 +93,5 @@ async function getProductsAndQuantity(req, res) {
 }
 
 module.exports = {
-    getOrdersPage, getOrders, getProductsAndQuantity, getAllOrders 
+    getOrdersPage, getOrders, getProductsAndQuantity, getAllOrders, getAllOrdersPage
 }
