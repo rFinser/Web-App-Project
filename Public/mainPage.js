@@ -1,30 +1,12 @@
 let isAdmin = false;
 
-$(document).ready(function () {
-    $('#loginBtn').hide();
-    $('#signupBtn').hide();
-    $.ajax({
-        type: 'GET',
-        url: '/mainPage',
-        success: function(data){
-            if(data.username == null){
-                $('#loginBtn').show();
-                $('#signupBtn').show();
-            }
-            else{
-                $('#loginBtn').hide();
-                $('#signupBtn').hide();
-                $('#username').html(`${data.username}`)
-            }
-            isAdmin = data.isAdmin;
-        }
-    })
-});
-
 $(async function(){
     //load navbar
     $.get('navbar.html', function(data){
         $("#navbarContainer").html(data);
+
+        //! ADD NAVBAR FUNCTIONALLITY HERE
+
         //search bar
         $("#searchBar").keyup(function() {
             if($("#searchBar").val() == "" || !$("#searchBar").is(":focus")){
@@ -44,6 +26,28 @@ $(async function(){
                     });
                 }
             });
+        });
+
+        //login-signup buttons
+        $(document).ready(function () {
+            $('#loginBtn').hide();
+            $('#signupBtn').hide();
+            $.ajax({
+                type: 'GET',
+                url: '/mainPage',
+                success: function(data){
+                    if(data.username == null){
+                        $('#loginBtn').show();
+                        $('#signupBtn').show();
+                    }
+                    else{
+                        $('#loginBtn').hide();
+                        $('#signupBtn').hide();
+                        $('#username').html(`${data.username}`)
+                    }
+                    isAdmin = data.isAdmin;
+                }
+            })
         });
     })
 })

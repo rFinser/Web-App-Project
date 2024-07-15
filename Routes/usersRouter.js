@@ -8,5 +8,6 @@ router.route('/settings').get(usersController.isLoggedIn, usersController.getSet
 router.route('/userData').get(usersController.getUserData);
 router.route('/deleteUser').post(usersController.deleteUser);
 router.route('/updateUser').put(usersController.updateUser);
+router.route('/isLoggedIn').get(usersController.isLoggedinJson);
 
 module.exports = router;
