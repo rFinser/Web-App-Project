@@ -19,11 +19,16 @@ $(async function(){
                 type: 'POST',
                 url: '/search',
                 data: {name: $("#searchBar").val()},
-                success: function(products) {
+                success: function(restaurants) {
                     $('#results').empty();
-                    products.results.forEach(product => {
-                       $("#results").append(`<p>${product}</p>`);
-                    });
+                    if(restaurants.results.length == 0){
+                        $('#results').append('<p>no results found</p>')
+                    }
+                    else{
+                        restaurants.results.forEach(restaurant => {
+                            $("#results").append(`<p>${restaurant}</p>`);
+                         });
+                    }
                 }
             });
         });

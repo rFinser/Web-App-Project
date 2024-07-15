@@ -14,6 +14,11 @@ async function findRestaurantByName(name) {
     return rest; //either null or the actual restaurant
 }
 
+async function findRestaurantIncludesName(name) {
+    let foundRestaurant = await Restaurant.find({r_name: {$regex: new RegExp('^.*'+name+'.*$')} });
+    return foundRestaurant;
+}
+
 async function listAllRestaurants() {
     return await Restaurant.find();
 }
@@ -83,6 +88,7 @@ async function removeProduct(restaurantName, productId) {
 module.exports = {
     createRestaurant,
     findRestaurantByName,
+    findRestaurantIncludesName,
     listAllRestaurants,
     updateRestaurant,
     deleteRestaurant,
