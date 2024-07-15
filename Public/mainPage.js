@@ -28,7 +28,6 @@ $(async function(){
             });
         });
 
-        //login-signup buttons
         $(document).ready(function () {
             $('#loginBtn').hide();
             $('#signupBtn').hide();
@@ -46,14 +45,25 @@ $(async function(){
                         $('#username').html(`${data.username}`)
                     }
                     isAdmin = data.isAdmin;
+                    loadAdminBtns();
+                    loadRestaurants();
                 }
             })
         });
     })
 })
 
+function loadAdminBtns(){
+    if (!isAdmin){
+        $("#adminModeBtns").hide();
+    }
+    else{
+        $("#adminModeBtns").show();
+    }
+}
+
 //loading the main section of restaurants
-$(function (){
+function loadRestaurants(){
   const $list = $("#restaurantList");
   
   $.ajax({
@@ -67,7 +77,7 @@ $(function (){
         }
     }
   })
-})
+}
 
 $('#restaurantList').delegate('#addRes', 'click', function(){
     $('#addRes').hide();

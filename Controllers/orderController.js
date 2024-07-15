@@ -1,6 +1,7 @@
 const ordersServices = require('../Services/ordersServices');
 const productsServices = require('../Services/productsServices');
 const restaurantServices = require('../Services/restaurantsServices');
+const userServices = require("../Services/usersServices");
 
 async function getOrdersPage(req, res) {
     const username = req.session.username
@@ -26,6 +27,18 @@ async function getOrders(req, res) {
         Products = []
     }
     res.json({ orderProducts, username });
+}
+
+async function getAllOrders(req, res){
+    const requestUser = await userServices.findUser(req.session.username);
+    if(requestUser == null || requestUser.u_admin == false){
+        res.status(404);
+        res.end();
+        return;
+    }
+
+    const orders = await ordersServices.showAllOrders();
+    res.json({orders});
 }
 
 async function getProductsAndQuantity(req, res) {
@@ -76,5 +89,5 @@ async function getProductsAndQuantity(req, res) {
 }
 
 module.exports = {
-    getOrdersPage, getOrders, getProductsAndQuantity
+    getOrdersPage, getOrders, getProductsAndQuantity, getAllOrders 
 }
