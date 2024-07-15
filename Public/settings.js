@@ -138,7 +138,11 @@ function validUsername(username){
 }
 
 function validDate(date){
-    if(date.month == 2 && date.day>28){
+    if(date.day == '' || date.month == '' || date.year == '')
+    {
+        return false
+    }
+    else if(date.month == 2 && date.day>28){
         return false;
     }
     else if(['04','06','09','11'].includes(date.month) && date.day>30){
