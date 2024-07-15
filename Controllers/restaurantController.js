@@ -44,7 +44,13 @@ async function getAllRestaurants(req, res){
     res.json(restaurants);
 }
 async function addRestaurant(req,res){
-    await restServices.createRestaurant(req.body.r_name,req.body.r_description,req.body.r_icon,[req.body.r_tags],req.body.r_address)
+    try{
+        await restServices.createRestaurant(req.body.r_name,req.body.r_description,req.body.r_icon,[req.body.r_tags],req.body.r_address)
+        res.json({status: 1})
+    }
+    catch(e){
+        res.json({status:-1})
+    }
     res.end();
 }
 async function deleteRestaurant(req,res){
@@ -53,7 +59,13 @@ async function deleteRestaurant(req,res){
 }
 
 async function updateRestaurant(req,res){
-    await restServices.updateRestaurant(req.body.id,req.body.name,req.body.desc,req.body.icon,req.body.tags,req.body.address,req.body.geo)
+    try{
+        await restServices.updateRestaurant(req.body.id,req.body.name,req.body.desc,req.body.icon,req.body.tags,req.body.address,req.body.geo)
+        res.json({status: 1});
+    }
+    catch(e){
+        res.json({status: -1})
+    }
     res.end()
 }
 
