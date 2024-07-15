@@ -31,10 +31,22 @@ async function deleteUser(req,res){
     });
 }
 
+async function updateUser(req,res){
+    try{
+        await userServices.updateUser(req.session.username,req.body.username, req.body.email, req.body.birthday, req.body.password);
+        req.session.username = req.body.username;
+        res.json({status:1})
+    }
+    catch(e){
+        res.json({status:-1}); //username taken
+    }
+}
+
 module.exports = {
     getUsersByRegistrationMonth,
     getSettingsPage,
     isLoggedIn,
     getUserData,
     deleteUser,
+    updateUser,
 }
