@@ -18,6 +18,15 @@ $(document).ready(function () {
     })
 })
 
+$(async function(){
+    //load navbar
+    $.get("http://localhost/navbar.html", function(data){
+        $("#navbarContainer").html(data);
+        //! ADD NAVBAR FUNCTIONALLITY HERE:
+        
+    })
+})
+
 //gets the restaurant name from the url of the current page
 function getRestaurantName() {
     return window.location.href.split("/").slice(-1)[0];
@@ -41,6 +50,7 @@ $(async function () {
 
 function makeRestaurant(restaurantJson) {
     const { restaurant, products } = restaurantJson;
+    $("#title").html(`Restaurants | ${restaurant.r_name}`);
     $("#name").html(`${restaurant.r_name}`);
     $("#desc").html(`${restaurant.r_description}`);
     $("#address").html(`${restaurant.r_address}`);

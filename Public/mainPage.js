@@ -20,26 +20,33 @@ $(document).ready(function () {
         }
     })
 });
-//search bar
-$("#searchBar").keyup(function() {
-    if($("#searchBar").val() == "" || !$("#searchBar").is(":focus")){
-        $('#results').hide();
-        return;
-    }
 
-    $('#results').show();
-    $.ajax({
-        type: 'POST',
-        url: '/search',
-        data: {name: $("#searchBar").val()},
-        success: function(products) {
-            $('#results').empty();
-            products.results.forEach(product => {
-               $("#results").append(`<p>${product}</p>`);
+$(async function(){
+    //load navbar
+    $.get('navbar.html', function(data){
+        $("#navbarContainer").html(data);
+        //search bar
+        $("#searchBar").keyup(function() {
+            if($("#searchBar").val() == "" || !$("#searchBar").is(":focus")){
+                $('#results').hide();
+                return;
+            }
+        
+            $('#results').show();
+            $.ajax({
+                type: 'POST',
+                url: '/search',
+                data: {name: $("#searchBar").val()},
+                success: function(products) {
+                    $('#results').empty();
+                    products.results.forEach(product => {
+                       $("#results").append(`<p>${product}</p>`);
+                    });
+                }
             });
-        }
-    });
-});
+        });
+    })
+})
 
 //loading the main section of restaurants
 $(function (){
@@ -165,7 +172,7 @@ function restaurantScheme(restaurant){
     <div class = "restaurant">
         <a href="restaurants/${restaurant.r_name}">
             <p class="restName">${restaurant.r_name} </p>
-            <img class="restImg" src=${restaurant.r_icon} alt="not Found">
+            <img class="restImg" src=${restaurant.r_icon} onerror="this.src = '${defaultRestIcon}'" alt="not Found">
             <p class="restDesc">${restaurant.r_description}</p>
         </a>`+
         Admin()+

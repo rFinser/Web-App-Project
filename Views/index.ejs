@@ -10,27 +10,23 @@
     <script defer src="usersGraph.js"></script>
 </head>
 <body>
-        <nav id="navbar">
-            <img src="" alt="">
-            <form action="/settings" method="get">
-                <button id="settingsBtn">settings</button>
-            </form>
-            
+    <div id="navbarContainer"></div>
+
+    <aside>
+        <nav>
             <form action="/cart" method="get">
                 <button id="cart">My Cart</button>
             </form>
             <form action="/orders" method="get">
                 <button id="orders">My Orders</button>
             </form>
-            <input type="text" id="searchBar" placeholder="Search..."> 
-            <div id="results"></div>
-            <a href="/signup" id="loginBtn"><button>signup</button></a>
-            <a href="/login" id="signupBtn"><button>login</button></a>
-            <p id="username"></p>
+            <button id="settingsBtn">settings</button>
         </nav>
+    </aside>
 
-        <div id="graph"></div>
+
+    <div id="graph"></div>
         
-        <ul id="restaurantList"></ul>
+    <ul id="restaurantList"></ul>
 </body>
 </html>
