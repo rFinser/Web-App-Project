@@ -21,6 +21,9 @@ async function listAllRestaurants() {
 async function updateRestaurant(restaurant_to_update, newName, newDesc, newIcon, newTags, newAddress, newLocation, newProducts) {
     if (await findRestaurantByName(restaurant_to_update) == null)
         throw Error(`No restaurant with the name "${restaurant_to_update}" was found.`);
+    else if(restaurant_to_update != newName && await findRestaurantByName(newName)!=null){
+        throw Error(`restaurant with that name "${restaurant_to_update}" already exist.`);
+    }
     await Restaurant.updateOne({ r_name: restaurant_to_update }, { r_name: newName, r_description: newDesc, r_icon: newIcon, r_tags: newTags, r_address: newAddress, r_geolocation: newLocation, r_productsId: newProducts });
 }
 
