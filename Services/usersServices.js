@@ -103,14 +103,12 @@ async function deleteUser(username){
     }
 }
 
-async function updateUser(username, email, birthday, password){
-    const u = await findUser(email)
-    if(u != null){
-        await  Users.updateOne({u_username: username}, {u_username:username, u_email:email, u_birthday:birthday, u_password:password}) 
+async function updateUser(username_to_update ,newUsername, email, birthday, password){
+    if(await findUser(newUsername) == null){
+        await  Users.updateOne({u_username: username_to_update}, {u_username:newUsername, u_email:email, u_birthday:birthday, u_password:password})
     }
     else{
-        throw Error(`user not exist, id: ${username}`)
-    }
+        throw Error(`username taken, id: ${newUsername}`)    }
 }
 
 async function getUsersByRegistrationMonth(month){
