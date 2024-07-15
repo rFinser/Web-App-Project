@@ -53,15 +53,18 @@ async function isLoggedinJson(req, res){
 }
 
 async function getAllUsers(req, res){
+    const users = await userServices.showAllUsers();
+    res.json({users});
+}
+
+async function getAllUsersPage(req, res){
     const requestUser = await userServices.findUser(req.session.username);
     if(requestUser == null || requestUser.u_admin == false){
         res.status(404);
         res.end();
         return;
     }
-
-    const users = await userServices.showAllUsers();
-    res.json({users});
+    res.render("usersPage");
 }
 
 module.exports = {
@@ -73,4 +76,5 @@ module.exports = {
     updateUser,
     isLoggedinJson,
     getAllUsers,
+    getAllUsersPage,
 }
