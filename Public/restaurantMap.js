@@ -4,7 +4,6 @@ $(async function initMap(){
     const { Map } = await google.maps.importLibrary("maps");
     const restaurantData = await getRestaurantLocations();
     const restaurantLocations = restaurantData.restData.restaurant.r_geolocation;
-    console.log(restaurantLocations);
 
     let mapOptions = {
         center: {lat: 31.7683, lng: 35.2137},

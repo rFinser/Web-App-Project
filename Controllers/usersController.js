@@ -42,6 +42,16 @@ async function updateUser(req,res){
     }
 }
 
+async function isLoggedinJson(req, res){
+    if(req.session.username == null){
+        res.json({isLoggedIn: false, user: null});
+    }
+    else if(req.session.username != null){
+        const u = await userServices.findUser(req.session.username);
+        res.json({isLoggedIn: true, username: u.u_username});
+    }
+}
+
 module.exports = {
     getUsersByRegistrationMonth,
     getSettingsPage,
@@ -49,4 +59,5 @@ module.exports = {
     getUserData,
     deleteUser,
     updateUser,
+    isLoggedinJson,
 }

@@ -24,6 +24,14 @@ $(async function(){
         $("#navbarContainer").html(data);
         //! ADD NAVBAR FUNCTIONALLITY HERE:
         
+        //checking if the user is logged in
+        $.get("/isLoggedIn", function(data){
+            if (data.isLoggedIn){
+                $("#loginBtn").hide();
+                $("#signupBtn").hide();
+                $("#username").html(`${data.username}`);
+            }
+        })
     })
 })
 
