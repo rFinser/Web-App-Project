@@ -67,7 +67,7 @@ function makeRestaurant(restaurantJson) {
     $("#icon").attr("src", `${restaurant.r_icon}`);
     $("#icon").attr('onerror', `this.src = '${defaultRestIcon}'`);
     for (tag of restaurant.r_tags) {
-        $("#tags").append(`<li>${tag}</li>`)
+        $("#tags").append(`<li>${tag.name}</li>`)
     }
 
     for (product of products) {

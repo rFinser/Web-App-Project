@@ -1,4 +1,32 @@
 let isAdmin = false;
+
+const icons = {
+    "meat": "https://cdn-icons-png.flaticon.com/128/1046/1046820.png",
+    "salad": "https://cdn-icons-png.flaticon.com/128/1057/1057510.png",
+    "vegan": "https://cdn-icons-png.flaticon.com/128/5581/5581203.png",
+    "seafood": "https://cdn-icons-png.flaticon.com/128/7438/7438538.png",
+    "dessert": "https://cdn-icons-png.flaticon.com/128/3173/3173469.png",
+    "sandwiches": "https://cdn-icons-png.flaticon.com/128/1625/1625062.png",
+    "burgers": "https://cdn-icons-png.flaticon.com/128/5787/5787016.png",
+    "bbq": "https://cdn-icons-png.flaticon.com/128/1161/1161633.png",
+    "sushi": "https://cdn-icons-png.flaticon.com/128/2346/2346236.png",
+    "tacos": "https://cdn-icons-png.flaticon.com/128/537/537386.png",
+    "pastries": "https://cdn-icons-png.flaticon.com/128/5787/5787330.png",
+    "soups": "https://cdn-icons-png.flaticon.com/128/2388/2388080.png",
+    "ice-cream": "https://cdn-icons-png.flaticon.com/128/938/938063.png",
+    "spicy": "https://cdn-icons-png.flaticon.com/128/5137/5137032.png",
+    "smoothies": "https://cdn-icons-png.flaticon.com/128/7703/7703600.png",
+    "noodles": "https://cdn-icons-png.flaticon.com/128/5110/5110068.png",
+    "fast-food": "https://cdn-icons-png.flaticon.com/128/737/737967.png",
+    "gourmet-food": "https://cdn-icons-png.flaticon.com/128/2858/2858726.png",
+    "asian": "https://cdn-icons-png.flaticon.com/128/6413/6413044.png",
+    "italian": "https://cdn-icons-png.flaticon.com/128/4624/4624250.png",
+    "mexican": "https://cdn-icons-png.flaticon.com/128/5596/5596725.png",
+    "middle-eastern": "https://cdn-icons-png.flaticon.com/128/4082/4082616.png",
+    "french": "https://cdn-icons-png.flaticon.com/128/3187/3187471.png",
+    "greek": "https://cdn-icons-png.flaticon.com/128/1680/1680533.png"
+}
+
 $(async function(){
     //load navbar
     $.get('navbar.html', function(data){
@@ -25,7 +53,7 @@ $(async function(){
                     }
                     else{
                         restaurants.results.forEach(restaurant => {
-                            $("#results").append(`<p>${restaurant}</p>`);
+                            $("#results").append(`<a href="/restaurants/${restaurant}" >${restaurant}</a></br>`);
                          });
                     }
                 }
@@ -90,10 +118,24 @@ $('#restaurantList').delegate('#cancelRes', 'click', function(){
 $('#restaurantList').delegate('#saveRes', 'click', function(){
     $('.tooltip').hide()
 
+    var selectedTags = [];
+    $('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+        selectedTags.push($(this).attr('id'));
+    });
+
+    var tags = []
+    var iconUrl;
+
+    $.each(selectedTags, (i, tag)=>{
+        iconUrl = icons[tag];
+        tags.push({name: tag,
+            icon : iconUrl,
+        });
+    })
+
     const name = $('#resName').val();
     const desc = $('#desc').val();
     const icon = $('#icon').val();
-    const tags = $('#tags').val();
     const address = $('#address').val();
 
     if(!validInputs(name,desc,address)){
@@ -155,7 +197,11 @@ $('#restaurantList').delegate('.updateRes', 'click', function(){
             $('#u_desc').val(rest.r_description);
             $('#u_icon').val(rest.r_icon);
             $('#u_address').val(rest.r_address);
-            $('#u_tags').val(rest.r_tags);
+            
+            $.each(rest.r_tags, (i, tag) => {
+                $(`#${tag.name}`).prop('checked', true);;
+            })
+
             $('#u_geolocation').val(rest.r_geolocation);
         }
     })
@@ -174,11 +220,25 @@ $('#restaurantList').delegate('.u_save','click', function(){
     $('.tooltip').hide();
     let $li = $(this).closest('li');
 
+    var selectedTags = [];
+    $('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+        selectedTags.push($(this).attr('id'));
+    });
+
+    var tags = []
+    var iconUrl;
+
+    $.each(selectedTags, (i, tag)=>{
+        iconUrl = icons[tag];
+        tags.push({name: tag,
+            icon : iconUrl,
+        });
+    })
+
     const name = $('#u_resName').val();
     const desc = $('#u_desc').val();
     const icon = $('#u_icon').val();
     const address = $('#u_address').val()
-    const tags = $('#u_tags').val()
     const geo = $('#u_geolocation').val()
 
     if(!validInputs(name,desc,address) || geo == ''){
@@ -215,7 +275,7 @@ function restaurantScheme(restaurant){
     <div class = "restaurant">
         <a href="restaurants/${restaurant.r_name}">
             <p class="restName">${restaurant.r_name} </p>
-            <img class="restImg" src=${restaurant.r_icon} onerror="this.src = '${defaultRestIcon}'" alt="not Found">
+            <img class="restImg" src=${restaurant.r_icon} alt="not Found" onerror="this.src = '${defaultRestIcon}'">
             <p class="restDesc">${restaurant.r_description}</p>
         </a>`+
         Admin()+
@@ -254,10 +314,11 @@ function createRestaurantScheme(){
         <input id="desc"/></br>
         <label for="icon">Icon(url):</label>
         <input id="icon"/></br>
-        <label for="tags">tags(optimal):</label>
-        <input id="tags"/></br>
+        `+tagsScheme()+`
         <label for="address">Address:</label>
         <input id="address"/></br>
+        <label for="u_geolocation">Geo location:</label>
+        <input id="u_geolocation"/></br>
         <button id="saveRes">save</button>
         <button id="cancelRes">cancel</button>
     </div>
@@ -274,8 +335,7 @@ function updateRestaurantScheme(){
         <input id="u_desc"/></br>
         <label for="u_icon">Icon(url):</label>
         <input id="u_icon"/></br>
-        <label for="u_tags">tags(optimal):</label>
-        <input id="u_tags"/></br>
+        `+tagsScheme()+`
         <label for="u_address">Address:</label>
         <input id="u_address"/></br>
         <label for="u_geolocation">Geo location:</label>
@@ -284,4 +344,34 @@ function updateRestaurantScheme(){
         <button id="u_cancel">cancel</button>
     </div>
     `
+}
+
+function tagsScheme(){
+    return `
+     <section id="tagsForm">
+        <input type="checkbox" id="meat"><label for="meat">Meat</label><br>
+        <input type="checkbox" id="salad"><label for="salad">Salad</label><br>
+        <input type="checkbox" id="vegan"><label for="vegan">Vegan</label><br>
+        <input type="checkbox" id="seafood"><label for="seafood">Seafood</label><br>
+        <input type="checkbox" id="dessert"><label for="dessert">Dessert</label><br>
+        <input type="checkbox" id="sandwiches"><label for="sandwiches">Sandwiches</label><br>
+        <input type="checkbox" id="burgers"><label for="burgers">Burgers</label><br>
+        <input type="checkbox" id="bbq"><label for="bbq">BBQ</label><br>
+        <input type="checkbox" id="sushi"><label for="sushi">Sushi</label><br>
+        <input type="checkbox" id="tacos"><label for="tacos">Tacos</label><br>
+        <input type="checkbox" id="pastries"><label for="pastries">Pastries</label><br>
+        <input type="checkbox" id="soups"><label for="soups">Soups</label><br>
+        <input type="checkbox" id="ice-cream"><label for="ice-cream">Ice Cream</label><br>
+        <input type="checkbox" id="spicy"><label for="spicy">Spicy</label><br>
+        <input type="checkbox" id="smoothies"><label for="smoothies">Smoothies</label><br>
+        <input type="checkbox" id="noodles"><label for="noodles">Noodles</label><br>
+        <input type="checkbox" id="fast-food"><label for="fast-food">Fast Food</label><br>
+        <input type="checkbox" id="gourmet-food"><label for="gourmet-food">Gourmet Food</label><br>
+        <input type="checkbox" id="asian"><label for="asian">Asian</label><br>
+        <input type="checkbox" id="italian"><label for="italian">Italian</label><br>
+        <input type="checkbox" id="mexican"><label for="mexican">Mexican</label><br>
+        <input type="checkbox" id="middle-eastern"><label for="middle-eastern">Middle Eastern</label><br>
+        <input type="checkbox" id="french"><label for="french">French</label><br>
+        <input type="checkbox" id="greek"><label for="greek">Greek</label><br>
+    </section>`
 }
