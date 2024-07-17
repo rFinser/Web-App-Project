@@ -147,16 +147,15 @@ $('#products').delegate('.p-save', 'click', function(){
     const p_description = $('#p-description').val();
     const p_price = $('#p-price').val();
     const p_tags = $('#p-tags').val();
-
+    const $li = $(this).closest('li')
     $.ajax({
         type: 'post',
         url: '/addProduct/' + getRestaurantName(),
         data: {name: p_name, desc: p_description, price: p_price, tags: p_tags},
         success: function(data){
-
-            $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id}))
-            $('.newProductForm').remove();
-            $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
+            $li.remove();
+            $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id})) 
+            $("#products").append('<li class="newProduct adminBtn"><button id="addProduct">add product</button></li>')
         }
     })
 

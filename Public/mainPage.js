@@ -1,6 +1,6 @@
 let isAdmin = false;
 
-const icons = {
+const tags = {
     "meat": "https://cdn-icons-png.flaticon.com/128/1046/1046820.png",
     "salad": "https://cdn-icons-png.flaticon.com/128/1057/1057510.png",
     "vegan": "https://cdn-icons-png.flaticon.com/128/5581/5581203.png",
@@ -59,6 +59,61 @@ $(async function(){
                 }
             });
         });
+        //filters
+        $('#filters').hide();
+        $('#tags').append(tagsScheme());
+
+        $('#filtersBtn').click(function (event) {
+            $('#filters').toggle();
+            event.stopPropagation();
+        });
+
+        $(document).click(function () {
+            $('#filters').hide();
+        });
+    
+        $('#filters').click(function (event) {
+            event.stopPropagation();
+        });
+
+        $('#cancel-filters').click(function(event){
+            $('#filters').toggle();
+            event.stopPropagation();
+        });
+
+        $('#reset-filters').click(function(){
+            $('input[type="checkbox"]').prop('checked', false);
+        });
+
+        $('#save-filters').click(function(event){
+            var selectedTags = [];
+            let flag =1;
+
+            const checkedTags =$('#tagsForm').find('input[type="checkbox"]:checked')
+            if (checkedTags.length==0){
+                selectedTags = Object.keys(tags);
+                flag = 0;
+            }
+            else{
+                checkedTags.each(function() {
+                    selectedTags.push($(this).attr('id'));
+                });
+            }
+            const countTags = selectedTags.length;
+            
+            $('#filters').toggle();
+            if(countTags>0 &&flag){
+                $('#filtersBtn').html(`(${countTags}) filters`);
+            }
+            else{
+                $('#filtersBtn').html(`filters`);
+            }
+            $.ajax({
+                type: 'post',
+                url: '/saveTags',
+                data:{tags:selectedTags}
+           })
+        })
 
         //login-signup buttons
         $(document).ready(function () {
@@ -84,6 +139,11 @@ $(async function(){
         });
     })
 })
+$(function () {
+    $.ajax({
+
+    })
+});
 
 //loading the main section of restaurants
 function loadRestaurants(){
@@ -127,7 +187,7 @@ $('#restaurantList').delegate('#saveRes', 'click', function(){
     var iconUrl;
 
     $.each(selectedTags, (i, tag)=>{
-        iconUrl = icons[tag];
+        iconUrl = tags[tag];
         tags.push({name: tag,
             icon : iconUrl,
         });
@@ -229,7 +289,7 @@ $('#restaurantList').delegate('.u_save','click', function(){
     var iconUrl;
 
     $.each(selectedTags, (i, tag)=>{
-        iconUrl = icons[tag];
+        iconUrl = tags[tag];
         tags.push({name: tag,
             icon : iconUrl,
         });

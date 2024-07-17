@@ -68,6 +68,21 @@ async function updateRestaurant(req,res){
     }
     res.end()
 }
+var selectedTags = [];
+function saveTags(req,res){
+    selectedTags = req.body.tags;
+    res.end();
+}
+function getRestaurants(req,res){
+    res.render('restaurantsFilters.ejs');
+}
+
+async function getRestaurantByTags(req,res){
+    console.log(selectedTags);
+    const restaurants = await restServices.searchByTags(selectedTags);
+    const rest =  Array.from(restaurants)
+    res.json({rest});
+}
 
 
 module.exports = {
@@ -78,4 +93,7 @@ module.exports = {
     deleteRestaurant,
     getRestaurantByName,
     updateRestaurant,
+    getRestaurantByTags,
+    getRestaurants,
+    saveTags,
 }

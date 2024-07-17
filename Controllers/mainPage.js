@@ -24,7 +24,8 @@ async function search(req,res){
         results.push(restaurant.r_name)
     });
     res.json({results})
-   
 }
+
+
 
 module.exports = {getMainPageUser,search,getMainPage}
