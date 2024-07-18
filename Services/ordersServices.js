@@ -1,4 +1,5 @@
 const Orders = require('../Models/Orders')
+const productServices = require('./productsServices');
 
 async function createOrder(userId, products, date){
     const order = new Orders({
@@ -34,6 +35,30 @@ async function showAllOrders(){
     return await Orders.find({});
 }
 
+async function groupOrdersByUserId(){
+    let groupedOrders = await Orders.aggregate([
+        {
+            $group:{
+                _id: "$o_userId",
+                totalOrders: {$sum: 1},
+                orders: {$push: {productsId: "$o_productsId", date: "$o_date"}}
+            },
+        }
+    ])
+
+    //replace the orders productsId with the actual products
+    for(const groupedOrder of groupedOrders){
+        for(const order of groupedOrder.orders){
+            for(let i=0; i < order.productsId.length; i++){
+                const product = await productServices.findProductById(order.productsId[i]);
+                order.productsId[i] = product;
+            }
+        }
+    }
+
+    return groupedOrders;
+}
+
 module.exports = {
-    createOrder,findOrderById, deleteOrder, updateOrder, showAllOrders, findOrderByUsername
+    createOrder,findOrderById, deleteOrder, updateOrder, showAllOrders, findOrderByUsername, groupOrdersByUserId
 }

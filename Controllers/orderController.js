@@ -29,9 +29,9 @@ async function getOrders(req, res) {
     res.json({ orderProducts, username });
 }
 
-async function getAllOrders(req, res){
-    const orders = await ordersServices.showAllOrders();
-    res.json({orders});
+async function getAllOrdersGroupedByUsers(req, res){
+    const ordersData = await ordersServices.groupOrdersByUserId();
+    res.json({ordersData});
 }
 
 async function getAllOrdersPage(req, res){
@@ -93,5 +93,5 @@ async function getProductsAndQuantity(req, res) {
 }
 
 module.exports = {
-    getOrdersPage, getOrders, getProductsAndQuantity, getAllOrders, getAllOrdersPage
+    getOrdersPage, getOrders, getProductsAndQuantity, getAllOrdersGroupedByUsers, getAllOrdersPage, 
 }
