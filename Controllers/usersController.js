@@ -52,6 +52,21 @@ async function isLoggedinJson(req, res){
     }
 }
 
+async function getAllUsers(req, res){
+    const users = await userServices.showAllUsers();
+    res.json({users});
+}
+
+async function getAllUsersPage(req, res){
+    const requestUser = await userServices.findUser(req.session.username);
+    if(requestUser == null || requestUser.u_admin == false){
+        res.status(404);
+        res.end();
+        return;
+    }
+    res.render("usersPage");
+}
+
 module.exports = {
     getUsersByRegistrationMonth,
     getSettingsPage,
@@ -60,4 +75,6 @@ module.exports = {
     deleteUser,
     updateUser,
     isLoggedinJson,
+    getAllUsers,
+    getAllUsersPage,
 }

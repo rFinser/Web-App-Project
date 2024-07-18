@@ -1,6 +1,7 @@
 const ordersServices = require('../Services/ordersServices');
 const productsServices = require('../Services/productsServices');
 const restaurantServices = require('../Services/restaurantsServices');
+const userServices = require("../Services/usersServices");
 
 async function getOrdersPage(req, res) {
     const username = req.session.username
@@ -26,6 +27,22 @@ async function getOrders(req, res) {
         Products = []
     }
     res.json({ orderProducts, username });
+}
+
+async function getAllOrdersGroupedByUsers(req, res){
+    const ordersData = await ordersServices.groupOrdersByUserId();
+    res.json({ordersData});
+}
+
+async function getAllOrdersPage(req, res){
+    const requestUser = await userServices.findUser(req.session.username);
+    if(requestUser == null || requestUser.u_admin == false){
+        res.status(404);
+        res.end();
+        return;
+    }
+
+    res.render("ordersPage");
 }
 
 async function getProductsAndQuantity(req, res) {
@@ -76,5 +93,5 @@ async function getProductsAndQuantity(req, res) {
 }
 
 module.exports = {
-    getOrdersPage, getOrders, getProductsAndQuantity
+    getOrdersPage, getOrders, getProductsAndQuantity, getAllOrdersGroupedByUsers, getAllOrdersPage, 
 }
