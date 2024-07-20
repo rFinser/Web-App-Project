@@ -8,6 +8,7 @@ $(function () {
             isAdmin = data.isAdmin
         }
     })
+    loadAdminBtns()
     loadTags();
     loadRestaurants();
 
