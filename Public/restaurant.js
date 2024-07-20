@@ -153,7 +153,7 @@ $('#products').delegate('.p-save', 'click', function(){
         url: '/addProduct/' + getRestaurantName(),
         data: {name: p_name, desc: p_description, price: p_price, tags: p_tags},
         success: function(data){
-
+            postProduct(getRestaurantName(), p_name)
             $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id}))
             $('.newProductForm').remove();
             $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
@@ -161,6 +161,18 @@ $('#products').delegate('.p-save', 'click', function(){
     })
 
 })
+
+function postProduct(restaurantName, productName){
+    fetch(`/FBpost`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            message: `A New Product Has Been Added To The ${restaurantName} Restaurant: "${productName}" `,
+        })
+    })
+}
 
 $('#products').delegate('.delProduct', 'click', function(){
     const $li = $(this).closest('li')
