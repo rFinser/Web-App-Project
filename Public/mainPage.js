@@ -123,6 +123,7 @@ $('#restaurantList').delegate('#saveRes', 'click', function(){
                 $('#newRes').remove();
                 $('#restaurantList').append(restaurantScheme(rest));
                 $('#restaurantList').append(`<li id="newRes"><button id="addRes">add restaurant</button></li>`);
+                postRestaurant(name);
             }
             else{
                 $('#nameTooltip').html('restaurant name already exist, try a diffrent one');
@@ -132,6 +133,16 @@ $('#restaurantList').delegate('#saveRes', 'click', function(){
     })
 
 });
+
+function postRestaurant(restaurantName){
+    fetch("/FBpost", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            message: `A New Restaurant Has Been Opened: "${restaurantName}"`,
+        }),
+    })
+}
 
 function validInputs(name, desc, address){
     if(name == '' || desc == '' || address == ''){
