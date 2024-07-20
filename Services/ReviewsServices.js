@@ -26,20 +26,31 @@ async function getAllReviews() {
     return await Review.find();
 }
 
-async function updateReview(id_to_update, rating) {
-    if (await findReviewById(id_to_update) == null)
-        throw Error(`No review for ${id_to_update} was found.`);
-    await Review.updateOne({ _id: id_to_update }, { _id: id_to_update, rev_rating: rating});
+async function updateReview(username, restaurantName, rating) {
+    const review = await getReviewByRestaurantAndUser(restaurantName, username);
+    if (review == null)
+        throw Error(`No Review for ${username} at ${restaurantName} was found.`);
+
+    await Review.updateOne({ _id: review._id }, { rev_rating: rating });
 }
 
-async function deleteReview(id_to_delete) {
-    if (await findReviewById(id_to_delete) == null)
-        throw Error(`No Review for ${id_to_delete} was found.`);
-    await Review.deleteOne({ _id: id_to_delete });
+async function deleteReview(username, restaurantName) {
+    const review = await getReviewByRestaurantAndUser(restaurantName, username);
+    if (review == null)
+        throw Error(`No Review for ${username} at ${restaurantName} was found.`);
+
+    await Review.deleteOne({ _id: review._id });
 }
 
 async function getReviewsByRestaurantName(restaurantName){
     return await Review.find({ rev_restaurantName: restaurantName });
+}
+
+async function getAvgRating(restaurantName){
+    return await Review.aggregate([
+        { $match: { rev_restaurantName: restaurantName } },
+        { $group: { _id: "$rev_restaurantName", avgRating: { $avg: "$rev_rating" } } }
+    ]);
 }
 
 module.exports = {
@@ -48,5 +59,6 @@ module.exports = {
     getAllReviews,
     updateReview,
     deleteReview,
-    getReviewsByRestaurantName
+    getReviewsByRestaurantName,
+    getAvgRating
 }
