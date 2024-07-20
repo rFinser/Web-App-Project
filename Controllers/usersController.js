@@ -60,7 +60,7 @@ async function isAdmin(req,res){
     }
     const user = await userServices.findUser(req.session.username);
     res.json({isAdmin: user.u_admin});
-
+}
 async function getAllUsers(req, res){
     const users = await userServices.showAllUsers();
     res.json({users});
