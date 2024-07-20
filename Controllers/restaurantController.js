@@ -78,7 +78,6 @@ function getRestaurants(req,res){
 }
 
 async function getRestaurantByTags(req,res){
-    console.log(selectedTags);
     const restaurants = await restServices.searchByTags(selectedTags);
     const rest =  Array.from(restaurants)
     res.json({rest});

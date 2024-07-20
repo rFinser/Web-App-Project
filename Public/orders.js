@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const $orders = $("#orders");
     $.ajax({
-        type: 'GET',
+        type: 'post',
         url: '/MyOrders',
         success: function(data){
             $('#name').html(`Hello ${data.username}`)

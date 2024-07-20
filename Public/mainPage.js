@@ -1,149 +1,47 @@
 let isAdmin = false;
 
-const tags = {
-    "meat": "https://cdn-icons-png.flaticon.com/128/1046/1046820.png",
-    "salad": "https://cdn-icons-png.flaticon.com/128/1057/1057510.png",
-    "vegan": "https://cdn-icons-png.flaticon.com/128/5581/5581203.png",
-    "seafood": "https://cdn-icons-png.flaticon.com/128/7438/7438538.png",
-    "dessert": "https://cdn-icons-png.flaticon.com/128/3173/3173469.png",
-    "sandwiches": "https://cdn-icons-png.flaticon.com/128/1625/1625062.png",
-    "burgers": "https://cdn-icons-png.flaticon.com/128/5787/5787016.png",
-    "bbq": "https://cdn-icons-png.flaticon.com/128/1161/1161633.png",
-    "sushi": "https://cdn-icons-png.flaticon.com/128/2346/2346236.png",
-    "tacos": "https://cdn-icons-png.flaticon.com/128/537/537386.png",
-    "pastries": "https://cdn-icons-png.flaticon.com/128/5787/5787330.png",
-    "soups": "https://cdn-icons-png.flaticon.com/128/2388/2388080.png",
-    "ice-cream": "https://cdn-icons-png.flaticon.com/128/938/938063.png",
-    "spicy": "https://cdn-icons-png.flaticon.com/128/5137/5137032.png",
-    "smoothies": "https://cdn-icons-png.flaticon.com/128/7703/7703600.png",
-    "noodles": "https://cdn-icons-png.flaticon.com/128/5110/5110068.png",
-    "fast-food": "https://cdn-icons-png.flaticon.com/128/737/737967.png",
-    "gourmet-food": "https://cdn-icons-png.flaticon.com/128/2858/2858726.png",
-    "asian": "https://cdn-icons-png.flaticon.com/128/6413/6413044.png",
-    "italian": "https://cdn-icons-png.flaticon.com/128/4624/4624250.png",
-    "mexican": "https://cdn-icons-png.flaticon.com/128/5596/5596725.png",
-    "middle-eastern": "https://cdn-icons-png.flaticon.com/128/4082/4082616.png",
-    "french": "https://cdn-icons-png.flaticon.com/128/3187/3187471.png",
-    "greek": "https://cdn-icons-png.flaticon.com/128/1680/1680533.png"
-}
+const tags = ["meat","salad","vegan","seafood","dessert","sandwiches","burgers","bbq","sushi","pastries","soups","ice-cream","spicy","smoothies","fast-food","gourmet-food","asian","italian","mexican"]
 
-$(async function(){
-    //load navbar
-    $.get('navbar.html', function(data){
-        $("#navbarContainer").html(data);
-
-        //! ADD NAVBAR FUNCTIONALLITY HERE
-
-        //search bar
-        $("#searchBar").keyup(function() {
-            if($("#searchBar").val() == "" || !$("#searchBar").is(":focus")){
-                $('#results').hide();
-                return;
-            }
-        
-            $('#results').show();
-            $.ajax({
-                type: 'POST',
-                url: '/search',
-                data: {name: $("#searchBar").val()},
-                success: function(restaurants) {
-                    $('#results').empty();
-                    if(restaurants.results.length == 0){
-                        $('#results').append('<p>no results found</p>')
-                    }
-                    else{
-                        restaurants.results.forEach(restaurant => {
-                            $("#results").append(`<a href="/restaurants/${restaurant}" >${restaurant}</a></br>`);
-                         });
-                    }
-                }
-            });
-        });
-        //filters
-        $('#filters').hide();
-        $('#tags').append(tagsScheme());
-
-        $('#filtersBtn').click(function (event) {
-            $('#filters').toggle();
-            event.stopPropagation();
-        });
-
-        $(document).click(function () {
-            $('#filters').hide();
-        });
-    
-        $('#filters').click(function (event) {
-            event.stopPropagation();
-        });
-
-        $('#cancel-filters').click(function(event){
-            $('#filters').toggle();
-            event.stopPropagation();
-        });
-
-        $('#reset-filters').click(function(){
-            $('input[type="checkbox"]').prop('checked', false);
-        });
-
-        $('#save-filters').click(function(event){
-            var selectedTags = [];
-            let flag =1;
-
-            const checkedTags =$('#tagsForm').find('input[type="checkbox"]:checked')
-            if (checkedTags.length==0){
-                selectedTags = Object.keys(tags);
-                flag = 0;
-            }
-            else{
-                checkedTags.each(function() {
-                    selectedTags.push($(this).attr('id'));
-                });
-            }
-            const countTags = selectedTags.length;
-            
-            $('#filters').toggle();
-            if(countTags>0 &&flag){
-                $('#filtersBtn').html(`(${countTags}) filters`);
-            }
-            else{
-                $('#filtersBtn').html(`filters`);
-            }
-            $.ajax({
-                type: 'post',
-                url: '/saveTags',
-                data:{tags:selectedTags}
-           })
-        })
-
-        //login-signup buttons
-        $(document).ready(function () {
-            $('#loginBtn').hide();
-            $('#signupBtn').hide();
-            $.ajax({
-                type: 'GET',
-                url: '/mainPage',
-                success: function(data){
-                    if(data.username == null){
-                        $('#loginBtn').show();
-                        $('#signupBtn').show();
-                    }
-                    else{
-                        $('#loginBtn').hide();
-                        $('#signupBtn').hide();
-                        $('#username').html(`${data.username}`)
-                    }
-                    isAdmin = data.isAdmin;
-                    loadRestaurants();
-                }
-            })
-        });
-    })
-})
 $(function () {
     $.ajax({
-
+        url: '/isAdmin',
+        success: function(data){
+            isAdmin = data.isAdmin
+        }
     })
+    loadTags();
+    loadRestaurants();
+
 });
+
+function loadTags(){
+    const $list = $('#tagsList');
+
+    $.each(tags, (i,tag) =>{
+            $list.append(createTagScheme(tag));
+    })
+
+    $('.tagForm').click(function() {
+        const $li = $(this).closest('li') 
+        $.ajax({
+            type: 'post',
+            url: 'saveTags',
+            data: {tags: [$li.attr('id')]},
+            success: function(){
+                location.href='/searchedRestaurants'
+            }
+        })
+    });
+}
+
+function createTagScheme(tag){
+    return `
+        <li id="${tag}" class="tagForm">
+            <h4>${tag}</h4>
+            <img src="./tagsPictures/${tag}.png" alt="not found">
+        </li>
+    `
+}
 
 //loading the main section of restaurants
 function loadRestaurants(){
@@ -157,14 +55,14 @@ function loadRestaurants(){
         })
         console.log(isAdmin)
         if(isAdmin == true){
-            $list.append(`<li id="newRes" class="adminBtn"><button id="addRes">add restaurant</button></li>`);
+            $list.append(`<li id="newRes"><button id="addRes" class="adminBtn">add restaurant</button></li>`);
         }
     }
   })
 }
 
 $('#restaurantList').delegate('#addRes', 'click', function(){
-    $('#addRes').hide();
+    $('.adminBtn').hide();
     $('#newRes').append(createRestaurantScheme())
     $('#nameTooltip').hide()
 
@@ -172,7 +70,7 @@ $('#restaurantList').delegate('#addRes', 'click', function(){
 
 $('#restaurantList').delegate('#cancelRes', 'click', function(){
     $('#addingData').remove();
-    $('#addRes').show();
+    $('.adminBtn').show();
 });
 
 $('#restaurantList').delegate('#saveRes', 'click', function(){
@@ -184,13 +82,9 @@ $('#restaurantList').delegate('#saveRes', 'click', function(){
     });
 
     var tags = []
-    var iconUrl;
 
     $.each(selectedTags, (i, tag)=>{
-        iconUrl = tags[tag];
-        tags.push({name: tag,
-            icon : iconUrl,
-        });
+        tags.push(tag)
     })
 
     const name = $('#resName').val();
@@ -267,7 +161,7 @@ $('#restaurantList').delegate('.updateRes', 'click', function(){
     })
 });
 
-$('#restaurantList').delegate('#u_cancel','click', function(){
+$('#restaurantList').delegate('.u_cancel','click', function(){
     let $li = $(this).closest('li');
     
     $('#updateData').remove();
@@ -286,13 +180,9 @@ $('#restaurantList').delegate('.u_save','click', function(){
     });
 
     var tags = []
-    var iconUrl;
 
     $.each(selectedTags, (i, tag)=>{
-        iconUrl = tags[tag];
-        tags.push({name: tag,
-            icon : iconUrl,
-        });
+        tags.push(tag);
     })
 
     const name = $('#u_resName').val();
@@ -400,38 +290,22 @@ function updateRestaurantScheme(){
         <input id="u_address"/></br>
         <label for="u_geolocation">Geo location:</label>
         <input id="u_geolocation"/></br>
-        <button id="" class="u_save">save</button>
-        <button id="u_cancel">cancel</button>
+        <button class="u_save">save</button>
+        <button class="u_cancel">cancel</button>
     </div>
     `
 }
-
+function firstLetterUppercase(str){
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}
 function tagsScheme(){
-    return `
-     <section id="tagsForm">
-        <input type="checkbox" id="meat"><label for="meat">Meat</label><br>
-        <input type="checkbox" id="salad"><label for="salad">Salad</label><br>
-        <input type="checkbox" id="vegan"><label for="vegan">Vegan</label><br>
-        <input type="checkbox" id="seafood"><label for="seafood">Seafood</label><br>
-        <input type="checkbox" id="dessert"><label for="dessert">Dessert</label><br>
-        <input type="checkbox" id="sandwiches"><label for="sandwiches">Sandwiches</label><br>
-        <input type="checkbox" id="burgers"><label for="burgers">Burgers</label><br>
-        <input type="checkbox" id="bbq"><label for="bbq">BBQ</label><br>
-        <input type="checkbox" id="sushi"><label for="sushi">Sushi</label><br>
-        <input type="checkbox" id="tacos"><label for="tacos">Tacos</label><br>
-        <input type="checkbox" id="pastries"><label for="pastries">Pastries</label><br>
-        <input type="checkbox" id="soups"><label for="soups">Soups</label><br>
-        <input type="checkbox" id="ice-cream"><label for="ice-cream">Ice Cream</label><br>
-        <input type="checkbox" id="spicy"><label for="spicy">Spicy</label><br>
-        <input type="checkbox" id="smoothies"><label for="smoothies">Smoothies</label><br>
-        <input type="checkbox" id="noodles"><label for="noodles">Noodles</label><br>
-        <input type="checkbox" id="fast-food"><label for="fast-food">Fast Food</label><br>
-        <input type="checkbox" id="gourmet-food"><label for="gourmet-food">Gourmet Food</label><br>
-        <input type="checkbox" id="asian"><label for="asian">Asian</label><br>
-        <input type="checkbox" id="italian"><label for="italian">Italian</label><br>
-        <input type="checkbox" id="mexican"><label for="mexican">Mexican</label><br>
-        <input type="checkbox" id="middle-eastern"><label for="middle-eastern">Middle Eastern</label><br>
-        <input type="checkbox" id="french"><label for="french">French</label><br>
-        <input type="checkbox" id="greek"><label for="greek">Greek</label><br>
-    </section>`
+    
+    var tagsHtml = "";
+    tagsHtml+=`<section id="tagsForm"></section>`
+    for(tag of tags){
+        console.log(tag)
+        tagsHtml+=`<input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label><br>`
+    }
+    tagsHtml += `</section>`;
+    return tagsHtml;
 }

@@ -18,22 +18,14 @@ $(document).ready(function () {
     })
 })
 
-$(async function(){
-    //load navbar
-    $.get("http://localhost/navbar.html", function(data){
-        $("#navbarContainer").html(data);
-        //! ADD NAVBAR FUNCTIONALLITY HERE:
-        
-        //checking if the user is logged in
-        $.get("/isLoggedIn", function(data){
-            if (data.isLoggedIn){
-                $("#loginBtn").hide();
-                $("#signupBtn").hide();
-                $("#username").html(`${data.username}`);
-            }
-        })
+$(function () {
+    $.ajax({
+        url: '/isAdmin',
+        success: function(data){
+            isAdmin = data.isAdmin
+        }
     })
-})
+});
 
 //gets the restaurant name from the url of the current page
 function getRestaurantName() {
@@ -66,8 +58,9 @@ function makeRestaurant(restaurantJson) {
     $("#address").html(`${restaurant.r_address}`);
     $("#icon").attr("src", `${restaurant.r_icon}`);
     $("#icon").attr('onerror', `this.src = '${defaultRestIcon}'`);
+    console.log(restaurant.r_tags)
     for (tag of restaurant.r_tags) {
-        $("#tags").append(`<li>${tag.name}</li>`)
+        $("#res-tags").append(`<li>${tag.name}</li>`)
     }
 
     for (product of products) {
@@ -102,14 +95,15 @@ function Admin(){
 function createProductData(){
     return `
     <div class="newProductForm">
+        <p id="tooltip"></p>
         <label for="p-name">product name:</label>
         <input id="p-name" /></br>
         <label for="p-description">description:</label>
         <input id="p-description" /></br>
         <label for="p-price">price:</label>
         <input id="p-price" /></br>
-        <label for="p-tags">tags:</label>
-        <input id="p-tags" /></br>
+        <label for="tagsForm">tags:</label>
+        `+tagsScheme()+`
         <button class="p-save">save</button>
         <button class="p-cancel">cancel</button>
     </div>`
@@ -117,17 +111,47 @@ function createProductData(){
 function updateProductData(){
     return `
     <div class="updateProductForm">
+        <p id="tooltip"></p>
         <label for="p-name">product name:</label>
         <input id="p-name" /></br>
         <label for="p-description">description:</label>
         <input id="p-description" /></br>
         <label for="p-price">price:</label>
         <input id="p-price" /></br>
-        <label for="p-tags">tags:</label>
-        <input id="p-tags" /></br>
+        <label for="tagsForm">tags:</label>
+        `+tagsScheme()+`
         <button class="u-save">save</button>
         <button class="u-cancel">cancel</button>
     </div>`
+}
+function tagsScheme(){
+    return `
+     <section id="tagsForm">
+        <input type="checkbox" id="meat"><label for="meat">Meat</label><br>
+        <input type="checkbox" id="salad"><label for="salad">Salad</label><br>
+        <input type="checkbox" id="vegan"><label for="vegan">Vegan</label><br>
+        <input type="checkbox" id="seafood"><label for="seafood">Seafood</label><br>
+        <input type="checkbox" id="dessert"><label for="dessert">Dessert</label><br>
+        <input type="checkbox" id="sandwiches"><label for="sandwiches">Sandwiches</label><br>
+        <input type="checkbox" id="burgers"><label for="burgers">Burgers</label><br>
+        <input type="checkbox" id="bbq"><label for="bbq">BBQ</label><br>
+        <input type="checkbox" id="sushi"><label for="sushi">Sushi</label><br>
+        <input type="checkbox" id="tacos"><label for="tacos">Tacos</label><br>
+        <input type="checkbox" id="pastries"><label for="pastries">Pastries</label><br>
+        <input type="checkbox" id="soups"><label for="soups">Soups</label><br>
+        <input type="checkbox" id="ice-cream"><label for="ice-cream">Ice Cream</label><br>
+        <input type="checkbox" id="spicy"><label for="spicy">Spicy</label><br>
+        <input type="checkbox" id="smoothies"><label for="smoothies">Smoothies</label><br>
+        <input type="checkbox" id="noodles"><label for="noodles">Noodles</label><br>
+        <input type="checkbox" id="fast-food"><label for="fast-food">Fast Food</label><br>
+        <input type="checkbox" id="gourmet-food"><label for="gourmet-food">Gourmet Food</label><br>
+        <input type="checkbox" id="asian"><label for="asian">Asian</label><br>
+        <input type="checkbox" id="italian"><label for="italian">Italian</label><br>
+        <input type="checkbox" id="mexican"><label for="mexican">Mexican</label><br>
+        <input type="checkbox" id="middle-eastern"><label for="middle-eastern">Middle Eastern</label><br>
+        <input type="checkbox" id="french"><label for="french">French</label><br>
+        <input type="checkbox" id="greek"><label for="greek">Greek</label><br>
+    </section>`
 }
 $('#products').delegate('#addProduct', 'click', function(){
     const $li = $(this).closest('li')
@@ -142,21 +166,38 @@ $('#products').delegate('.p-cancel', 'click', function(){
 })
 
 $('#products').delegate('.p-save', 'click', function(){
-    
+    $('#tooltip').empty();
+
     const p_name = $('#p-name').val();
     const p_description = $('#p-description').val();
     const p_price = $('#p-price').val();
-    const p_tags = $('#p-tags').val();
+    var p_tags = [];
+
+    $('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+        p_tags.push($(this).attr('id'));
+    });
+    if(!validProduct(p_name,p_description,p_price,p_tags))
+    {
+            $('#tooltip').html('please fill the fields correctly and choose at least 2 tags')
+            return;
+    }
     const $li = $(this).closest('li')
     $.ajax({
         type: 'post',
         url: '/addProduct/' + getRestaurantName(),
         data: {name: p_name, desc: p_description, price: p_price, tags: p_tags},
         success: function(data){
-            $li.remove();
-            $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id})) 
-            $("#products").append('<li class="newProduct adminBtn"><button id="addProduct">add product</button></li>')
+            console.log(data)
+            if(data.status == -1){
+                $('#tooltip').html('product name already in use, try a diffrent name')
+            }
+            else{
+                $li.remove();
+                $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id})) ;
+                $("#products").append('<li class="newProduct adminBtn"><button id="addProduct">add product</button></li>');
+            }
         }
+
     })
 
 })
@@ -182,12 +223,15 @@ $('#products').delegate('.updateProduct', 'click', function(){
     $.ajax({
         type: 'GET',
         url: '/getProduct'+$li.attr('id'),
-        success: function(data){
+        success: function(product){
+            console.log(product)
             $li.append(updateProductData());
-            $('#p-name').val(data.p_name);
-            $('#p-description').val(data.p_description);
-            $('#p-price').val(data.p_price);
-            $('#p-tags').val(data.p_tags);
+            $('#p-name').val(product.p_name);
+            $('#p-description').val(product.p_description);
+            $('#p-price').val(product.p_price);
+            $.each(product.p_tags, (i, tag) => {
+                $(`#${tag}`).prop('checked', true);;
+            })
         }
     })
 })
@@ -200,24 +244,50 @@ $('#products').delegate('.u-cancel', 'click', function(){
 })
 
 $('#products').delegate('.u-save', 'click', function(){
+
+    $('#tooltip').empty();
     const $li = $(this).closest('li');
 
     const name = $('#p-name').val();
     const desc = $('#p-description').val();
     const price = $('#p-price').val();
-    const tags = $('#p-tags').val();
+
+    var tags = [];
+
+    $('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+        tags.push($(this).attr('id'));
+    });
+    if(!validProduct(name,desc,price,tags))
+    {
+        $('#tooltip').html('please fill the fields correctly and choose at least 2 tags')
+        return;
+    }
 
     const id = $li.attr('id')
 
     $.ajax({
         type: 'PUT',
-        url: '/updateProduct',
+        url: '/updateProduct/' + getRestaurantName(),
         data: {id,name,desc,price,tags},
-        success: function(){
-            $('.updateProductForm').remove();
-            $li.find('.product').remove();
-            $li.append(makeProduct({_id:id, p_name: name, p_description:desc,p_price: price}));
-            $('.adminBtn').show();
+        success: function(data){
+            if(data.status == 1){
+                $('.updateProductForm').remove();
+                $li.find('.product').remove();
+                $li.append(makeProduct({_id:id, p_name: name, p_description:desc,p_price: price}));
+                $('.adminBtn').show();
+            }
+            else{
+                $('#tooltip').html('product name already in use, try a diffrent name')
+            }
         }
     })
 })
+
+function validProduct(name, desc, price, tags){
+    const isNumber = /^[0-9]+$/;
+    console.log(typeof(price))
+    if(name =='' || desc == ''|| !isNumber.test(price) || tags.length < 2){
+        return false;
+    }
+    return true;
+}

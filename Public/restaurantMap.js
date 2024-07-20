@@ -1,4 +1,3 @@
-
 let map;
 $(async function initMap(){
     const { Map } = await google.maps.importLibrary("maps");
@@ -6,14 +5,19 @@ $(async function initMap(){
     const restaurantLocations = restaurantData.restData.restaurant.r_geolocation;
 
     let mapOptions = {
-        center: {lat: 31.7683, lng: 35.2137},
-        zoom: 10,
+        center: {lat: 31.7683, lng: 34.8},
+        zoom:8.3,
     }
 
     map = new Map(document.getElementById("map"), mapOptions);
     
     for(const location of restaurantLocations){
-        makeMarker(location.lat, location.lng, location.address);
+        try{
+            makeMarker(location.lat, location.lng, location.address);
+        }
+        catch(e){
+            console.log(e);
+        }
     }
 })
 
