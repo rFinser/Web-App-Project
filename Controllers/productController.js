@@ -1,6 +1,5 @@
 const restServices = require("../Services/restaurantsServices");
 const prodServices = require("../Services/productsServices");
-const usersServices = require("../Services/usersServices");
 
 async function getProduct(req,res){
     const product = await prodServices.findProductById(req.params.id);
@@ -8,11 +7,20 @@ async function getProduct(req,res){
 }
 
 async function addProduct(req,res){
+    const restaurant = await restServices.findRestaurantByName(req.params.name);
+    
+    for(productId of restaurant.r_productsId){
+        let product = await prodServices.findProductById(productId)
+        if(product.p_name == req.body.name){
+            res.json({status:-1});
+            return;
+        }
+    }
     const newProduct = await prodServices.createProduct(req.body.name, req.body.price, req.body.desc, req.body.tags)
-    const restName = req.params.name;
     const id = newProduct._id.toString()
-    await restServices.addProduct(restName, id);
-    res.json({id})
+    await restServices.addProduct(restaurant.r_name, id);
+    res.json({id, status:1})
+    res.end();
 }
 
 async function deleteProduct(req,res){
@@ -22,8 +30,19 @@ async function deleteProduct(req,res){
     res.end();
 }
 async function updateProduct(req,res){
+    const restaurant = await restServices.findRestaurantByName(req.params.name);
+
+    for(productId of restaurant.r_productsId){
+        let product = await prodServices.findProductById(productId)
+        if(product.p_name == req.body.name && req.body.id != product._id.toString()){
+            res.json({status:-1});
+            return;
+        }
+    }
+    
     await prodServices.updateProduct(req.body.id, req.body.name, req.body.price, req.body.desc, req.body.tags)
-    res.end()
+    res.json({status:1});
+    res.end();
 }
 
 module.exports = {

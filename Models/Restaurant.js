@@ -1,11 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const tag = new Schema({
+    name:{type:String, required:true},
+    icon: String,
+})
+
 const Restaurant = new Schema({
     r_name: { type: String, required: true },
     r_description: { type: String, required: true },
     r_icon: String, //path to the image
-    r_tags: Array,
+    r_tags: [tag],
     r_address: { type: String, required: true },
     r_geolocation: { type: Array, required: true }, //array coordinates (lat, lng, address), would be helpful when using maps api
     r_productsId: { type: Array, required: true, default: [] },

@@ -40,10 +40,10 @@ async function deleteRestaurant(restaurant_to_delete) {
 
 function isSubArray(array, subArray) {
     for (let i = 0; i < subArray.length; i++) {
-        if (!array.includes(subArray[i]))
-            return false;
+        if (array.includes(subArray[i].name))
+            return true;
     }
-    return true;
+    return false;
 }
 
 async function searchByTags(tags) {
@@ -52,8 +52,13 @@ async function searchByTags(tags) {
     for (rest of restaurants) {
         if (rest.r_tags == null)
             continue;
-        if (isSubArray(rest.r_tags, tags))
-            foundRestaurant.add(rest);
+        for (let i = 0; i < rest.r_tags.length; i++) {
+            if (tags.includes( rest.r_tags[i].name))
+            {
+                foundRestaurant.add(rest);
+                break;
+            }
+        }   
     }
     return foundRestaurant;
 }

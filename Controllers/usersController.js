@@ -52,6 +52,15 @@ async function isLoggedinJson(req, res){
     }
 }
 
+
+async function isAdmin(req,res){
+    if(req.session.username == null){
+        res.json({isAdmin:false});
+        return;
+    }
+    const user = await userServices.findUser(req.session.username);
+    res.json({isAdmin: user.u_admin});
+
 async function getAllUsers(req, res){
     const users = await userServices.showAllUsers();
     res.json({users});
@@ -75,6 +84,7 @@ module.exports = {
     deleteUser,
     updateUser,
     isLoggedinJson,
+    isAdmin,
     getAllUsers,
     getAllUsersPage,
 }
