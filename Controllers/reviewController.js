@@ -6,17 +6,22 @@ async function getReviewsByRestaurantName(req, res) {
         res.json({reviews});
     }
     catch (err) {
-        res.status(500).send(err.message);
+        res.status(404).send(err.message);
     }
 }
 
 async function addReview(req, res) {
+    if(req.session.username == null){
+        res.json({status: -1}) //not logged in
+        return;
+    }
+
     try {
-        const review = await reviewsServices.createReview(req.body.username, req.body.restaurantName, req.body.rating);
+        const review = await reviewsServices.createReview(req.session.username, req.body.restaurantName, req.body.rating);
         res.json({review});
     }
     catch (err) {
-        res.status(500).send(err.message);
+        res.json({status: -2}) //already reviewed
     }
 }
 
@@ -26,7 +31,7 @@ async function updateReview(req, res) {
         res.json({review});
     }
     catch (err) {
-        res.status(500).send(err.message);
+        res.status(404).send(err.message);
     }
 }
 
@@ -36,17 +41,18 @@ async function deleteReview(req, res){
         res.json({review});
     }
     catch (err) {
-        res.status(500).send(err.message);
+        res.status(404).send(err.message);
     }
 }
 
 async function getAvgRating(req, res){
     try {
         const avgRating = await reviewsServices.getAvgRating(req.body.restaurantName);
-        res.json({avgRating: avgRating[0].avgRating});
+        if (avgRating.length == 0) throw Error(`No reviews for ${req.body.restaurantName} were found.`);
+        res.json({avgRating: Math.floor(avgRating[0].avgRating)});
     }
     catch (err) {
-        res.status(500).send(err.message);
+        res.json({avgRating: "No Reviews Found"});
     }
 }
 
