@@ -1,9 +1,8 @@
 $(document).ready(function(){
     $.ajax({
-        type: "GET",
+        type: "post",
         url: "/userData",
         success: function (data) {
-            
             $('#username').html(data.u_username)
             $('#email').html(data.u_email)
             const day = data.u_birthdate.day
@@ -20,12 +19,38 @@ $(document).ready(function(){
 
 
 $('#updateUser').on('click',function(){
-    $('#user-data').find('ul').hide();
+    $('#user-data').find('#user-data-list').hide();
     $('.btn').hide();
     $('#user-data').append(updateUser());
+    $.ajax({
+        type: "post",
+        url: "/userData",
+        success: function (user){
+            console.log(user);
+            $('#u_username').val(user.u_username);
+            $('#u_email').val(user.u_email);
+            $('#u_day').val(user.u_birthdate.day);
+            $('#u_month').val(user.u_birthdate.month);
+            $('#u_year').val(user.u_birthdate.year);
+            $('#u_password').val(user.u_password);
+            $('#u_cnf-password').val(user.u_password);
+
+        }
+    });
 })
+$('#user-data').delegate('#showPassword', 'click', function(){
+    if($('#showPassword').prop('checked')){
+        $('#u_password').attr('type','text');
+        $('#u_cnf-password').attr('type','text');
+    }
+    else{
+        $('#u_password').attr('type','password');
+        $('#u_cnf-password').attr('type','password');
+    }
+})
+
 $('#user-data').delegate('#cancel', 'click', function(){
-    $('#user-data').find('ul').show();
+    $('#user-data').find('#user-data-list').show();
     $('.btn').show();
     $('#user-data').find('#updateUser').remove();
 })
@@ -51,7 +76,6 @@ $('#user-data').delegate('#save', 'click', function(){
     }
 
     if(!validEmail(email)){
-        console.log(email)
         $('#emailTooltip').html('invalid email');
         flag = false;
     }
@@ -79,9 +103,8 @@ $('#user-data').delegate('#save', 'click', function(){
             url: '/updateUser',
             data: {username,email,birthdate,password},
             success: function(res){
-                console.log('a')
                 if(res.status == 1){
-                    window.location.href = '/'
+                    window.location.href = '/settings'
                 }
                 else{
                     $('#statusTooltip').html('usernmae already in use, try a diffrent one')
@@ -166,11 +189,12 @@ function updateUser(){
         +birthdateScheme()+`
         <p id="birthdateTooltip"  class="tooltip"></p></br>
         <label for="u_password">password:</label>
-        <input id="u_password"/>
+        <input type="password" id="u_password"/>
         <p id="passwordTooltip"  class="tooltip"></p></br>
         <label for="u_cnf-password">confirm password:</label>
-        <input id="u_cnf-password"/>
-        <p id="cnfPasswordTooltip"  class="tooltip"></p></br>
+        <input type="password" id="u_cnf-password"/>
+        <p id="cnfPasswordTooltip"  class="tooltip" hidden></p></br>
+        <input type="checkbox" id="showPassword"/><label for="showPassword">show password</label></br>
         <button id="save">save</button>
         <button id="cancel">cancel</button>
     </div>
