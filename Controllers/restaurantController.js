@@ -45,7 +45,7 @@ async function getAllRestaurants(req, res){
 }
 async function addRestaurant(req,res){
     try{
-        await restServices.createRestaurant(req.body.r_name,req.body.r_description,req.body.r_icon,[req.body.r_tags],req.body.r_address)
+        await restServices.createRestaurant(req.body.r_name,req.body.r_description,req.body.r_icon,req.body.r_tags,req.body.r_address)
         res.json({status: 1})
     }
     catch(e){
@@ -68,6 +68,20 @@ async function updateRestaurant(req,res){
     }
     res.end()
 }
+var selectedTags = [];
+function saveTags(req,res){
+    selectedTags = req.body.tags;
+    res.end();
+}
+function getRestaurants(req,res){
+    res.render('restaurantsFilters.ejs');
+}
+
+async function getRestaurantByTags(req,res){
+    const restaurants = await restServices.searchByTags(selectedTags);
+    const rest =  Array.from(restaurants)
+    res.json({rest});
+}
 
 
 module.exports = {
@@ -78,4 +92,7 @@ module.exports = {
     deleteRestaurant,
     getRestaurantByName,
     updateRestaurant,
+    getRestaurantByTags,
+    getRestaurants,
+    saveTags,
 }

@@ -104,7 +104,7 @@ async function deleteUser(username){
 }
 
 async function updateUser(username_to_update ,newUsername, email, birthday, password){
-    if(await findUser(newUsername) == null){
+    if(await findUser(newUsername) == null || username_to_update == newUsername){
         await  Users.updateOne({u_username: username_to_update}, {u_username:newUsername, u_email:email, u_birthday:birthday, u_password:password})
     }
     else{

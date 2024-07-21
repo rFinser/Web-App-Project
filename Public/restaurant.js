@@ -1,4 +1,6 @@
 let isAdmin = false;
+const tags = ['spicy','vegan', 'meat', 'dessert', 'salad']
+
 
 $(document).ready(function () {
     $(document).on("click", ".addBtn", function () {
@@ -18,22 +20,14 @@ $(document).ready(function () {
     })
 })
 
-$(async function(){
-    //load navbar
-    $.get("http://localhost/navbar.html", function(data){
-        $("#navbarContainer").html(data);
-        //! ADD NAVBAR FUNCTIONALLITY HERE:
-        
-        //checking if the user is logged in
-        $.get("/isLoggedIn", function(data){
-            if (data.isLoggedIn){
-                $("#loginBtn").hide();
-                $("#signupBtn").hide();
-                $("#username").html(`${data.username}`);
-            }
-        })
+$(function () {
+    $.ajax({
+        url: '/isAdmin',
+        success: function(data){
+            isAdmin = data.isAdmin
+        }
     })
-})
+});
 
 //gets the restaurant name from the url of the current page
 function getRestaurantName() {
@@ -66,8 +60,9 @@ function makeRestaurant(restaurantJson) {
     $("#address").html(`${restaurant.r_address}`);
     $("#icon").attr("src", `${restaurant.r_icon}`);
     $("#icon").attr('onerror', `this.src = '${defaultRestIcon}'`);
+    console.log(restaurant.r_tags)
     for (tag of restaurant.r_tags) {
-        $("#tags").append(`<li>${tag}</li>`)
+        $("#res-tags").append(`<li>${tag.name}</li>`)
     }
 
     for (product of products) {
@@ -102,14 +97,15 @@ function Admin(){
 function createProductData(){
     return `
     <div class="newProductForm">
+        <p class="tooltip"></p>
         <label for="p-name">product name:</label>
         <input id="p-name" /></br>
         <label for="p-description">description:</label>
         <input id="p-description" /></br>
         <label for="p-price">price:</label>
         <input id="p-price" /></br>
-        <label for="p-tags">tags:</label>
-        <input id="p-tags" /></br>
+        <label for="tagsForm">tags:</label>
+        `+tagsScheme()+`
         <button class="p-save">save</button>
         <button class="p-cancel">cancel</button>
     </div>`
@@ -117,17 +113,27 @@ function createProductData(){
 function updateProductData(){
     return `
     <div class="updateProductForm">
+        <p class="tooltip"></p>
         <label for="p-name">product name:</label>
         <input id="p-name" /></br>
         <label for="p-description">description:</label>
         <input id="p-description" /></br>
         <label for="p-price">price:</label>
         <input id="p-price" /></br>
-        <label for="p-tags">tags:</label>
-        <input id="p-tags" /></br>
+        <label for="tagsForm">tags:</label>
+        `+tagsScheme()+`
         <button class="u-save">save</button>
         <button class="u-cancel">cancel</button>
     </div>`
+}
+function tagsScheme(){
+    var tagsHtml = "";
+    tagsHtml+=`<section id="tagsForm">`
+    for(tag of tags){
+        tagsHtml+=`<input type="checkbox" id="${tag}"><label for="${tag}">${tag}</label><br>`
+    }
+    tagsHtml += `</section>`;
+    return tagsHtml;
 }
 $('#products').delegate('#addProduct', 'click', function(){
     const $li = $(this).closest('li')
@@ -142,22 +148,39 @@ $('#products').delegate('.p-cancel', 'click', function(){
 })
 
 $('#products').delegate('.p-save', 'click', function(){
-    
+    $('#tooltip').empty();
+    const $li = $(this).closest('li')
+
     const p_name = $('#p-name').val();
     const p_description = $('#p-description').val();
     const p_price = $('#p-price').val();
-    const p_tags = $('#p-tags').val();
+    var p_tags = [];
+
+    $li.find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+        p_tags.push($(this).attr('id'));
+    });
+    if(!validProduct(p_name,p_description,p_price,p_tags))
+    {
+            $('.tooltip').html('please fill the fields correctly and choose at least one tag')
+            return;
+    }
 
     $.ajax({
         type: 'post',
         url: '/addProduct/' + getRestaurantName(),
         data: {name: p_name, desc: p_description, price: p_price, tags: p_tags},
         success: function(data){
-            postProduct(getRestaurantName(), p_name)
-            $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id}))
-            $('.newProductForm').remove();
-            $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
+            if(data.status == -1){
+                $('.tooltip').html('product name already in use, try a diffrent name')
+            }
+            else{
+              postProduct(getRestaurantName(), p_name)
+              $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id}))
+              $li.remove();
+              $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
+            }
         }
+
     })
 
 })
@@ -193,14 +216,17 @@ $('#products').delegate('.updateProduct', 'click', function(){
     $('.adminBtn').hide()
 
     $.ajax({
-        type: 'GET',
-        url: '/getProduct'+$li.attr('id'),
-        success: function(data){
+        type: 'post',
+        url: '/getProduct',
+        data: {id:$li.attr('id')},
+        success: function(product){
             $li.append(updateProductData());
-            $('#p-name').val(data.p_name);
-            $('#p-description').val(data.p_description);
-            $('#p-price').val(data.p_price);
-            $('#p-tags').val(data.p_tags);
+            $('#p-name').val(product.p_name);
+            $('#p-description').val(product.p_description);
+            $('#p-price').val(product.p_price);
+            $.each(product.p_tags, (i, tag) => {
+                $li.find(`#${tag}`).prop('checked', true);;
+            })
         }
     })
 })
@@ -213,24 +239,146 @@ $('#products').delegate('.u-cancel', 'click', function(){
 })
 
 $('#products').delegate('.u-save', 'click', function(){
+
+    $('.tooltip').empty();
     const $li = $(this).closest('li');
 
     const name = $('#p-name').val();
     const desc = $('#p-description').val();
     const price = $('#p-price').val();
-    const tags = $('#p-tags').val();
+
+    var tags = [];
+
+    $li.find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+        tags.push($(this).attr('id'));
+    });
+    if(!validProduct(name,desc,price,tags))
+    {
+        $('.tooltip').html('please fill the fields correctly and choose at least 1 tags')
+        return;
+    }
 
     const id = $li.attr('id')
 
     $.ajax({
         type: 'PUT',
-        url: '/updateProduct',
+        url: '/updateProduct/' + getRestaurantName(),
         data: {id,name,desc,price,tags},
-        success: function(){
-            $('.updateProductForm').remove();
-            $li.find('.product').remove();
-            $li.append(makeProduct({_id:id, p_name: name, p_description:desc,p_price: price}));
-            $('.adminBtn').show();
+        success: function(data){
+            if(data.status == 1){
+                $('.updateProductForm').remove();
+                $li.find('.product').remove();
+                $li.append(makeProduct({_id:id, p_name: name, p_description:desc,p_price: price}));
+                $('.adminBtn').show();
+            }
+            else{
+                $('.tooltip').html('product name already in use, try a diffrent name')
+            }
         }
     })
 })
+
+function validProduct(name, desc, price, tags){
+    const isNumber = /^[0-9]+$/;
+    if(name =='' || desc == ''|| !isNumber.test(price) || price.length>6 || tags.length < 1){
+        return false;
+    }
+    return true;
+}
+
+//product filters
+$(document).ready(function () {
+    $('#filtersForm').hide();
+    
+    $('#filter-tags').append(tagsScheme());
+    $('#get-filters').click(function() { 
+        $('#filtersForm').toggle(200);
+    });
+    $('#cancel-filters').click(function(){
+        $('#rangeTooltip').empty();
+        $('#filtersForm').toggle(100);
+        $('input[type="checkbox"]').prop('checked', false);
+        $('.rangeBtn').prop("value", "");
+    });
+    $('#reset-filters').click(function(){
+        $('#rangeTooltip').empty();
+        $('input[type="checkbox"]').prop('checked', false);
+        $('.rangeBtn').prop("value", "");
+    });
+    $('#search-filters').click(function(){
+        $('#rangeTooltip').hide();
+
+        var selectedTags = [];
+        var countFilters = 0;
+
+        const checkedTags =$('#filter-tags').find('input[type="checkbox"]:checked')
+        if (checkedTags.length==0){
+            selectedTags = tags;
+        }
+        else{
+            checkedTags.each(function() {
+                selectedTags.push($(this).attr('id'));
+                countFilters++;
+            });
+        }
+
+        var min = $('#minPrice').val();
+        var max = $('#maxPrice').val();
+        
+        console.log(min,max)
+        if(min == ''){
+            min = '0';
+        }
+        else{
+            countFilters++;
+        }
+        if(max == ''){
+            max = '9999999';
+        }
+        else{
+            countFilters++;
+        }
+        console.log(countFilters)
+        if(!validRange(min,max))
+        {
+            $('#rangeTooltip').html('invalid range, price should be a Natural number');
+            $('#rangeTooltip').show();
+            return;
+        }
+
+
+
+        if(countFilters > 0)
+            $('#get-filters').html(`(${countFilters}) filters`)
+        else
+            $('#get-filters').html(`filters`)
+
+        $('#filtersForm').toggle();
+        
+        $.ajax({
+            type: "post",
+            url: "/productsSearched/" + getRestaurantName(),
+            data: {tags: selectedTags, minPrice: min, maxPrice: max},
+            success: function (products) {
+                $("#products").empty();
+                if(products.length == 0){
+                    $("#products").append('<p>no product found</p>')
+                }
+                for (product of products) {
+                    $("#products").append(makeProduct(product))
+                }
+                if(isAdmin){
+                    $("#products").append('<li class="newProduct adminBtn"><button id="addProduct">add product</button></li>')
+                }
+            }
+        });
+    })
+});
+
+function validRange(min,max){
+    console.log(min,max)
+    if(min>max || min < 0 || max < 1){
+        return false;
+    }
+    return true;
+}

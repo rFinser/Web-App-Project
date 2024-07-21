@@ -9,6 +9,7 @@ router.route('/userData').get(usersController.getUserData);
 router.route('/deleteUser').post(usersController.deleteUser);
 router.route('/updateUser').put(usersController.updateUser);
 router.route('/isLoggedIn').get(usersController.isLoggedinJson);
+router.route('/isAdmin').get(usersController.isAdmin);
 router.route("/allUsers").get(usersController.getAllUsers);
 router.route("/allUsersPage").get(usersController.getAllUsersPage);
 

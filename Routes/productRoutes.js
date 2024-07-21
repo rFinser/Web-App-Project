@@ -6,8 +6,8 @@ const prodController = require("../Controllers/productController");
 
 router.route('/addProduct/:name').post(prodController.addProduct)
 router.route('/deleteProduct/:name').delete(prodController.deleteProduct)
-router.route('/getProduct:id').get(prodController.getProduct)
-router.route('/updateProduct').put(prodController.updateProduct)
-
+router.route('/getProduct').get(prodController.getProduct)
+router.route('/updateProduct/:name').put(prodController.updateProduct)
+router.route('/productsSearched/:name').post(prodController.productsFilter)
 
 module.exports = router;

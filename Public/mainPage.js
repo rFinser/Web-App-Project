@@ -1,65 +1,51 @@
 let isAdmin = false;
-$(async function () {
-    //load navbar
-    $.get('navbar.html', function (data) {
-        $("#navbarContainer").html(data);
 
-        //! ADD NAVBAR FUNCTIONALLITY HERE
+const tags = ["meat","salad","vegan","seafood","dessert","sandwiches","burgers","bbq","sushi","pastries","soups","ice-cream","spicy","smoothies","fast-food","gourmet-food","asian","italian","mexican"]
 
-        //search bar
-        $("#searchBar").keyup(function () {
-            if ($("#searchBar").val() == "" || !$("#searchBar").is(":focus")) {
-                $('#results').hide();
-                return;
-            }
-
-            $('#results').show();
-            $.ajax({
-                type: 'POST',
-                url: '/search',
-                data: { name: $("#searchBar").val() },
-                success: function (restaurants) {
-                    $('#results').empty();
-                    if (restaurants.results.length == 0) {
-                        $('#results').append('<p>no results found</p>')
-                    }
-                    else {
-                        restaurants.results.forEach(restaurant => {
-                            $("#results").append(`<p>${restaurant}</p>`);
-                        });
-                    }
-                }
-            });
-        });
-
-        $(document).ready(function () {
-            $('#loginBtn').hide();
-            $('#signupBtn').hide();
-            $.ajax({
-                type: 'GET',
-                url: '/mainPage',
-                success: function (data) {
-                    if (data.username == null) {
-                        $('#loginBtn').show();
-                        $('#signupBtn').show();
-                    }
-                    else {
-                        $('#loginBtn').hide();
-                        $('#signupBtn').hide();
-                        $('#username').html(`${data.username}`)
-                    }
-                    isAdmin = data.isAdmin;
-
-                    loadAdminBtns();
-                    loadRestaurants();
-                }
-            })
-        });
+$(function () {
+    $.ajax({
+        url: '/isAdmin',
+        success: function(data){
+            isAdmin = data.isAdmin
+            loadTags();
+            loadRestaurants();
+            loadAdminBtns();
+        }
     })
-})
 
-function loadAdminBtns() {
-    if (!isAdmin) {
+});
+
+function loadTags(){
+    const $list = $('#tagsList');
+
+    $.each(tags, (i,tag) =>{
+            $list.append(createTagScheme(tag));
+    })
+
+    $('.tagForm').click(function() {
+        const $li = $(this).closest('li') 
+        $.ajax({
+            type: 'post',
+            url: 'saveTags',
+            data: {tags: [$li.attr('id')]},
+            success: function(){
+                location.href='/searchedRestaurants'
+            }
+        })
+    });
+}
+
+function createTagScheme(tag){
+    return `
+        <li id="${tag}" class="tagForm">
+            <h4>${tag}</h4>
+            <img src="./tagsPictures/${tag}.png" alt="not found">
+        </li>
+    `
+}
+
+function loadAdminBtns(){
+    if (!isAdmin){
         $("#adminModeBtns").hide();
     }
     else {
@@ -68,25 +54,23 @@ function loadAdminBtns() {
 }
 
 //loading the main section of restaurants
-function loadRestaurants() {
-    const $list = $("#restaurantList");
-
-    $.ajax({
-        url: "/restaurants",
-        success: function (restaurants) {
-            $.each(restaurants, async (i, rest) => {
-                $list.append(await restaurantScheme(rest));
-            })
-            console.log(isAdmin)
-            if (isAdmin == true) {
-                $list.append(`<li id="newRes" class="adminBtn"><button id="addRes">add restaurant</button></li>`);
-            }
+function loadRestaurants(){
+  const $list = $("#restaurantList");
+  
+  $.ajax({
+    url: "/restaurants",
+    success: function (restaurants){
+        $.each(restaurants, (i, rest) => {
+            $list.append(restaurantScheme(rest));
+        })
+        if(isAdmin == true){
+            $list.append(`<li id="newRes"><button id="addRes" class="adminBtn">add restaurant</button></li>`);
         }
     })
 }
 
-$('#restaurantList').delegate('#addRes', 'click', function () {
-    $('#addRes').hide();
+$('#restaurantList').delegate('#addRes', 'click', function(){
+    $('.adminBtn').hide();
     $('#newRes').append(createRestaurantScheme())
     $('#nameTooltip').hide()
 
@@ -94,16 +78,26 @@ $('#restaurantList').delegate('#addRes', 'click', function () {
 
 $('#restaurantList').delegate('#cancelRes', 'click', function () {
     $('#addingData').remove();
-    $('#addRes').show();
+    $('.adminBtn').show();
 });
 
 $('#restaurantList').delegate('#saveRes', 'click', function () {
     $('.tooltip').hide()
 
+    var selectedTags = [];
+    $('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+        selectedTags.push($(this).attr('id'));
+    });
+
+    var tags = []
+
+    $.each(selectedTags, (i, tag)=>{
+        tags.push(tag)
+    })
+
     const name = $('#resName').val();
     const desc = $('#desc').val();
     const icon = $('#icon').val();
-    const tags = $('#tags').val();
     const address = $('#address').val();
 
     if (!validInputs(name, desc, address)) {
@@ -178,13 +172,17 @@ $('#restaurantList').delegate('.updateRes', 'click', function () {
             $('#u_desc').val(rest.r_description);
             $('#u_icon').val(rest.r_icon);
             $('#u_address').val(rest.r_address);
-            $('#u_tags').val(rest.r_tags);
+            
+            $.each(rest.r_tags, (i, tag) => {
+                $(`#${tag.name}`).prop('checked', true);;
+            })
+
             $('#u_geolocation').val(rest.r_geolocation);
         }
     })
 });
 
-$('#restaurantList').delegate('#u_cancel', 'click', function () {
+$('#restaurantList').delegate('.u_cancel','click', function(){
     let $li = $(this).closest('li');
 
     $('#updateData').remove();
@@ -197,11 +195,21 @@ $('#restaurantList').delegate('.u_save', 'click', function () {
     $('.tooltip').hide();
     let $li = $(this).closest('li');
 
+    var selectedTags = [];
+    $('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+        selectedTags.push($(this).attr('id'));
+    });
+
+    var tags = []
+
+    $.each(selectedTags, (i, tag)=>{
+        tags.push(tag);
+    })
+
     const name = $('#u_resName').val();
     const desc = $('#u_desc').val();
     const icon = $('#u_icon').val();
     const address = $('#u_address').val()
-    const tags = $('#u_tags').val()
     const geo = $('#u_geolocation').val()
 
     if (!validInputs(name, desc, address) || geo == '') {
@@ -370,10 +378,11 @@ function createRestaurantScheme() {
         <input id="desc"/></br>
         <label for="icon">Icon(url):</label>
         <input id="icon"/></br>
-        <label for="tags">tags(optimal):</label>
-        <input id="tags"/></br>
+        `+tagsScheme()+`
         <label for="address">Address:</label>
         <input id="address"/></br>
+        <label for="u_geolocation">Geo location:</label>
+        <input id="u_geolocation"/></br>
         <button id="saveRes">save</button>
         <button id="cancelRes">cancel</button>
     </div>
@@ -390,14 +399,27 @@ function updateRestaurantScheme() {
         <input id="u_desc"/></br>
         <label for="u_icon">Icon(url):</label>
         <input id="u_icon"/></br>
-        <label for="u_tags">tags(optimal):</label>
-        <input id="u_tags"/></br>
+        `+tagsScheme()+`
         <label for="u_address">Address:</label>
         <input id="u_address"/></br>
         <label for="u_geolocation">Geo location:</label>
         <input id="u_geolocation"/></br>
-        <button id="" class="u_save">save</button>
-        <button id="u_cancel">cancel</button>
+        <button class="u_save">save</button>
+        <button class="u_cancel">cancel</button>
     </div>
     `
+}
+function firstLetterUppercase(str){
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}
+function tagsScheme(){
+
+    var tagsHtml = "";
+    tagsHtml+=`<section id="tagsForm"></section>`
+    for(tag of tags){
+        console.log(tag)
+        tagsHtml+=`<input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label><br>`
+    }
+    tagsHtml += `</section>`;
+    return tagsHtml;
 }
