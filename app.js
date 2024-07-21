@@ -32,6 +32,7 @@ const ordersRouter = require('./Routes/ordersRoutes')
 const usersRouter = require("./Routes/usersRouter");
 const productsRouter = require("./Routes/productRoutes");
 const facbookApiRouter = require('./Routes/FacebookApiRouter')
+const reviewsRouter = require("./Routes/reviewsRoutes");
 
 app.use(restRouter);
 app.use(loginSignupRouter);
@@ -41,6 +42,7 @@ app.use(ordersRouter);
 app.use(usersRouter);
 app.use(productsRouter);
 app.use(facbookApiRouter);
+app.use(reviewsRouter);
 
 app.listen(process.env.PORT, (err) => {
     if (err) console.error(err)
