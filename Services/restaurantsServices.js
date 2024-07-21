@@ -1,11 +1,12 @@
 const Restaurant = require("../Models/Restaurant");
 const Product = require("./productsServices");
 
-async function createRestaurant(name, desc, iconPath, tags, address, location) {
+async function createRestaurant(name, desc, iconPath, tags, location) {
+    console.log(name);
     if (await findRestaurantByName(name) != null)
         throw Error(`A restaurant with the given name "${name}" already exists.`);
 
-    let rest = new Restaurant({ r_name: name, r_description: desc, r_icon: iconPath, r_tags: tags, r_address: address, r_geolocation: location });
+    let rest = new Restaurant({ r_name: name, r_description: desc, r_icon: iconPath, r_tags: tags, r_geolocation: location });
     await rest.save();
 }
 
@@ -38,13 +39,6 @@ async function deleteRestaurant(restaurant_to_delete) {
     await Restaurant.deleteOne({ r_name: restaurant_to_delete });
 }
 
-function isSubArray(array, subArray) {
-    for (let i = 0; i < subArray.length; i++) {
-        if (array.includes(subArray[i].name))
-            return true;
-    }
-    return false;
-}
 
 async function searchByTags(tags) {
     let foundRestaurant = new Set();
@@ -53,7 +47,7 @@ async function searchByTags(tags) {
         if (rest.r_tags == null)
             continue;
         for (let i = 0; i < rest.r_tags.length; i++) {
-            if (tags.includes( rest.r_tags[i].name))
+            if (tags.includes( rest.r_tags[i]))
             {
                 foundRestaurant.add(rest);
                 break;

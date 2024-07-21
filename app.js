@@ -32,6 +32,7 @@ const ordersRouter = require('./Routes/ordersRoutes')
 const usersRouter = require("./Routes/usersRouter");
 const productsRouter = require("./Routes/productRoutes");
 const facbookApiRouter = require('./Routes/FacebookApiRouter')
+const openCageApiRouter = require('./Routes/openCageAPI')
 const reviewsRouter = require("./Routes/reviewsRoutes");
 
 app.use(restRouter);
@@ -43,6 +44,7 @@ app.use(usersRouter);
 app.use(productsRouter);
 app.use(facbookApiRouter);
 app.use(reviewsRouter);
+app.use(openCageApiRouter);
 
 app.listen(process.env.PORT, (err) => {
     if (err) console.error(err)

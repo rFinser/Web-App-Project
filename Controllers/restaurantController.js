@@ -45,7 +45,7 @@ async function getAllRestaurants(req, res){
 }
 async function addRestaurant(req,res){
     try{
-        await restServices.createRestaurant(req.body.r_name,req.body.r_description,req.body.r_icon,req.body.r_tags,req.body.r_address)
+        await restServices.createRestaurant(req.body.r_name,req.body.r_description,req.body.r_icon,req.body.r_tags,req.body.r_geolocation)
         res.json({status: 1})
     }
     catch(e){

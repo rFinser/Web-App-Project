@@ -56,23 +56,26 @@ function loadAdminBtns(){
 //loading the main section of restaurants
 function loadRestaurants(){
   const $list = $("#restaurantList");
-  
   $.ajax({
     url: "/restaurants",
     success: function (restaurants){
-        $.each(restaurants, (i, rest) => {
-            $list.append(restaurantScheme(rest));
+        console.log(restaurants)
+        $.each(restaurants, async (i, rest) => {
+            $list.append(await restaurantScheme(rest));
         })
-        if(isAdmin == true){
-            $list.append(`<li id="newRes"><button id="addRes" class="adminBtn">add restaurant</button></li>`);
-        }
+        
+    }
     })
+    console.log(isAdmin)
+    if(isAdmin == true){
+        $list.append(`<li id="newRes"><button id="addRes" class="adminBtn">add restaurant</button></li>`);
+    }
 }
 
 $('#restaurantList').delegate('#addRes', 'click', function(){
     $('.adminBtn').hide();
     $('#newRes').append(createRestaurantScheme())
-    $('#nameTooltip').hide()
+    $('.tooltip').hide()
 
 })
 
@@ -85,7 +88,7 @@ $('#restaurantList').delegate('#saveRes', 'click', function () {
     $('.tooltip').hide()
 
     var selectedTags = [];
-    $('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+    $('#newRes').find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
         selectedTags.push($(this).attr('id'));
     });
 
@@ -106,27 +109,37 @@ $('#restaurantList').delegate('#saveRes', 'click', function () {
         return;
     }
 
-    var rest = {
-        r_name: name, r_description: desc,
-        r_icon: icon, r_tags: tags, r_address: address
-    }
     $.ajax({
-        type: 'POST',
-        url: '/addRestaurant',
-        data: rest,
-        success: async function (data) {
-            if (data.status == 1) {
-                $('#newRes').remove();
-                $('#restaurantList').append(await restaurantScheme(rest));
-                $('#restaurantList').append(`<li id="newRes"><button id="addRes">add restaurant</button></li>`);
-                postRestaurant(name);
-            }
-            else {
-                $('#nameTooltip').html('restaurant name already exist, try a diffrent one');
-                $('#nameTooltip').show();
-            }
+        type: "post",
+        url: "/openCageLatLng",
+        data: {address},
+        success: function (response) {
+            const rest = { r_name: name, r_description: desc, r_icon: icon, 
+                r_tags: tags, r_geolocation: {address:response.address, lat :response.lat, lng: response.lng}}
+            $.ajax({
+                type: 'POST',
+                url: '/addRestaurant',
+                data: rest,
+                success: async function (data) {
+                    console.log(rest);
+                    if (data.status == 1) {
+                        $('#addingData').remove();
+                        $('#restaurantList').append(await restaurantScheme(rest));
+                        $('.adminBtn').show();
+                        postRestaurant(name);
+                    }
+                    else {
+                        $('#nameTooltip').html('restaurant name already exist, try a diffrent one');
+                        $('#nameTooltip').show();
+                    }
+                }
+            })
+        },
+        error: function(){
+            $('#addressTooltip').show();
         }
-    })
+    });
+    
 
 });
 
@@ -163,21 +176,22 @@ $('#restaurantList').delegate('.updateRes', 'click', function () {
     $li.find('.restaurant').hide();
     $('.adminBtn').hide()
     $.ajax({
-        type: 'GET',
-        url: '/restaurantName' + $li.attr('id'),
+        type: 'post',
+        url: '/restaurantName/' + $li.attr('id'),
         success: function (rest) {
+            console.log(rest)
             $li.append(updateRestaurantScheme())
             $li.attr('id', rest.r_name);
             $('#u_resName').val(rest.r_name);
             $('#u_desc').val(rest.r_description);
             $('#u_icon').val(rest.r_icon);
-            $('#u_address').val(rest.r_address);
-            
-            $.each(rest.r_tags, (i, tag) => {
-                $(`#${tag.name}`).prop('checked', true);;
-            })
 
-            $('#u_geolocation').val(rest.r_geolocation);
+            $.each(rest.r_geolocation, (i, location) => {
+                $('#u_address').val(location.address);
+            })
+            $.each(rest.r_tags, (i, tag) => {
+                $(`#${tag}`).prop('checked', true);;
+            })
         }
     })
 });
@@ -210,33 +224,42 @@ $('#restaurantList').delegate('.u_save', 'click', function () {
     const desc = $('#u_desc').val();
     const icon = $('#u_icon').val();
     const address = $('#u_address').val()
-    const geo = $('#u_geolocation').val()
 
-    if (!validInputs(name, desc, address) || geo == '') {
+    if (!validInputs(name, desc, address)) {
         $('#inputsTooltip').html('please fill all the required fields');
         $('#inputsTooltip').show();
         return;
     }
     const id = $li.attr('id')
-
     $.ajax({
-        type: 'PUT',
-        url: 'updateRestaurant',
-        data: { id, name, desc, icon, address, tags, geo },
-        success: function (data) {
-            if (data.status == 1) {
-                $('#updateData').remove()
-                $li.find('.restaurant').remove();
-                $li.attr('id', name)
-                $li.append(updatedRestaurantScheme({ r_name: name, r_icon: icon, r_description: desc }))
-                $('.adminBtn').show()
-            }
-            else {
-                $('#nameTooltip').html('restaurant name already exist, try a diffrent one');
-                $('#nameTooltip').show();
-            }
+        type: "post",
+        url: "/openCageLatLng",
+        data: {address},
+        success: function (response) {
+                $.ajax({
+                    type: 'PUT',
+                    url: 'updateRestaurant',
+                    data: { id, name, desc, icon, tags, r_geolocation: {address:response.address, lat :response.lat, lng: response.lng}},
+                    success: function (data) {
+                        if (data.status == 1) {
+                            $('#updateData').remove()
+                            $li.find('.restaurant').remove();
+                            $li.attr('id', name)
+                            $li.append(updatedRestaurantScheme({ r_name: name, r_icon: icon, r_description: desc }))
+                            $('.adminBtn').show()
+                        }
+                        else {
+                            $('#nameTooltip').html('restaurant name already exist, try a diffrent one');
+                            $('#nameTooltip').show();
+                        }
+                    }
+                })
+        },
+        error: function(){
+            $('#addressTooltip').show();
         }
-    })
+    });
+    
 });
 
 async function getRating(restaurantName) {
@@ -333,7 +356,7 @@ async function restaurantScheme(restaurant) {
     <a href="restaurants/${restaurant.r_name}">
         <p id="restRating">${rating}</p>
         <p class="restName">${restaurant.r_name} </p>
-        <img class="restImg" src=${restaurant.r_icon} onerror="this.src = '${defaultRestIcon}'" alt="not Found">
+        <img class="restImg" src="${restaurant.r_icon}" onerror="this.src = '${defaultRestIcon}'" alt="not Found">
         <p class="restDesc">${restaurant.r_description}</p>
     </a>
         <button id="addRatingBtn">Add Rating</button>`
@@ -379,10 +402,9 @@ function createRestaurantScheme() {
         <label for="icon">Icon(url):</label>
         <input id="icon"/></br>
         `+tagsScheme()+`
-        <label for="address">Address:</label>
-        <input id="address"/></br>
-        <label for="u_geolocation">Geo location:</label>
-        <input id="u_geolocation"/></br>
+        <label for="address">Address(hebrew):</label>
+        <input id="address" placeholder="format: address, city(optional), country(optional)" style="width: 300px;"/></br>
+        <p id="addressTooltip" class="tooltip">invalid address</p>
         <button id="saveRes">save</button>
         <button id="cancelRes">cancel</button>
     </div>
@@ -402,8 +424,7 @@ function updateRestaurantScheme() {
         `+tagsScheme()+`
         <label for="u_address">Address:</label>
         <input id="u_address"/></br>
-        <label for="u_geolocation">Geo location:</label>
-        <input id="u_geolocation"/></br>
+        <p id="addressTooltip" class="tooltip"></p>
         <button class="u_save">save</button>
         <button class="u_cancel">cancel</button>
     </div>
@@ -415,9 +436,8 @@ function firstLetterUppercase(str){
 function tagsScheme(){
 
     var tagsHtml = "";
-    tagsHtml+=`<section id="tagsForm"></section>`
+    tagsHtml+=`<section id="tagsForm">`
     for(tag of tags){
-        console.log(tag)
         tagsHtml+=`<input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label><br>`
     }
     tagsHtml += `</section>`;

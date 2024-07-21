@@ -1,4 +1,3 @@
-
 $(async function(){
     //load navbar
     
@@ -68,7 +67,7 @@ function filters(){
 
         const checkedTags =$('#tagsForm').find('input[type="checkbox"]:checked')
         if (checkedTags.length==0){
-            selectedTags = Object.keys(tags);
+            selectedTags = tags;
         }
         else{
             checkedTags.each(function() {
@@ -115,7 +114,7 @@ function firstLetterUppercase(str){
 function tagsScheme(){
 
     var tagsHtml = "";
-    tagsHtml+=`<section id="tagsForm"></section>`
+    tagsHtml+=`<section id="tagsForm">`
     for(tag of tags){
         tagsHtml+=`<input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label><br>`
     }
