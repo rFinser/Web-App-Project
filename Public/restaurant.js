@@ -1,4 +1,6 @@
 let isAdmin = false;
+const tags = ['spicy','vegan', 'meat', 'dessert', 'salad']
+
 
 $(document).ready(function () {
     $(document).on("click", ".addBtn", function () {
@@ -95,7 +97,7 @@ function Admin(){
 function createProductData(){
     return `
     <div class="newProductForm">
-        <p id="tooltip"></p>
+        <p class="tooltip"></p>
         <label for="p-name">product name:</label>
         <input id="p-name" /></br>
         <label for="p-description">description:</label>
@@ -111,7 +113,7 @@ function createProductData(){
 function updateProductData(){
     return `
     <div class="updateProductForm">
-        <p id="tooltip"></p>
+        <p class="tooltip"></p>
         <label for="p-name">product name:</label>
         <input id="p-name" /></br>
         <label for="p-description">description:</label>
@@ -125,33 +127,13 @@ function updateProductData(){
     </div>`
 }
 function tagsScheme(){
-    return `
-     <section id="tagsForm">
-        <input type="checkbox" id="meat"><label for="meat">Meat</label><br>
-        <input type="checkbox" id="salad"><label for="salad">Salad</label><br>
-        <input type="checkbox" id="vegan"><label for="vegan">Vegan</label><br>
-        <input type="checkbox" id="seafood"><label for="seafood">Seafood</label><br>
-        <input type="checkbox" id="dessert"><label for="dessert">Dessert</label><br>
-        <input type="checkbox" id="sandwiches"><label for="sandwiches">Sandwiches</label><br>
-        <input type="checkbox" id="burgers"><label for="burgers">Burgers</label><br>
-        <input type="checkbox" id="bbq"><label for="bbq">BBQ</label><br>
-        <input type="checkbox" id="sushi"><label for="sushi">Sushi</label><br>
-        <input type="checkbox" id="tacos"><label for="tacos">Tacos</label><br>
-        <input type="checkbox" id="pastries"><label for="pastries">Pastries</label><br>
-        <input type="checkbox" id="soups"><label for="soups">Soups</label><br>
-        <input type="checkbox" id="ice-cream"><label for="ice-cream">Ice Cream</label><br>
-        <input type="checkbox" id="spicy"><label for="spicy">Spicy</label><br>
-        <input type="checkbox" id="smoothies"><label for="smoothies">Smoothies</label><br>
-        <input type="checkbox" id="noodles"><label for="noodles">Noodles</label><br>
-        <input type="checkbox" id="fast-food"><label for="fast-food">Fast Food</label><br>
-        <input type="checkbox" id="gourmet-food"><label for="gourmet-food">Gourmet Food</label><br>
-        <input type="checkbox" id="asian"><label for="asian">Asian</label><br>
-        <input type="checkbox" id="italian"><label for="italian">Italian</label><br>
-        <input type="checkbox" id="mexican"><label for="mexican">Mexican</label><br>
-        <input type="checkbox" id="middle-eastern"><label for="middle-eastern">Middle Eastern</label><br>
-        <input type="checkbox" id="french"><label for="french">French</label><br>
-        <input type="checkbox" id="greek"><label for="greek">Greek</label><br>
-    </section>`
+    var tagsHtml = "";
+    tagsHtml+=`<section id="tagsForm">`
+    for(tag of tags){
+        tagsHtml+=`<input type="checkbox" id="${tag}"><label for="${tag}">${tag}</label><br>`
+    }
+    tagsHtml += `</section>`;
+    return tagsHtml;
 }
 $('#products').delegate('#addProduct', 'click', function(){
     const $li = $(this).closest('li')
@@ -167,33 +149,34 @@ $('#products').delegate('.p-cancel', 'click', function(){
 
 $('#products').delegate('.p-save', 'click', function(){
     $('#tooltip').empty();
+    const $li = $(this).closest('li')
 
     const p_name = $('#p-name').val();
     const p_description = $('#p-description').val();
     const p_price = $('#p-price').val();
     var p_tags = [];
 
-    $('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+    $li.find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
         p_tags.push($(this).attr('id'));
     });
     if(!validProduct(p_name,p_description,p_price,p_tags))
     {
-            $('#tooltip').html('please fill the fields correctly and choose at least 2 tags')
+            $('.tooltip').html('please fill the fields correctly and choose at least one tag')
             return;
     }
-    const $li = $(this).closest('li')
+
     $.ajax({
         type: 'post',
         url: '/addProduct/' + getRestaurantName(),
         data: {name: p_name, desc: p_description, price: p_price, tags: p_tags},
         success: function(data){
             if(data.status == -1){
-                $('#tooltip').html('product name already in use, try a diffrent name')
+                $('.tooltip').html('product name already in use, try a diffrent name')
             }
             else{
               postProduct(getRestaurantName(), p_name)
               $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id}))
-              $('.newProductForm').remove();
+              $li.remove();
               $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
             }
         }
@@ -233,16 +216,16 @@ $('#products').delegate('.updateProduct', 'click', function(){
     $('.adminBtn').hide()
 
     $.ajax({
-        type: 'GET',
-        url: '/getProduct'+$li.attr('id'),
+        type: 'post',
+        url: '/getProduct',
+        data: {id:$li.attr('id')},
         success: function(product){
-            console.log(product)
             $li.append(updateProductData());
             $('#p-name').val(product.p_name);
             $('#p-description').val(product.p_description);
             $('#p-price').val(product.p_price);
             $.each(product.p_tags, (i, tag) => {
-                $(`#${tag}`).prop('checked', true);;
+                $li.find(`#${tag}`).prop('checked', true);;
             })
         }
     })
@@ -257,7 +240,7 @@ $('#products').delegate('.u-cancel', 'click', function(){
 
 $('#products').delegate('.u-save', 'click', function(){
 
-    $('#tooltip').empty();
+    $('.tooltip').empty();
     const $li = $(this).closest('li');
 
     const name = $('#p-name').val();
@@ -266,12 +249,12 @@ $('#products').delegate('.u-save', 'click', function(){
 
     var tags = [];
 
-    $('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
+    $li.find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
         tags.push($(this).attr('id'));
     });
     if(!validProduct(name,desc,price,tags))
     {
-        $('#tooltip').html('please fill the fields correctly and choose at least 2 tags')
+        $('.tooltip').html('please fill the fields correctly and choose at least 1 tags')
         return;
     }
 
@@ -289,7 +272,7 @@ $('#products').delegate('.u-save', 'click', function(){
                 $('.adminBtn').show();
             }
             else{
-                $('#tooltip').html('product name already in use, try a diffrent name')
+                $('.tooltip').html('product name already in use, try a diffrent name')
             }
         }
     })
@@ -297,8 +280,104 @@ $('#products').delegate('.u-save', 'click', function(){
 
 function validProduct(name, desc, price, tags){
     const isNumber = /^[0-9]+$/;
-    console.log(typeof(price))
-    if(name =='' || desc == ''|| !isNumber.test(price) || tags.length < 2){
+    if(name =='' || desc == ''|| !isNumber.test(price) || price.length>6 || tags.length < 1){
+        return false;
+    }
+    return true;
+}
+
+//product filters
+$(document).ready(function () {
+    $('#filtersForm').hide();
+    
+    $('#filter-tags').append(tagsScheme());
+    $('#get-filters').click(function() { 
+        $('#filtersForm').toggle(200);
+    });
+    $('#cancel-filters').click(function(){
+        $('#rangeTooltip').empty();
+        $('#filtersForm').toggle(100);
+        $('input[type="checkbox"]').prop('checked', false);
+        $('.rangeBtn').prop("value", "");
+    });
+    $('#reset-filters').click(function(){
+        $('#rangeTooltip').empty();
+        $('input[type="checkbox"]').prop('checked', false);
+        $('.rangeBtn').prop("value", "");
+    });
+    $('#search-filters').click(function(){
+        $('#rangeTooltip').hide();
+
+        var selectedTags = [];
+        var countFilters = 0;
+
+        const checkedTags =$('#filter-tags').find('input[type="checkbox"]:checked')
+        if (checkedTags.length==0){
+            selectedTags = tags;
+        }
+        else{
+            checkedTags.each(function() {
+                selectedTags.push($(this).attr('id'));
+                countFilters++;
+            });
+        }
+
+        var min = $('#minPrice').val();
+        var max = $('#maxPrice').val();
+        
+        console.log(min,max)
+        if(min == ''){
+            min = '0';
+        }
+        else{
+            countFilters++;
+        }
+        if(max == ''){
+            max = '9999999';
+        }
+        else{
+            countFilters++;
+        }
+        console.log(countFilters)
+        if(!validRange(min,max))
+        {
+            $('#rangeTooltip').html('invalid range, price should be a Natural number');
+            $('#rangeTooltip').show();
+            return;
+        }
+
+
+
+        if(countFilters > 0)
+            $('#get-filters').html(`(${countFilters}) filters`)
+        else
+            $('#get-filters').html(`filters`)
+
+        $('#filtersForm').toggle();
+        
+        $.ajax({
+            type: "post",
+            url: "/productsSearched/" + getRestaurantName(),
+            data: {tags: selectedTags, minPrice: min, maxPrice: max},
+            success: function (products) {
+                $("#products").empty();
+                if(products.length == 0){
+                    $("#products").append('<p>no product found</p>')
+                }
+                for (product of products) {
+                    $("#products").append(makeProduct(product))
+                }
+                if(isAdmin){
+                    $("#products").append('<li class="newProduct adminBtn"><button id="addProduct">add product</button></li>')
+                }
+            }
+        });
+    })
+});
+
+function validRange(min,max){
+    console.log(min,max)
+    if(min>max || min < 0 || max < 1){
         return false;
     }
     return true;

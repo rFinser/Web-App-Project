@@ -43,54 +43,49 @@ function searchBar(){
     });
 }
 function filters(){
+
     $('#filters').hide();
-        $('#tags').append(tagsScheme());
+    $('#tags').append(tagsScheme());
 
-        $('#filtersBtn').click(function (event) {
-            $('#filters').toggle();
-            event.stopPropagation();
-        });
+    $('#filtersBtn').click(function (event) {
+        $('#filters').toggle();
+        event.stopPropagation();
+    });
 
-        $(document).click(function () {
-            $('#filters').hide();
-        });
-    
-        $('#filters').click(function (event) {
-            event.stopPropagation();
-        });
+    $('#filters').click(function (event) {
+        event.stopPropagation();
+    });
+    $('#cancel-filters').click(function(event){
+        $('#filters').toggle();
+        $('input[type="checkbox"]').prop('checked', false);
+        event.stopPropagation();
+    });
+    $('#reset-filters').click(function(){
+        $('input[type="checkbox"]').prop('checked', false);
+    });
+    $('#save-filters').click(function(){
+        var selectedTags = [];
 
-        $('#cancel-filters').click(function(event){
-            $('#filters').toggle();
-            event.stopPropagation();
-        });
-
-        $('#reset-filters').click(function(){
-            $('input[type="checkbox"]').prop('checked', false);
-        });
-
-        $('#save-filters').click(function(){
-            var selectedTags = [];
-
-            const checkedTags =$('#tagsForm').find('input[type="checkbox"]:checked')
-            if (checkedTags.length==0){
-                selectedTags = Object.keys(tags);
+        const checkedTags =$('#tagsForm').find('input[type="checkbox"]:checked')
+        if (checkedTags.length==0){
+            selectedTags = Object.keys(tags);
+        }
+        else{
+            checkedTags.each(function() {
+                selectedTags.push($(this).attr('id'));
+            });
+        }            
+        $('#filters').toggle();
+        
+        $.ajax({
+            type: 'post',
+            url: '/saveTags',
+            data:{tags:selectedTags},
+            success: function(){
+                location.href = '/searchedRestaurants'
             }
-            else{
-                checkedTags.each(function() {
-                    selectedTags.push($(this).attr('id'));
-                });
-            }            
-            $('#filters').toggle();
-            
-            $.ajax({
-                type: 'post',
-                url: '/saveTags',
-                data:{tags:selectedTags},
-                success: function(){
-                    location.href = '/searchedRestaurants'
-                }
-           })
-        })
+       })
+    })
 
 }
 
