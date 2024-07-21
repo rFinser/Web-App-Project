@@ -34,6 +34,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 
 document.getElementById('submitBtn').onclick = validCheck;
+document.getElementById('showPassword').onclick = showPassword;
+
+function showPassword(){
+    const passwordInput = document.getElementById('password');
+    const showPasswordCheckbox = document.getElementById('showPassword');
+    if (showPasswordCheckbox.checked) {
+        passwordInput.setAttribute('type', 'text');
+    } else {
+        passwordInput.setAttribute('type', 'password');
+    }
+}
 
 let flag = 0;
 

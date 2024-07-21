@@ -6,11 +6,11 @@ $(function () {
         url: '/isAdmin',
         success: function(data){
             isAdmin = data.isAdmin
+            loadTags();
+            loadRestaurants();
+            loadAdminBtns();
         }
     })
-    loadAdminBtns()
-    loadTags();
-    loadRestaurants();
 
 });
 
@@ -44,6 +44,7 @@ function createTagScheme(tag){
 }
 
 function loadAdminBtns(){
+    console.log(isAdmin)
     if (!isAdmin){
         $("#adminModeBtns").hide();
     }
@@ -62,7 +63,6 @@ function loadRestaurants(){
         $.each(restaurants, (i, rest) => {
             $list.append(restaurantScheme(rest));
         })
-        console.log(isAdmin)
         if(isAdmin == true){
             $list.append(`<li id="newRes"><button id="addRes" class="adminBtn">add restaurant</button></li>`);
         }
@@ -319,7 +319,7 @@ function firstLetterUppercase(str){
     return str.charAt(0).toUpperCase() + str.slice(1)
 }
 function tagsScheme(){
-    
+
     var tagsHtml = "";
     tagsHtml+=`<section id="tagsForm"></section>`
     for(tag of tags){

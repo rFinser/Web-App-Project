@@ -2,7 +2,7 @@ const restServices = require("../Services/restaurantsServices");
 const prodServices = require("../Services/productsServices");
 
 async function getProduct(req,res){
-    const product = await prodServices.findProductById(req.params.id);
+    const product = await prodServices.findProductById(req.body.id);
     res.json(product);
 }
 
@@ -45,9 +45,33 @@ async function updateProduct(req,res){
     res.end();
 }
 
+async function productsFilter(req,res){
+    const {tags, minPrice, maxPrice} = req.body;
+    const rest = await restServices.findRestaurantByName(req.params.name)
+
+    const priceFilter = await prodServices.findByPrice(minPrice,maxPrice);
+    const tagsFilter = await prodServices.findByTags(tags);
+
+    const productsSet = new Set(priceFilter.concat(tagsFilter));
+    const Allproducts = Array.from(productsSet);
+
+    let products = [];
+    for(let i =0; i<rest.r_productsId.length; i++){
+        for(let j =0; j<Allproducts.length-1; j++){
+            if(Allproducts[j]._id.toString() == rest.r_productsId[i]){
+                products.push(Allproducts[j]);
+                break;
+            }
+        }
+    }
+
+    res.json(products);
+}
+
 module.exports = {
     addProduct,
     deleteProduct,
     getProduct,
     updateProduct,
+    productsFilter,
 }
