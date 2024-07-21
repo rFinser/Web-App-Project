@@ -1,4 +1,4 @@
-const reviewsServices = require("../Services/ReviewsServices");
+const reviewsServices = require("../Services/reviewsServices");
 
 async function getReviewsByRestaurantName(req, res) {
     try {
@@ -21,7 +21,9 @@ async function addReview(req, res) {
         res.json({review});
     }
     catch (err) {
-        res.json({status: -2}) //already reviewed
+        //already reviewed, overwrite
+        const newReview = await reviewsServices.updateReview(req.session.username, req.body.restaurantName, req.body.rating);
+        res.json({review: newReview});
     }
 }
 

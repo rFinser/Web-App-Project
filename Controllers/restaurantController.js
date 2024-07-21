@@ -1,6 +1,7 @@
 const restServices = require("../Services/restaurantsServices");
 const prodServices = require("../Services/productsServices");
 const usersServices = require("../Services/usersServices");
+const reviewsServices = require("../Services/reviewsServices");
 
 async function getRestaurantPage(req, res) {
     const restaurant = await restServices.findRestaurantByName(req.params.name);
@@ -55,6 +56,10 @@ async function addRestaurant(req,res){
 }
 async function deleteRestaurant(req,res){
     await restServices.deleteRestaurant(req.params.id);
+    const reviews = await reviewsServices.getReviewsByRestaurantName(req.params.id);
+    for(const review of reviews){
+        await reviewsServices.deleteReview(review.rev_username, review.rev_restaurantName);
+    }
     res.end();
 }
 
