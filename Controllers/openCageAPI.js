@@ -1,4 +1,4 @@
-const apiKey = 'API KEY';
+const apiKey = '0bd48b02abbb472fb708488fafdf7c3d';
 
 async function getLatLng(req,res) {
     const address = req.body.address;

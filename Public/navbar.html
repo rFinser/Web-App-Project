@@ -5,10 +5,27 @@
         <button id="filtersBtn">filters</button>
 
         <div id="filters">
+            <label for="tags">tags:</label> 
             <div id="tags">
                 
             </div>
-            <div id="location"></div>
+            <label for="locationForm">location:</label>
+            <div id="locationForm">
+                <input id="north" type="checkbox"/><label for="north">north</label>
+                <input id="center" type="checkbox"/><label for="center">center</label>
+                <input id="south" type="checkbox"/><label for="south">north</label>
+            </div>
+            <label for="ratingForm">rating:</label>
+            <div id="ratingForm">
+                <select id="ratingFilter">
+                    <option id="defaultValue" value="" selected>min rating</option>
+                    <option value="5">5</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
             <button id="save-filters">search</button>
             <button id="cancel-filters">cancel</button>
             <button id="reset-filters">reset</button>

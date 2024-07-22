@@ -1,9 +1,9 @@
 $(document).ready(function () {
     $.ajax({
-        type: 'GET',
+        type: 'post',
         url: '/restaurantsFilters',
-        success: function(data){
-            data.rest.forEach(restaurant => {
+        success: function(restaurants){
+            restaurants.forEach(restaurant => {
                 $('#restaurants').append(restaurantScheme(restaurant))
             });
         }

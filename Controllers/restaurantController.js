@@ -73,19 +73,36 @@ async function updateRestaurant(req,res){
     }
     res.end()
 }
-var selectedTags = [];
-function saveTags(req,res){
-    selectedTags = req.body.tags;
+var selectedTags;
+var selectedLocation;
+var selectedRating;
+function saveFilters(req,res){
+
+    selectedTags = req.body.selectedTags;
+    selectedLocation = req.body.selectedLocation;
+    selectedRating = req.body.selectedRating;
+    
     res.end();
 }
-function getRestaurants(req,res){
+function getRestaurantsFilters(req,res){
     res.render('restaurantsFilters.ejs');
 }
 
-async function getRestaurantByTags(req,res){
-    const restaurants = await restServices.searchByTags(selectedTags);
-    const rest =  Array.from(restaurants)
-    res.json({rest});
+async function getRestaurantByFilters(req,res){
+    const restaurantsTags = await restServices.searchByTags(selectedTags);
+    const restaurantsLocation = await restServices.searchByLocation(selectedLocation);
+    const restaurantsRating = await reviewsServices.getRestaurantsByRating(selectedRating);
+
+    const restaurantsSearched = [];
+    let i = 0;
+    restaurantsTags.forEach(rest => {
+            i++;
+        if (restaurantsLocation.has(rest) && restaurantsRating.has(rest)) {
+            restaurantsSearched.push(rest);
+        }
+      });
+
+    res.json(restaurantsSearched);
 }
 
 
@@ -97,7 +114,7 @@ module.exports = {
     deleteRestaurant,
     getRestaurantByName,
     updateRestaurant,
-    getRestaurantByTags,
-    getRestaurants,
-    saveTags,
+    getRestaurantByFilters,
+    getRestaurantsFilters,
+    saveFilters,
 }

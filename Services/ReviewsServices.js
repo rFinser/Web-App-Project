@@ -1,5 +1,6 @@
 const Review = require("../Models/Review");
-const usersServices = require("../Services/usersServices");
+const usersServices = require("./usersServices");
+const restaurantsServices = require('./restaurantsServices')
 
 async function createReview(username, restaurantId, rating) {
     if (await usersServices.findUser(username) == null)
@@ -53,6 +54,20 @@ async function getAvgRating(restaurantName){
     ]);
 }
 
+async function getRestaurantsByRating(rating) //rating number from 0 to 5
+{
+    const restaurants = await restaurantsServices.listAllRestaurants();
+    const foundedRestaurants = new Set();
+    for(rest of restaurants){
+        if((await getAvgRating(rest.r_name)).length == 0){
+            continue;
+        }
+        else if((await getAvgRating(rest.r_name))[0].avgRating >= rating){
+            foundedRestaurants.add(rest)
+        }
+    }
+    return foundedRestaurants;
+}
 module.exports = {
     createReview,
     findReviewById,
@@ -60,5 +75,6 @@ module.exports = {
     updateReview,
     deleteReview,
     getReviewsByRestaurantName,
-    getAvgRating
+    getAvgRating,
+    getRestaurantsByRating,
 }
