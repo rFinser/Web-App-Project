@@ -13,7 +13,7 @@ $(async function initMap(){
     
     for(const location of restaurantLocations){
         try{
-            makeMarker(location.lat, location.lng, location.address);
+            makeMarker(Number(location.lat), Number(location.lng), location.address);
         }
         catch(e){
             console.log(e);

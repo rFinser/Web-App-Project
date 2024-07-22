@@ -42,7 +42,7 @@ function loadRestaurants(){
       $('.adminBtn').show();
   });
   
-  $('#restaurantList').delegate('#saveRes', 'click', function () {
+  $('#restaurantList').delegate('#saveRes', 'click', async function () {
       $('.tooltip').hide()
   
       var selectedTags = [];
@@ -59,46 +59,62 @@ function loadRestaurants(){
       const name = $('#resName').val();
       const desc = $('#desc').val();
       const icon = $('#icon').val();
-      const address = $('#address').val();
+    //   const address = $('#address').val();
+
+    let addresses = [];
+    $('#addressContainer').find('input').each(function(){
+        addresses.push($(this).val())
+    })
+
+    const {allValid, validAddresses} = await checkAddresses(addresses);
+    if(!allValid){
+        $("#addressTooltip").show();
+        return;
+    }
   
-      if (!validInputs(name, desc, address)) {
-          $('#inputsTooltip').html('please fill all the required fields');
-          $('#inputsTooltip').show();
-          return;
-      }
-  
-      $.ajax({
-          type: "post",
-          url: "/openCageLatLng",
-          data: {address},
-          success: function (response) {
-              const rest = { r_name: name, r_description: desc, r_icon: icon, 
-                  r_tags: tags, r_geolocation: {address:response.address, lat :response.lat, lng: response.lng}}
-              $.ajax({
-                  type: 'POST',
-                  url: '/addRestaurant',
-                  data: rest,
-                  success: async function (data) {
-                      if (data.status == 1) {
-                          $('#addingData').remove();
-                          $('#restaurantList').append(await restaurantScheme(rest));
-                          $('.adminBtn').show();
-                          //postRestaurant(name);
-                      }
-                      else {
-                          $('#nameTooltip').html('restaurant name already exist, try a diffrent one');
-                          $('#nameTooltip').show();
-                      }
-                  }
-              })
-          },
-          error: function(){
-              $('#addressTooltip').show();
-          }
-      });
-      
-  
+    if (!validInputs(name, desc)) {
+        $('#inputsTooltip').html('please fill all the required fields');
+        $('#inputsTooltip').show();
+        return;
+    }
+
+    const restaurant = { r_name: name, r_description: desc, r_icon: icon, r_tags: tags, r_geolocation: validAddresses};
+
+    $.ajax({
+        type: 'POST',
+        url: '/addRestaurant',
+        data: restaurant,
+        success: async function (data) {
+            if (data.status == 1) {
+                $('#addingData').remove();
+                $("#restaurantList").append(await restaurantScheme(restaurant));
+                $('.adminBtn').show();
+                postRestaurant(restaurant);
+            }
+        }
+    })
   });
+
+  async function checkAddresses(addresses){
+      let allValid = true;
+      let validAddresses = [];
+      for(const address of addresses){
+          await $.ajax({
+              type: "post",
+              url: "/openCageLatLng",
+              data: {address},
+              success: function (response) {
+                validAddresses.push(response);
+              },
+              error: function(response){
+                  if (response.status == 400){
+                      allValid = false;
+                  }
+              }
+          });
+        }
+        return {allValid, validAddresses};
+  }
   
   function postRestaurant(restaurantName) {
       fetch("/FBpost", {
@@ -110,8 +126,8 @@ function loadRestaurants(){
       })
   }
   
-  function validInputs(name, desc, address) {
-      if (name == '' || desc == '' || address == '') {
+  function validInputs(name, desc) {
+      if (name == '' || desc == '') {
           return false;
       }
       return true;
@@ -160,8 +176,7 @@ function loadRestaurants(){
       $('.adminBtn').show()
   });
   
-  $('#restaurantList').delegate('.u_save', 'click', function () {
-  
+  $('#restaurantList').delegate('.u_save', 'click', async function () {
       $('.tooltip').hide();
       let $li = $(this).closest('li');
   
@@ -179,42 +194,72 @@ function loadRestaurants(){
       const name = $('#u_resName').val();
       const desc = $('#u_desc').val();
       const icon = $('#u_icon').val();
-      const address = $('#u_address').val()
+    //   const address = $('#u_address').val()
+
+    let addresses = [];
+    $('#u_addressContainer').find('input').each(function(){
+        addresses.push($(this).val())
+    })
+
+    const {allValid, validAddresses} = await checkAddresses(addresses);
+    if(!allValid){
+        $("#addressTooltip").show();
+        return;
+    }
   
-      if (!validInputs(name, desc, address)) {
+      if (!validInputs(name, desc)) {
           $('#inputsTooltip').html('please fill all the required fields');
           $('#inputsTooltip').show();
           return;
       }
+
+      const restaurant = { name, desc, icon, tags, r_geolocation: validAddresses};
+
       const id = $li.attr('id')
+
       $.ajax({
-          type: "post",
-          url: "/openCageLatLng",
-          data: {address},
-          success: function (response) {
-                  $.ajax({
-                      type: 'PUT',
-                      url: 'updateRestaurant',
-                      data: { id, name, desc, icon, tags, r_geolocation: {address:response.address, lat :response.lat, lng: response.lng}},
-                      success: function (data) {
-                          if (data.status == 1) {
-                              $('#updateData').remove()
-                              $li.find('.restaurant').remove();
-                              $li.attr('id', name)
-                              $li.append(updatedRestaurantScheme({ r_name: name, r_icon: icon, r_description: desc }))
-                              $('.adminBtn').show()
-                          }
-                          else {
-                              $('#nameTooltip').html('restaurant name already exist, try a diffrent one');
-                              $('#nameTooltip').show();
-                          }
-                      }
-                  })
-          },
-          error: function(){
-              $('#addressTooltip').show();
+          type: 'PUT',
+          url: 'updateRestaurant',
+          data: { id, name, desc, icon, tags, r_geolocation: validAddresses},
+          success: async function (data) {
+              if (data.status == 1) {
+                  $('#updateData').remove()
+                  $li.find('.restaurant').remove();
+                  $li.attr('id', name)
+                  $li.append(await restaurantScheme(restaurant))
+                  $('.adminBtn').show();
+              }
           }
-      });
+      })
+
+    //   $.ajax({
+    //       type: "post",
+    //       url: "/openCageLatLng",
+    //       data: {address},
+    //       success: function (response) {
+    //               $.ajax({
+    //                   type: 'PUT',
+    //                   url: 'updateRestaurant',
+    //                   data: { id, name, desc, icon, tags, r_geolocation: {address:response.address, lat :response.lat, lng: response.lng}},
+    //                   success: function (data) {
+    //                       if (data.status == 1) {
+    //                           $('#updateData').remove()
+    //                           $li.find('.restaurant').remove();
+    //                           $li.attr('id', name)
+    //                           $li.append(updatedRestaurantScheme({ r_name: name, r_icon: icon, r_description: desc }))
+    //                           $('.adminBtn').show()
+    //                       }
+    //                       else {
+    //                           $('#nameTooltip').html('restaurant name already exist, try a diffrent one');
+    //                           $('#nameTooltip').show();
+    //                       }
+    //                   }
+    //               })
+    //       },
+    //       error: function(){
+    //           $('#addressTooltip').show();
+    //       }
+    //   });
       
   });
   
@@ -413,6 +458,12 @@ function loadRestaurants(){
           return ''
       }
   }
+
+  $(document).on("click","#addAddress", function(){
+    $addressList = $(this).parent();
+    $addressList.append(`<input id="address" placeholder="format: address, city(optional), country(optional)" style="width: 300px;"/><br>`)
+  })
+
   function createRestaurantScheme() {
       return `
       <div id="addingData">
@@ -426,7 +477,10 @@ function loadRestaurants(){
           <input id="icon"/></br>
           `+tagsScheme()+`
           <label for="address">Address(hebrew):</label>
-          <input id="address" placeholder="format: address, city(optional), country(optional)" style="width: 300px;"/></br>
+          <div id="addressContainer">
+            <input id="address" placeholder="format: address, city(optional), country(optional)" style="width: 300px;"/>
+            <button id="addAddress">Add Address</button></br>
+          </div>
           <p id="addressTooltip" class="tooltip">invalid address</p>
           <button id="saveRes">save</button>
           <button id="cancelRes">cancel</button>
@@ -446,8 +500,9 @@ function loadRestaurants(){
           <input id="u_icon"/></br>
           `+tagsScheme()+`
           <label for="u_address">Address:</label>
-          <input id="u_address"/></br>
-          <p id="addressTooltip" class="tooltip"></p>
+          <input id="u_address"/>
+          <button id="addAddress">Add Address</button></br>
+          <p id="u_addressTooltip" class="tooltip"></p>
           <button class="u_save">save</button>
           <button class="u_cancel">cancel</button>
       </div>

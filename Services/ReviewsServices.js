@@ -109,4 +109,5 @@ module.exports = {
     getAvgRating,
     getRestaurantsByRating,
     getTopRatedRestaurants,
+    getReviewByRestaurantAndUser
 }
