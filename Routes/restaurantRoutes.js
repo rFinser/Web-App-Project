@@ -13,5 +13,8 @@ router.route('/updateRestaurant').put(restController.updateRestaurant);
 router.route('/searchedRestaurants').get(restController.getRestaurantsFilters);
 router.route('/saveFilters').post(restController.saveFilters);
 router.route('/restaurantsFilters').post(restController.getRestaurantByFilters);
+router.route('/allRestaurants').get(restController.getAllRestaurantsPage);
+router.route('/TopRatedRestaurants').post(restController.getTopRatedRestaurants);
+
 
 module.exports = router;

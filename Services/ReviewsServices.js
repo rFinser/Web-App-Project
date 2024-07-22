@@ -48,10 +48,14 @@ async function getReviewsByRestaurantName(restaurantName){
 }
 
 async function getAvgRating(restaurantName){
-    return await Review.aggregate([
+    const review = await Review.aggregate([
         { $match: { rev_restaurantName: restaurantName } },
         { $group: { _id: "$rev_restaurantName", avgRating: { $avg: "$rev_rating" } } }
     ]);
+    if(review.length == 0){
+        return [{_id:restaurantName, avgRating:0}];
+    }
+    return review;
 }
 
 async function getRestaurantsByRating(rating) //rating number from 0 to 5
@@ -68,6 +72,33 @@ async function getRestaurantsByRating(rating) //rating number from 0 to 5
     }
     return foundedRestaurants;
 }
+
+async function getTopRatedRestaurants(Top) //Top number of restaurants to return
+{
+    var allRestaurants = await restaurantsServices.listAllRestaurants();
+    var maxRating = -1;
+    var restaurant = null;
+
+    var topRestaurants = [];
+
+    for(let i = 0; i < Top; i++){
+        maxRating = -1;
+        for (let i = 0; i<allRestaurants.length; i++) {
+            const avgRating = (await getAvgRating(allRestaurants[i].r_name))[0].avgRating;
+            if (avgRating > maxRating) {
+                maxRating = avgRating;
+                restaurant = allRestaurants[i];
+            }
+        }
+        if (restaurant) {
+            topRestaurants.push(restaurant);
+            allRestaurants = allRestaurants.filter(rest => rest.r_name !== restaurant.r_name);
+        }
+    }
+
+    return topRestaurants;
+}
+
 module.exports = {
     createReview,
     findReviewById,
@@ -77,4 +108,5 @@ module.exports = {
     getReviewsByRestaurantName,
     getAvgRating,
     getRestaurantsByRating,
+    getTopRatedRestaurants,
 }

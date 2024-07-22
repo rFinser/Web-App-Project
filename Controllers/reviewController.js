@@ -50,7 +50,7 @@ async function deleteReview(req, res){
 async function getAvgRating(req, res){
     try {
         const avgRating = await reviewsServices.getAvgRating(req.body.restaurantName);
-        if (avgRating.length == 0) throw Error(`No reviews for ${req.body.restaurantName} were found.`);
+        if (avgRating.avgRating == 0) throw Error(`No reviews for ${req.body.restaurantName} were found.`);
         res.json({avgRating: Math.floor(avgRating[0].avgRating)});
     }
     catch (err) {

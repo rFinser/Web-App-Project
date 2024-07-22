@@ -13,6 +13,10 @@ async function getRestaurantPage(req, res) {
     }
 }
 
+function getAllRestaurantsPage(req,res){
+    res.render('allRestaurants.ejs');
+}
+
 async function getRestaurant(req, res){
 
     let isAdmin = false
@@ -111,6 +115,10 @@ function isInRestaurnats(restaurants, target){
     return false;
 }
 
+async function getTopRatedRestaurants(req,res){
+    const restaurants = await reviewsServices.getTopRatedRestaurants(req.body.top);
+    res.json(restaurants);
+}
 
 module.exports = {
     getRestaurantPage,
@@ -123,4 +131,6 @@ module.exports = {
     getRestaurantByFilters,
     getRestaurantsFilters,
     saveFilters,
+    getAllRestaurantsPage,
+    getTopRatedRestaurants,
 }
