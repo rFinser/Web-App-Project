@@ -38,24 +38,35 @@ async function updateReview(req, res) {
 }
 
 async function deleteReview(req, res){
+    if(req.session.username == null){
+        res.json({status: -1}) //not logged in
+        return;
+    }
+
     try {
-        const review = await reviewsServices.deleteReview(req.body.username, req.body.restaurantName);
+        const review = await reviewsServices.deleteReview(req.session.username, req.body.restaurantName);
         res.json({review});
     }
     catch (err) {
+        //didnt review
         res.status(404).send(err.message);
     }
 }
 
+async function hasReviewed(req, res){
+    if(req.session.username == null){
+        res.json({hasReviewed: false}) //not logged in
+        return;
+    }
+
+    const review = await reviewsServices.getReviewByRestaurantAndUser(req.body.restaurantName, req.session.username);
+    if (review == null) res.json({hasReviewed: false}); //didnt review
+    else res.json({hasReviewed: true}); //reviewed
+}
+
 async function getAvgRating(req, res){
-    try {
         const avgRating = await reviewsServices.getAvgRating(req.body.restaurantName);
-        if (avgRating.avgRating == 0) throw Error(`No reviews for ${req.body.restaurantName} were found.`);
         res.json({avgRating: Math.floor(avgRating[0].avgRating)});
-    }
-    catch (err) {
-        res.json({avgRating: "No Reviews Found"});
-    }
 }
 
 module.exports = {
@@ -63,5 +74,6 @@ module.exports = {
     addReview,
     updateReview,
     deleteReview,
-    getAvgRating
+    getAvgRating,
+    hasReviewed
 }

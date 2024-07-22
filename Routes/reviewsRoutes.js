@@ -7,5 +7,6 @@ router.route("/reviews/addReview").post(reviewsController.addReview);
 router.route("/reviews/updateReview").post(reviewsController.updateReview);
 router.route("/reviews/deleteReview").post(reviewsController.deleteReview);
 router.route("/reviews/getAvgRating").post(reviewsController.getAvgRating);
+router.route("/reviews/hasReviewed").post(reviewsController.hasReviewed);
 
 module.exports = router
