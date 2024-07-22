@@ -2,7 +2,6 @@ const Restaurant = require("../Models/Restaurant");
 const Product = require("./productsServices");
 
 async function createRestaurant(name, desc, iconPath, tags, location) {
-    console.log(name);
     if (await findRestaurantByName(name) != null)
         throw Error(`A restaurant with the given name "${name}" already exists.`);
 
@@ -57,6 +56,50 @@ async function searchByTags(tags) {
     return foundRestaurant;
 }
 
+
+async function searchByLocation(location) //location is array contains north, south, center
+{
+    let foundRestaurant = new Set();
+    let restaurants = await listAllRestaurants();
+
+    const south = {min_lat:29.4902, max_lat:31.5, min_lng: 34.25, max_lng:35.0, searched:false};
+    const north = {min_lat: 32.5, max_lat:33.4167, min_lng:34.9, max_lng:35.8667, searched:false};
+    const center = {min_lat: 31.5, max_lat:32.5, min_lng:34.5, max_lng:35.3, searched:false};
+
+    if(location.includes('south'))
+        south.searched = true;
+    if(location.includes('north'))
+        north.searched = true;
+    if(location.includes('center'))
+        center.searched = true;
+
+    for (rest of restaurants) {
+        if (rest.r_geolocation == null)
+            continue;
+        for (restLocation of rest.r_geolocation) {
+            if(south.searched && isInRange(south.min_lat, south.max_lat, restLocation.lat) && isInRange(south.min_lng, south.max_lng, restLocation.lng)){
+                foundRestaurant.add(rest);
+                break;
+            }
+            if(north.searched && isInRange(north.min_lat, north.max_lat, restLocation.lat) && isInRange(north.min_lng, north.max_lng, restLocation.lng)){
+                foundRestaurant.add(rest);
+                break;
+            }
+            if(center.searched && isInRange(center.min_lat, center.max_lat, restLocation.lat) && isInRange(center.min_lng, center.max_lng, restLocation.lng)){
+                foundRestaurant.add(rest);
+                break;
+            }
+        }   
+    }
+    return foundRestaurant;
+}
+
+function isInRange(min,max,target){
+    if(target>=min && target<=max)
+        return true;
+    return false;
+}
+
 async function addProduct(restaurantName, productId) {
     let rest = await findRestaurantByName(restaurantName);
     if (rest == null)
@@ -97,4 +140,5 @@ module.exports = {
     searchByTags,
     addProduct,
     removeProduct,
+    searchByLocation
 }

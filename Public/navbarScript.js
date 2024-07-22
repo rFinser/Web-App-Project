@@ -44,42 +44,32 @@ function searchBar(){
 function filters(){
 
     $('#filters').hide();
-    $('#tags').append(tagsScheme());
+    $('#tags').append(SchemeTags());
 
-    $('#filtersBtn').click(function (event) {
-        $('#filters').toggle();
-        event.stopPropagation();
+    $('#filtersBtn').click(function () {
+        $('#filters').toggle(200);
     });
 
-    $('#filters').click(function (event) {
-        event.stopPropagation();
-    });
-    $('#cancel-filters').click(function(event){
-        $('#filters').toggle();
-        $('input[type="checkbox"]').prop('checked', false);
-        event.stopPropagation();
+    $('#cancel-filters').click(function(){
+        $('#filters').toggle(200, function(){
+            $('input[type="checkbox"]').prop('checked', false);
+            $('#ratingFilter').val($('#defaultValue').val())
+        });
     });
     $('#reset-filters').click(function(){
         $('input[type="checkbox"]').prop('checked', false);
+        $('#ratingFilter').val($('#defaultValue').val());
     });
     $('#save-filters').click(function(){
-        var selectedTags = [];
+        
+        const {selectedTags, selectedLocation, selectedRating} = selectedFilters();
 
-        const checkedTags =$('#tagsForm').find('input[type="checkbox"]:checked')
-        if (checkedTags.length==0){
-            selectedTags = tags;
-        }
-        else{
-            checkedTags.each(function() {
-                selectedTags.push($(this).attr('id'));
-            });
-        }            
         $('#filters').toggle();
         
         $.ajax({
             type: 'post',
-            url: '/saveTags',
-            data:{tags:selectedTags},
+            url: '/saveFilters',
+            data:{selectedTags, selectedLocation, selectedRating},
             success: function(){
                 location.href = '/searchedRestaurants'
             }
@@ -108,16 +98,45 @@ function login(){
             })
 }
 
+function selectedFilters(){
+    var selectedTags = [];
+
+    const checkedTags =$('#tagsForm').find('input[type="checkbox"]:checked')
+    if (checkedTags.length==0){
+        selectedTags = tags;
+    }
+    else{
+        checkedTags.each(function() {
+            selectedTags.push($(this).attr('id'));
+        });
+    }
+    var selectedLocation = [];
+    const checkedLocation =$('#locationForm').find('input[type="checkbox"]:checked')
+    if (checkedLocation.length==0){
+        $('#locationForm').find('input[type="checkbox"]').each(function() {
+            selectedLocation.push($(this).attr('id'));
+        });
+    }
+    else{
+        checkedLocation.each(function() {
+            selectedLocation.push($(this).attr('id'));
+        });
+    }
+    var selectedRating = '0';
+    if($('#ratingFilter').val()!=""){
+        selectedRating = $('#ratingFilter').val();        
+    }
+    return {selectedTags, selectedLocation, selectedRating}
+}
+
 function firstLetterUppercase(str){
     return str.charAt(0).toUpperCase() + str.slice(1)
 }
-function tagsScheme(){
+function SchemeTags(){
 
     var tagsHtml = "";
-    tagsHtml+=`<section id="tagsForm">`
     for(tag of tags){
         tagsHtml+=`<input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label><br>`
     }
-    tagsHtml += `</section>`;
     return tagsHtml;
 }
