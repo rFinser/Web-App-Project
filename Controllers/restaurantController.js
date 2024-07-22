@@ -94,15 +94,21 @@ async function getRestaurantByFilters(req,res){
     const restaurantsRating = await reviewsServices.getRestaurantsByRating(selectedRating);
 
     const restaurantsSearched = [];
-    let i = 0;
     restaurantsTags.forEach(rest => {
-            i++;
-        if (restaurantsLocation.has(rest) && restaurantsRating.has(rest)) {
+        if (isInRestaurnats(restaurantsLocation, rest.r_name) && isInRestaurnats(restaurantsRating, rest.r_name)) {
             restaurantsSearched.push(rest);
         }
       });
-
+    
     res.json(restaurantsSearched);
+}
+
+function isInRestaurnats(restaurants, target){
+    for(rest of restaurants){
+        if(rest.r_name == target)
+            return true;
+    }
+    return false;
 }
 
 
