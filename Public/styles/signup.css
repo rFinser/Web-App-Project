@@ -1,0 +1,221 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background:#292836;
+}
+
+.container{
+    width: 400px;
+    color: #fff;
+    border-radius: 10px;
+    background-color:#201f2b;
+    padding: 20px;
+
+}
+.wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+}
+#signupTitle{
+    font-size: 40px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+.box-Input{
+    position: relative;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.box-Input input{
+    width: 100%;
+    height: 56px;
+    outline: none;
+    background: transparent;
+    border: 2px solid, rgb(163, 163, 163);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 20px;
+    padding: 0 15px;
+}
+
+.box-Input label{
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #fff;
+    pointer-events: none;
+    transition: .3s;
+}
+
+.box-Input input:focus{
+    border: 2px solid,rgba(255, 255, 255);
+}
+
+.box-Input input:focus ~ label,
+.box-Input input:valid ~ label{
+    top: 0;
+    font-size: 16px;
+    color: #fff;
+    padding: 0 10px;
+    background-color: #201f2b;
+}
+
+.box-Input i {
+    position: absolute;
+    right: 15px;
+    top:50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+.submit-container{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-self: center;
+}
+
+.labelDate{
+    margin-left: 10px;
+}
+#dateList{
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 15px 0;
+}
+
+.BirthdateTitle{
+    margin-left: 4px;
+    font-size: 18px;
+    font-weight: 100;
+}
+.dmy {
+    cursor: pointer;
+    width: 120px;
+    height: 48px;
+    border: 2px solid, rgb(163, 163, 163);
+    font-size: 20px;
+    color: #ffffff;
+    background-color: #201f2b;
+}
+
+#day{
+    border-radius: 10px 0 0 10px;
+}
+#month{
+
+    border-bottom: 2px solid, rgba(255,255,255,0.2);
+    border-top: 2px solid, rgba(255,255,255,0.2);
+    border-right: 0;
+    border-left: 0;
+}
+#year{
+    border-radius: 0 10px 10px 0;
+}
+
+
+.checkbox-container{
+    margin: -8px 0 28px 4px;
+    display: flex;
+    align-items: center;
+    pointer-events: pointer;
+    gap:8px;
+}
+#showPassword{
+    width: 16px;
+    height: 100%;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.submit-container{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#submitBtn {
+    width: 70%;
+    height: 50px;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #000;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    margin-bottom: 30px;
+}
+#submitBtn:hover{
+    background-color: #5d5d5d;
+    color: #ffffff;
+}
+#submitBtn:disabled{
+    background-color: #5d5d5d;
+    color: #c6c6c668;
+    cursor:default;
+}
+#date{
+    color: #ffffff;
+    margin:0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.login-link{
+    font-size: 16px;
+    color: #fff;
+    text-decoration: none;
+    margin-top: -10px;
+    display:flex;
+    justify-content: center;
+}
+
+.login-link p a{
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+.login-link p a:hover{
+    text-decoration: underline;
+}
+
+.errorInput{
+    border: 2px solid, #fe3f3f !important;
+    transition: none;
+    margin-bottom: 10px;
+}
+.errorLabel{
+    color: #fe3f3f !important;
+    transition: none !important; 
+}
+.error{
+    color: #ffffff;
+    background-color: #f9666630;
+    padding: 8px;
+    display: none;
+    border-radius: 4px;
+}
+
+.error.display-error{
+    display: block;
+    margin-top: 10px;
+    transform: translateY(-20px);
+}

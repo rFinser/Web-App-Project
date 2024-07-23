@@ -1,89 +1,87 @@
-document.addEventListener('DOMContentLoaded', ()=>{
-    const inputs = document.querySelectorAll('input[required]');
-    const submitButton = document.getElementById('submitBtn');
-  
-    function checkInputs() {
-      let allFilled = true;
-
-      inputs.forEach(input => {
-        if(input.value == '')
-            allFilled = false;
-      });
-      submitButton.disabled = !allFilled;
-    }
-  
-    inputs.forEach(input => {
-      input.addEventListener('input', checkInputs);
+$(function () {
+    $('#showPassword').on('click', function() {
+        showPassword();
     });
-
-    checkInputs();
+    
+    checkFormValidity();
+    $('input').on('input', checkFormValidity);
+    $('#submitBtn').on('click', async function(){
+        if(await validCheck()){
+            window.location.href = '/'
+        }
+    });
 });
 
-document.getElementById('submitBtn').onclick = validCheck;
-document.getElementById('showPassword').onclick = showPassword;
 
-function showPassword(){
-    const passwordInput = document.getElementById('password');
-    const showPasswordCheckbox = document.getElementById('showPassword');
-    if (showPasswordCheckbox.checked) {
-        passwordInput.setAttribute('type', 'text');
-    } else {
-        passwordInput.setAttribute('type', 'password');
-    }
-}
-
-let flag1 = 0;
-let flag2 = 0;
-
-async function validCheck(){
-
-    document.getElementById('statusTooltip').innerText = "";
-
-    const username = document.getElementById('username');
-    const password = document.getElementById('password');
-
-    flag1=0;
-    validUsername(username.value)
-
-    if(flag1 != 0)
-        return;
-
-    body = {username: username.value, password: password.value};
-
-    const res = await fetch('/login',{
-        method: "post",
-        body: JSON.stringify(body),
-        headers: { "Content-type": "application/json" }
+function checkFormValidity() {
+    let isValid = true;
+    $('input[required]').each(function() {
+        if ($(this).val().trim() == '') {
+            isValid = false;
+        }
     });
-
-    const data = await res.json()
-    validStatus(data.status)
+    $('#submitBtn').prop('disabled', !isValid);
 }
 
-function validStatus(status){
-    switch(status){
-        case 1:
-            flag2 = 1
-            window.location.href="/";
-            break;
-        case -1:
-            document.getElementById('statusTooltip').innerText = "This username doesn't have account";
-            break;
-        case -2:
-            document.getElementById('statusTooltip').innerText = "The username and password don't match";
-            break;
-        default:
-            document.getElementById('statusTooltip').innerText = "";
+function validCheck(){
+    clearErrors();
+    const username = $('#username');
+    const password = $('#password');
+
+    if(!validUsername(username.val())){
+        showError('username', 'invalid username');
+        return false;;
     }
+
+    const user = {username:username.val(), password:password.val()};
+    return new Promise(function(resolve){
+        $.ajax({
+            type: "post",
+            url: "/login",
+            data: user,
+            success: function(){
+                resolve(true);
+            },
+            error: function(response){
+                showError('status', response.responseJSON.msg);
+                resolve(false);
+            }
+        });
+    });
 }
 
 function validUsername(username){
     const letter = /[a-z]/;
 
     if(username.length < 4 || username.length > 20 || !letter.test(username)){
-        document.getElementById('usernameTooltip').innerText = "invalid username, username can be 4 to 20 characters long and must contain at least one letter";
-        flag1--;
-        return;
+        return false;
+
     }
-    document.getElementById('usernameTooltip').innerText = "";
+    return true;
+}
+
+
+function showError(element, msg){
+    $(`#${element}`).addClass('errorInput');
+    $(`label[for="${element}"]`).addClass('errorLabel');
+    $(`.${element}-error`).addClass('display-error');
+    $(`.${element}-error`).text(msg);
+}
+
+function clearErrors(){
+    $('.errorInput').removeClass('errorInput');
+    $('.errorLabel').removeClass('errorLabel');
+    $('.error').removeClass('display-error');
+}
+
+
+function showPassword(){
+    const passwordInput = $('#password');
+    const showPasswordCheckbox = $('#showPassword');
+    if (showPasswordCheckbox.is(':checked')) {
+        passwordInput.attr('type', 'text');
+    } 
+    else {
+        passwordInput.attr('type', 'password');
+    }
 }
