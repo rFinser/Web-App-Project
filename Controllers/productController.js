@@ -16,7 +16,7 @@ async function addProduct(req,res){
             return;
         }
     }
-    const newProduct = await prodServices.createProduct(req.body.name, req.body.price, req.body.desc, req.body.tags)
+    const newProduct = await prodServices.createProduct(req.body.name, req.body.price, req.body.desc, req.body.tags, req.body.img);
     const id = newProduct._id.toString()
     await restServices.addProduct(restaurant.r_name, id);
     res.json({id, status:1})
@@ -40,7 +40,7 @@ async function updateProduct(req,res){
         }
     }
     
-    await prodServices.updateProduct(req.body.id, req.body.name, req.body.price, req.body.desc, req.body.tags)
+    await prodServices.updateProduct(req.body.id, req.body.name, req.body.price, req.body.desc, req.body.tags, req.body.img);
     res.json({status:1});
     res.end();
 }

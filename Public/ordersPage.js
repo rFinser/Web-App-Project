@@ -1,5 +1,5 @@
 $(async function(){
-    $.get("/allOrders", renderOrders)
+    $.post("/allOrders", renderOrders)
 })
 
 
