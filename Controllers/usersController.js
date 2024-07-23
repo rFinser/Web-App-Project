@@ -24,11 +24,16 @@ async function getUserData(req,res){
     res.json(user)
 }
 
-async function deleteUser(req,res){
+async function deleteUserFromSettings(req,res){
     await userServices.deleteUser(req.session.username);
     req.session.destroy(() => {
         res.redirect('/');
     });
+}
+
+async function deleteUser(req, res){
+    await userServices.deleteUser(req.body.username);
+    res.end();
 }
 
 async function updateUser(req,res){
@@ -81,10 +86,11 @@ module.exports = {
     getSettingsPage,
     isLoggedIn,
     getUserData,
-    deleteUser,
+    deleteUserFromSettings,
     updateUser,
     isLoggedinJson,
     isAdmin,
     getAllUsers,
     getAllUsersPage,
+    deleteUser,
 }
