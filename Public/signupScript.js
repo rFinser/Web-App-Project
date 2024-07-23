@@ -1,110 +1,90 @@
-document.addEventListener('DOMContentLoaded', ()=>{
-
-
-    const inputs = document.querySelectorAll('input[required]');
-    const submitButton = document.getElementById('submitBtn');
-  
-    function checkInputs() {
-      const day = document.getElementById('day');
-      const month = document.getElementById('month');
-      const year = document.getElementById('year');
-      
-      let allFilled = true;
-
-      inputs.forEach(input => {
-        if(input.value == '')
-            allFilled = false;
-      });
-      if(day.value =='' || month.value=='' || year.value==''){
-        allFilled = false;
-      }
-      submitButton.disabled = !allFilled;
-    }
-  
-    inputs.forEach(input => {
-      input.addEventListener('input', checkInputs);
+$(function () {
+    $('#showPassword').on('click', function() {
+        showPassword();
     });
-    document.getElementById('day').onchange = checkInputs
-    document.getElementById('month').onchange = checkInputs
-    document.getElementById('year').onchange = checkInputs
     
-
-    checkInputs();
-    
+    checkFormValidity();
+    $('input, select').on('input change', checkFormValidity);
+    $('#submitBtn').on('click', async function(){
+        console.log(validCheck())
+        if(await validCheck()){
+            window.location.href = '/'
+        }
+    });
 });
 
-document.getElementById('submitBtn').onclick = validCheck;
-document.getElementById('showPassword').onclick = showPassword;
 
-function showPassword(){
-    const passwordInput = document.getElementById('password');
-    const showPasswordCheckbox = document.getElementById('showPassword');
-    if (showPasswordCheckbox.checked) {
-        passwordInput.setAttribute('type', 'text');
-    } else {
-        passwordInput.setAttribute('type', 'password');
-    }
-}
-
-let flag = 0;
-
-async function validCheck(){
-    document.getElementById('statusTooltip').innerText = ""
-
-    const username = document.getElementById('username');
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-
-    const day = document.getElementById('day');
-    const month = document.getElementById('month');
-    const year = document.getElementById('year');
-
-    const birthdate= {day:day.value,month:month.value,year:year.value};
-    
-    flag = 0;
-    validUsername(username.value);
-    validEmail(email.value);
-    if(validDate(day.value, month.value, year.value)){
-       
-    }
-    validPassword(password.value);
-
-    if(flag!=0){
-        return;
-    }
-    const body = {username:username.value, birthdate:birthdate, email:email.value, password:password.value};
-    const res = await fetch('/signup', {
-        method : "post",
-        body: JSON.stringify(body),
-        headers: { "Content-type": "application/json" }
+function checkFormValidity() {
+    let isValid = true;
+    $('input[required]').each(function() {
+        if ($(this).val().trim() === '') {
+            isValid = false;
+        }
     });
-    
-    const data = (await res.json())
-    
-    validStatus(data.status)
+    $('select[required]').each(function() {
+        if ($(this).val() === '') {
+            isValid = false;
+        }
+    });
+    $('#submitBtn').prop('disabled', !isValid);
 }
-function validStatus(status){
-    if(status == 1){
-        window.location.href = '/'
+
+function validCheck(){
+    clearErrors();
+    const username = $('#username');
+    const email = $('#email');
+    const password = $('#password');
+
+    const day = $('#day');
+    const month = $('#month');
+    const year = $('#year');
+
+    if(!validDate(day.val(), month.val(), year.val())){
+
+        showError('birthdate', 'invalid date');
+        $('.BirthdateTitle').addClass('errorLabel');
+        $('.dmy').addClass('errorInput');
+        return false;;
     }
-    else if (status == -1){
-        document.getElementById('statusTooltip').innerText = "username already in use, please try a diffrent username"
+    if(!validUsername(username.val())){
+        showError('username', 'invalid username, username can be 4 to 20 characters long and must contain at least one letter');
+        return false;;
     }
-    else{
-        document.getElementById('statusTooltip').innerText = ""
+    if(!validEmail(email.val())){
+        showError('email', 'invalid email');
+        return false;;
     }
+    if(!validPassword(password.val())){
+        showError('password', 'invalid password, password must be at least 8 characters and contain uppercase letter, lowercase letter and a number');
+        return false;;
+    }
+
+    const birthdate= {day:day.val(),month:month.val(),year:year.val()};
+    const user = {username:username.val(), birthdate, email:email.val(), password:password.val()};
+    return new Promise(function(resolve){
+        $.ajax({
+            type: "post",
+            url: "/signup",
+            data: user,
+            success: function(response){
+                resolve(true);
+            },
+            error: function(response){
+                showError('username', 'username already in use, please try a diffrent one');
+                resolve(false);
+            }
+        });
+    });
 }
+
 function validPassword(password){
     const lowercaseL = /[a-z]/;
     const uppercaseL = /[A-Z]/;
     const digit = /[0-9]/;
-
     if(password.length < 8 || !lowercaseL.test(password) || !uppercaseL.test(password) || !digit.test(password)){
-        document.getElementById('passwordTooltip').innerText = "invalid password, password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter and one number";
-        flag--;
-        return;
+        return false;
     }
-    document.getElementById('passwordTooltip').innerText = "";
+    return true;
 }
 
 function validEmail(email){
@@ -112,35 +92,54 @@ function validEmail(email){
     const emailV = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
     if(!emailV.test(email)){
-        document.getElementById('emailTooltip').innerText = "invalid email";
-        flag--;
-        return; 
+        return false;
+
     }
-    document.getElementById('emailTooltip').innerText = ""
+    return true;
 }
 
 function validUsername(username){
     const letter = /[a-z]/;
 
     if(username.length < 4 || username.length > 20 || !letter.test(username)){
-        document.getElementById('usernameTooltip').innerText = "invalid username, username can be 4 to 20 characters long and must contain at least one letter";
-        flag--;
-        return;
+        return false;
+
     }
-    document.getElementById('usernameTooltip').innerText = "";
+    return true;
 }
 
 function validDate(day,month,year){
     if(month == 2 && day>28){
-        flag--;
-        document.getElementById("dateTooltip").innerText = "invalid date"
-
+        return false;
     }
     else if(['04','06','09','11'].includes(month) && day>30){
-        flag--;
-        document.getElementById("dateTooltip").innerText = "invalid date"
+        return false;
     }
-    else{
-        document.getElementById("dateTooltip").innerText = ""
+    return true;
+}
+
+function showError(element, msg){
+    console.log(element);
+    $(`#${element}`).addClass('errorInput');
+    $(`label[for="${element}"]`).addClass('errorLabel');
+    $(`.${element}-error`).addClass('display-error');
+    $(`.${element}-error`).text(msg);
+}
+
+function clearErrors(){
+    $('.errorInput').removeClass('errorInput');
+    $('.errorLabel').removeClass('errorLabel');
+    $('.error').removeClass('display-error');
+}
+
+
+function showPassword(){
+    const passwordInput = $('#password');
+    const showPasswordCheckbox = $('#showPassword');
+    if (showPasswordCheckbox.is(':checked')) {
+        passwordInput.attr('type', 'text');
+    } 
+    else {
+        passwordInput.attr('type', 'password');
     }
 }
