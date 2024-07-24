@@ -80,7 +80,7 @@ function createProducts(products){
         
         const productString = `
             <div class="product-container">
-                <p class="product">${product.quantity} X ${product.name} - ₪${product.price}</p>
+                <p class="product">${product.quantity} X ${product.name} - ₪${product.price * product.quantity}</p>
             </div>
         `;
         productsString += productString;
