@@ -12,8 +12,9 @@ async function findOrderById(orderId){
     return await Orders.findOne({_id: orderId});
 }
 
-async function findOrderByUsername(username){
-    return await Orders.find({o_userId: username});
+async function findOrderByUsername(username) {
+    let groupedOrders = await groupOrdersByUserId();
+    return groupedOrders.find(order => order._id === username);
 }
 
 async function deleteOrder(orderId){

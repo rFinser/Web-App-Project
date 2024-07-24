@@ -13,20 +13,10 @@ async function getOrdersPage(req, res) {
 }
 
 async function getOrders(req, res) {
-    const username = req.session.username
-
+    const username = req.session.username;
     const orders = await ordersServices.findOrderByUsername(username);
 
-    let orderProducts = [];
-    let Products = [];
-    for (order of orders) {
-        for (productID of order.o_productsId) {
-            Products.push(await productsServices.findProductById(productID));
-        }
-        orderProducts.push(Products)
-        Products = []
-    }
-    res.json({ orderProducts, username });
+    res.json({ orders });
 }
 
 async function getAllOrdersGroupedByUsers(req, res){
