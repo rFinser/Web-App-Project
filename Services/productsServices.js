@@ -1,7 +1,7 @@
 const Product = require("../Models/Products");
 
-async function createProduct(name, price, desc, tags) {
-    let product = new Product({p_name: name, p_price: price, p_description: desc, p_tags: tags });
+async function createProduct(name, price, desc, tags, imgUrl) {
+    let product = new Product({p_name: name, p_price: price, p_description: desc, p_tags: tags, p_img: imgUrl});
     await product.save();
     return product;
 }
@@ -15,10 +15,10 @@ async function getAllProducts() {
     return await Product.find();
 }
 
-async function updateProduct(id_to_update, name, price, desc, tags) {
+async function updateProduct(id_to_update, name, price, desc, tags, imgUrl) {
     if (await findProductById(id_to_update) == null)
         throw Error(`No product for ${id_to_update} was found.`);
-    await Product.updateOne({ _id: id_to_update }, { _id: id_to_update, p_name: name, p_price: price, p_description: desc, p_tags: tags });
+    await Product.updateOne({ _id: id_to_update }, { _id: id_to_update, p_name: name, p_price: price, p_description: desc, p_tags: tags, p_img: imgUrl });
 }
 
 async function deleteProduct(id_to_delete) {

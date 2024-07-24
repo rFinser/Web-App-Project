@@ -78,6 +78,7 @@ function makeProduct(product) {
        <li id="${product._id}">
         <section class="product">
          <h5>${product.p_name}</h5>
+         <img src="${product.p_img}">
          <p>${product.p_description}</p>
          <p>${product.p_price}</p>
          <input class="addBtn" type="button" value="Add To Cart"></input></br>`
@@ -106,6 +107,8 @@ function createProductData(){
         <input id="p-price" /></br>
         <label for="tagsForm">tags:</label>
         `+tagsScheme()+`
+        <label for="p-img">image:</label>
+        <input id="p-img" /></br>
         <button class="p-save">save</button>
         <button class="p-cancel">cancel</button>
     </div>`
@@ -122,6 +125,8 @@ function updateProductData(){
         <input id="p-price" /></br>
         <label for="tagsForm">tags:</label>
         `+tagsScheme()+`
+        <label for="p-img">image:</label>
+        <input id="p-img" /></br>
         <button class="u-save">save</button>
         <button class="u-cancel">cancel</button>
     </div>`
@@ -154,6 +159,7 @@ $('#products').delegate('.p-save', 'click', function(){
     const p_name = $('#p-name').val();
     const p_description = $('#p-description').val();
     const p_price = $('#p-price').val();
+    const p_img = $('#p-img').val();
     var p_tags = [];
 
     $li.find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
@@ -168,14 +174,14 @@ $('#products').delegate('.p-save', 'click', function(){
     $.ajax({
         type: 'post',
         url: '/addProduct/' + getRestaurantName(),
-        data: {name: p_name, desc: p_description, price: p_price, tags: p_tags},
+        data: {name: p_name, desc: p_description, price: p_price, tags: p_tags, img: p_img},
         success: function(data){
             if(data.status == -1){
                 $('.tooltip').html('product name already in use, try a diffrent name')
             }
             else{
               postProduct(getRestaurantName(), p_name)
-              $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id}))
+              $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id, p_img: img}))
               $li.remove();
               $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
             }
@@ -227,6 +233,7 @@ $('#products').delegate('.updateProduct', 'click', function(){
             $.each(product.p_tags, (i, tag) => {
                 $li.find(`#${tag}`).prop('checked', true);;
             })
+            $("#p-img").val(product.p_img);
         }
     })
 })
@@ -246,6 +253,7 @@ $('#products').delegate('.u-save', 'click', function(){
     const name = $('#p-name').val();
     const desc = $('#p-description').val();
     const price = $('#p-price').val();
+    const img = $('#p-img').val();
 
     var tags = [];
 
@@ -263,12 +271,12 @@ $('#products').delegate('.u-save', 'click', function(){
     $.ajax({
         type: 'PUT',
         url: '/updateProduct/' + getRestaurantName(),
-        data: {id,name,desc,price,tags},
+        data: {id,name,desc,price,tags,img},
         success: function(data){
             if(data.status == 1){
                 $('.updateProductForm').remove();
                 $li.find('.product').remove();
-                $li.append(makeProduct({_id:id, p_name: name, p_description:desc,p_price: price}));
+                $li.append(makeProduct({_id:id, p_name: name, p_description:desc,p_price: price, p_img: img}));
                 $('.adminBtn').show();
             }
             else{
