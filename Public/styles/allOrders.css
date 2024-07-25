@@ -1,0 +1,104 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #292836;
+    margin: 0;
+    padding: 20px;
+    color: #fff;
+}
+
+h1 {
+    text-align: center;
+    font-size: 40px;
+    margin-bottom: 30px;
+}
+
+hr {
+    border: 1px solid #45a049;
+    margin-bottom: 30px;
+}
+
+#groupedOrders-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.groupedOrder-container {
+    background-color: #201f2b;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 80%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.groupedOrder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.groupedOrder-user {
+    font-size: 24px;
+    margin: 0;
+}
+
+.toggle-groupedOrder-details, .toggle-order-details {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.toggle-groupedOrder-details:hover, .toggle-order-details:hover {
+    color: #45a049;
+}
+
+.groupedOrder-details, .order-details {
+    margin-top: 15px;
+}
+
+.order-container {
+    background-color: #292836;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.order-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-date {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.product-container {
+    margin-left: 20px;
+    margin-bottom: 5px;
+}
+
+.product {
+    font-size: 16px;
+}
+
+p {
+    margin: 5px 0;
+}
+
+.order-total {
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .groupedOrder-container {
+        width: 95%;
+    }
+}

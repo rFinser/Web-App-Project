@@ -15,17 +15,17 @@ function createOrderSchema(order) {
     const orders = order.orders
     const $groupedOrder = $(`
         <div class="groupedOrder-container">
-            <h2 class="groupedOrder-user">${order._id}</h2>
-            <button class="toggle-groupedOrder-details">▼</button>
-        
+            <div class="groupedOrder-header">
+                <h2 class="groupedOrder-user">${order._id}</h2>
+                <button class="toggle-groupedOrder-details">▼</button>
+            </div>
             <div class="groupedOrder-details" style="display: none;">
-                <h3 class="orders-container"><hr style="border: dashed 1px black;">`+
+                <h3 class="orders-container">`+
                     createOrders(orders)
                 + `</h3>
             </div>
 
         </div>
-        <hr>
     `);
 
     $groupedOrder.find('.toggle-groupedOrder-details').on('click', function() {
@@ -41,14 +41,15 @@ function createOrders(orders){
     for(const order of orders){
             const orderString = `
                 <div class="order-container">
-                    <p class="order-date">${new Date(order.date).toLocaleString()}</p>
-                    <button class="toggle-order-details">▼</button>
+                    <div class="order-header">
+                        <p class="order-date">${new Date(order.date).toLocaleString()}</p>
+                        <button class="toggle-order-details">▼</button>
+                    </div>
                     <div class="order-details" style="display: none;">` +
                      createProducts(order.productsId)   
                     + `</div>
                     <p>Total: ₪${calculateTotal(order)}</p>
                 </div>
-                <hr style="border: 1px dashed black;">
             `;
             
             ordersString += orderString;
@@ -90,7 +91,7 @@ function createProducts(products){
     
 $(document).on("click", ".toggle-order-details", function() {
     $(this).text($(this).text() === '▼' ? '▲' : '▼');
-    $(this).parent().find('.order-details').slideToggle();
+    $(this).parent().parent().find('.order-details').slideToggle();
 });
 
 function  calculateTotal(order){
