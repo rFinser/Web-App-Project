@@ -28,7 +28,6 @@ function createUserSchema(user) {
             </div>
         </div>
     </div>
-    <hr/>
     `);
 
     $user.find('.toggle-details').on('click', function() {

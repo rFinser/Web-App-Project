@@ -1,0 +1,94 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #292836;
+    margin: 0;
+    padding: 20px;
+    color: #fff;
+}
+
+h1 {
+    text-align: center;
+    font-size: 40px;
+    margin-bottom: 30px;
+}
+
+#usersContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-container {
+    background-color: #201f2b;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 80%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-header h2 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.user-role {
+    font-size: 18px;
+    color: #45a049;
+}
+
+.toggle-details {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.toggle-details:hover {
+    color: #45a049;
+}
+
+.user-details {
+    margin-top: 15px;
+}
+
+.user-details p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+.user-actions {
+    margin-top: 15px;
+}
+
+.delete-user {
+    width: 100px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: #fe3f3f;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    transition: 0.3s;
+}
+
+.delete-user:hover {
+    background-color: #ff6666;
+}
+
+@media (max-width: 768px) {
+    .user-container {
+        width: 95%;
+    }
+}
