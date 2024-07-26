@@ -45,6 +45,15 @@ async function deleteFromCart(username,productId){
         throw Error(`user not exist, id: ${username}`)
     }
 }
+async function removeFromCart(username, productId) {
+    const user = await findUser(username);
+    if (user) {
+        user.u_cart = user.u_cart.filter(id => id !== productId);
+        await Users.updateOne({u_username: username}, {u_cart: user.u_cart});
+    } else {
+        throw Error(`User not found: ${username}`);
+    }
+}
 
 async function clearCart(username){
     await Users.updateOne({u_username: username}, {u_cart: []});
@@ -123,5 +132,5 @@ async function getUsersByRegistrationMonth(month){
 }
 
 module.exports = {
-    findUser, register, deleteUser, updateUser, showAllUsers,findUserByAge,deleteFromCart,addToCart, clearCart, setAdmin, getUsersByRegistrationMonth
+    findUser, register, deleteUser, updateUser, showAllUsers,findUserByAge,deleteFromCart,addToCart, clearCart, setAdmin, getUsersByRegistrationMonth, removeFromCart, 
 }
