@@ -27,10 +27,6 @@ async function addProduct(req,res){
 async function deleteProduct(req,res){
     const restName = req.params.name;
     await restServices.removeProduct(restName,req.body.id);
-    const users = await usersServices.showAllUsers();
-    for(const user of users){
-        await usersServices.removeFromCart(user.u_username, req.body.id)
-    }
     await prodServices.deleteProduct(req.body.id);
     res.end();
 }

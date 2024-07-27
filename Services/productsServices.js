@@ -1,4 +1,5 @@
 const Product = require("../Models/Products");
+const usersServices = require("./usersServices");
 
 async function createProduct(name, price, desc, tags, imgUrl) {
     let product = new Product({p_name: name, p_price: price, p_description: desc, p_tags: tags, p_img: imgUrl});
@@ -24,7 +25,15 @@ async function updateProduct(id_to_update, name, price, desc, tags, imgUrl) {
 async function deleteProduct(id_to_delete) {
     if (await findProductById(id_to_delete) == null)
         throw Error(`No Product for ${id_to_delete} was found.`);
+    deleteProductFromUsers(id_to_delete);
     await Product.deleteOne({ _id: id_to_delete });
+}
+
+async function deleteProductFromUsers(id_to_delete) {
+    const users = await usersServices.showAllUsers();
+    for (const user of users) {
+        usersServices.removeFromCart(user.u_username, id_to_delete);
+    }
 }
 
 function isSubArray(array, subArray) {

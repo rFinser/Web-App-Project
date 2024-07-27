@@ -59,11 +59,15 @@ async function addRestaurant(req,res){
     res.end();
 }
 async function deleteRestaurant(req,res){
-    await restServices.deleteRestaurant(req.params.id);
+    const restaurant = await restServices.findRestaurantByName(req.params.id);
     const reviews = await reviewsServices.getReviewsByRestaurantName(req.params.id);
     for(const review of reviews){
         await reviewsServices.deleteReview(review.rev_username, review.rev_restaurantName);
     }
+    for(const product of restaurant.r_productsId){
+        await prodServices.deleteProduct(product);
+    }
+    await restServices.deleteRestaurant(req.params.id);
     res.end();
 }
 
