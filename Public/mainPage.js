@@ -11,7 +11,6 @@ $(function () {
             isAdmin = data.isAdmin
             loadTags();
             loadTopRatedRestaurants();
-            loadAdminBtns();
         }
     })
 
@@ -46,14 +45,7 @@ function createTagScheme(tag){
     `
 }
 
-function loadAdminBtns(){
-    if (!isAdmin){
-        $("#adminModeBtns").hide();
-    }
-    else {
-        $("#adminModeBtns").show();
-    }
-}
+
 
 //loading the top rated section of restaurants
 function loadTopRatedRestaurants(){

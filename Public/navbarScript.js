@@ -1,41 +1,45 @@
+const filtersTags = ["meat","salad","vegan","seafood","dessert","sandwiches","burgers","bbq","sushi","pastries","soups","ice-cream","spicy","smoothies","fast-food","gourmet-food","asian","italian","mexican"]
+
 $(async function(){
     //load navbar
-    
     $.get('http://localhost/navbar.html', function(data){
         $("#navbarContainer").html(data);
         //! ADD NAVBAR FUNCTIONALLITY HERE
-
         //search bar
         searchBar();
         //filters
         filters();
-
         //login-signup buttons
         login();
+
+        loadAdminBtns();
+
+        sideBar();
     })
 })
 
 function searchBar(){
     $("#searchBar").keyup(function() {
         if($("#searchBar").val() == "" || !$("#searchBar").is(":focus")){
-            $('#results').hide();
+            $('#results').removeClass('active');
             return;
         }
     
-        $('#results').show();
+        $('#results').addClass('active');
         $.ajax({
             type: 'POST',
             url: '/search',
             data: {name: $("#searchBar").val()},
             success: function(restaurants) {
+                console.log(restaurants)
                 $('#results').empty();
-                if(restaurants.results.length == 0){
+                if(restaurants.length == 0){
                     $('#results').append('<p>no results found</p>')
                 }
                 else{
-                    restaurants.results.forEach(restaurant => {
-                        $("#results").append(`<a href="/restaurants/${restaurant}" >${restaurant}</a></br>`);
-                     });
+                    restaurants.forEach(restaurant => {
+                        $("#results").append(`<div class="resultsItem"><img src="${restaurant.r_icon}"><a href="/restaurants/${restaurant.r_name}">${restaurant.r_name}</a></div>`);
+                    });
                 }
             }
         });
@@ -47,11 +51,11 @@ function filters(){
     $('#tags').append(SchemeTags());
 
     $('#filtersBtn').click(function () {
-        $('#filters').toggle(200);
+        $('#filters').slideToggle();
     });
 
     $('#cancel-filters').click(function(){
-        $('#filters').toggle(200, function(){
+        $('#filters').slideToggle(function(){
             $('input[type="checkbox"]').prop('checked', false);
             $('#ratingFilter').val($('#defaultValue').val())
         });
@@ -64,7 +68,7 @@ function filters(){
         
         const {selectedTags, selectedLocation, selectedRating} = selectedFilters();
 
-        $('#filters').toggle();
+        $('#filters').slideToggle();
         
         $.ajax({
             type: 'post',
@@ -79,23 +83,22 @@ function filters(){
 }
 
 function login(){
-    $('#loginBtn').hide();
-            $('#signupBtn').hide();
-            $.ajax({
-                type: 'GET',
-                url: '/mainPage',
-                success: function(data){
-                    if(data.username == null){
-                        $('#loginBtn').show();
-                        $('#signupBtn').show();
-                    }
-                    else{
-                        $('#loginBtn').hide();
-                        $('#signupBtn').hide();
-                        $('#username').html(`${data.username}`)
-                    }
-                }
-            })
+    $('.login-signup-container').hide();
+    $.ajax({
+        type: 'GET',
+        url: '/mainPage',
+        success: function(data){
+            if(data.username == null){
+                $('#usernameForm').hide();
+                $('.login-signup-container').show();
+            }
+            else{
+                $('.login-signup-container').hide();
+                $('#usernameForm').show();
+                $('#username').html(`${data.username}`)
+            }
+        }
+    })
 }
 
 function selectedFilters(){
@@ -103,7 +106,7 @@ function selectedFilters(){
 
     const checkedTags =$('#tagsForm').find('input[type="checkbox"]:checked')
     if (checkedTags.length==0){
-        selectedTags = tags;
+        selectedTags = filtersTags;
     }
     else{
         checkedTags.each(function() {
@@ -134,9 +137,41 @@ function firstLetterUppercase(str){
 }
 function SchemeTags(){
 
-    var tagsHtml = "";
-    for(tag of tags){
-        tagsHtml+=`<input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label><br>`
+    var tagsHtml = "<section class='tags-section1'>";
+    const firstSection = filtersTags.slice(0, Math.ceil(filtersTags.length/2));
+    const secondSection = filtersTags.slice(Math.ceil(filtersTags.length/2), filtersTags.length);
+    for(tag of firstSection){
+        tagsHtml+=`<div><input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label></div>`
     }
+    tagsHtml+= "</section>";
+    tagsHtml+= "<section class='tags-section2'>";
+    for(tag of secondSection){
+        tagsHtml+=`<div><input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label></div>`
+    }
+    tagsHtml+= "</section>";
     return tagsHtml;
+}
+
+function loadAdminBtns(){
+    $.ajax({
+        type: "get",
+        url: "/isAdmin",
+        success: function (response) {
+            if (response.isAdmin){
+                $("#adminModeBtns").show();
+            }
+            else {
+                $("#adminModeBtns").hide();
+            }
+        }
+    });
+}
+
+function sideBar(){
+    $('#open-sidebar').click(function(){
+        $('#sidebar').addClass('active');
+    });
+    $('#close-sidebar').click(function(){
+        $('#sidebar').removeClass('active');
+    });
 }
