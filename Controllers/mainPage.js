@@ -18,12 +18,7 @@ async function getMainPageUser(req,res){
 
 async function search(req,res){
     const Restaurants = await restaurants.findRestaurantIncludesName(req.body.name.toLowerCase());
-    let results = [];
-
-    Restaurants.forEach(restaurant => {
-        results.push(restaurant.r_name)
-    });
-    res.json({results})
+    res.json(Restaurants)
 }
 
 
