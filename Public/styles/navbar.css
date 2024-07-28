@@ -1,0 +1,345 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Medium.ttf');
+    font-size: 18px;
+    font-weight: 500;
+}
+
+#navbarContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+}
+
+#navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: #202020;
+    padding: 0 20px;
+}
+.navbar-section{
+    display: flex;
+    align-items: center;
+    background: transparent;;
+}
+
+.navbar-section a{
+    color: #fff;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.navbarBtn{
+    text-overflow:initial;
+    position: relative;
+    color: #fff ;
+    text-decoration:none;
+    display: flex;
+    align-items: center !important;
+    gap: 4px;
+}
+.navbarBtn i{
+    display: flex;
+    align-items: center;
+}
+.navbarBtn::after{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: #fff;
+    border-radius: 5px;
+    left:0;
+    bottom: -10px;
+    transform: scaleX(0);
+    transition: transform .5s;
+}
+
+.navbarBtn:hover::after{
+    transform: scaleX(1);
+}
+.login-signup-container{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 20px;
+}
+.login-signup{
+    width: 130px;
+    height: 50px;
+    outline: none;
+    background-color: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 1.2em;
+    transition: 0.3s;
+}
+.login-signup:hover{
+    background-color: #fff;
+    color: #000000;
+    cursor: pointer;
+}
+
+#usernameForm{
+    display: flex;
+    align-items: center;
+    color: #fff;
+    gap:10px
+    
+}
+#logo{
+    width: 100px;
+    height: 100px;
+    margin-right: 100px;
+}
+.search{
+    display: flex;
+    align-items: center;
+    background: transparent;
+    flex-direction: column;
+    gap:10px;
+    font-weight: 500;
+}
+.search-box{
+    width: 300px;
+    height: 40px;
+    position: relative;
+    
+}
+#searchBar{
+    position: relative;
+    text-indent: 25px;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    border: 2px solid #fff;
+    outline: none;
+    font-size: 18px;
+    padding-left: 10px;
+    background-color: transparent;
+    color: #fff;
+}
+#searchBar::placeholder{
+    color: #fff;
+}
+
+#results{
+    position: absolute;
+    display: none;
+    top:100%;
+    background-color: #000000;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    font-size: 18px;
+    color: #fff;
+    z-index: 10;
+}
+#results.active{
+    display: flex;
+    flex-direction: column;
+}
+.resultsItem{
+    display: flex;
+    align-items: center;
+    color:#fff;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    padding: 10px;
+
+}
+.resultsItem img{
+    width: 25px;
+    height: 25px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+.resultsItem:hover{
+    background-color: #626262;
+    cursor: pointer;
+}
+.bi-search{
+    position: absolute;
+    font-size: 18px;
+    color: #fff;
+    top:50%;
+    transform: translateY(-50%);
+    margin-left:10px;
+}
+.lastSection{
+    position: relative;
+    right:30px;
+    gap:20px;
+    padding: 0 10px;
+}
+#filtersContainer{
+    display: flex;
+    align-items: center;
+    margin-left: 24px;
+
+}
+
+#filtersBtn{
+    position: relative;
+    background: transparent;
+    outline: none;
+    font-size: 1.2em;
+    font-weight: 500;
+    padding: 8px;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+}
+#filtersBtn:hover{
+    background-color: #393838;
+    color: #fff;
+}
+#filters{
+    background-color: #000000;
+    border-radius: 10px;
+    border:2px solid #fff;
+    color:#fff;
+    padding:10px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 100%;
+    gap:20px;
+    z-index: 99;
+}
+.filter{
+    display: flex;
+    flex-direction: column;
+}
+#tags{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+#filtersBtnsContainer{
+    display: flex;
+    flex-direction: row;
+    bottom: 0;
+    gap:10px;
+}
+.filter-button{
+    width:100px;
+    height: 30px;
+    border: 2px solid #fff;
+    font-size: 1em;
+    font-weight:500;
+    border-radius: 10px;
+    background: transparent;
+    color: #fff;
+}
+#ratingFilter{
+    width: 80px;
+    height: 44px;
+    border: 2px solid #fff;
+    font-size: 1.2em;
+    font-weight:500;
+    border-radius: 10px;
+    background: transparent;
+    color: #fff;
+    text-align: center;
+}
+#ratingFilter option{
+    background: #000000;
+    color: #fff;
+
+}
+.filter-button:hover{
+    background-color: #dcdcdc;
+    color: #2f2f2f;
+    cursor: pointer;
+}
+.filtersTypes{
+    display: flex;
+    flex-direction: row;
+    gap:24px;
+}
+#filters label{
+    color: #fff;
+    font-size: 1.2em;
+    font-weight: 500;
+    margin: 10px 0;
+}
+.lastSection i{
+    font-size: 1.1em;
+}  
+#sidebar{
+    position: fixed;
+    background-color: #2f2f2f;
+    width: 200px;
+    height: 100vh;
+    top:0;
+    left:-250px;
+    overflow-y: auto;
+    transition: .6s ease;
+    transition-property: left;
+    display: flex;
+    flex-direction: column;
+    gap:1000px;
+}
+#sidebar.active{
+    left:0;
+}
+#open-sidebar{
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 35px;
+    left:0;
+    font-weight: 500;
+    margin:8px;
+}
+#close-sidebar{
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 35px;
+    right: 0;
+    font-weight: 500;
+    position: absolute;
+    top: 0;
+    margin:8px 0 0 100px;
+}
+
+#sidebar-content{
+    width: 100%;
+    margin-top:80px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.sidebar-item{
+    position: relative;
+    cursor: pointer;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.sidebar-item:hover{
+    background-color: #393838;
+    color: #fff;
+    cursor: pointer;
+}
+.sidebar-item a{
+    color: #fff;
+    font-family: 'Poppins';
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+.sidebar-item i{
+    display: flex;
+    align-items: center;
+    margin:10px
+}

@@ -7,35 +7,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script defer src="mainPage.js"></script>
-    <script defer src="usersGraph.js"></script>
     <script defer src="navbarScript.js"></script>
+    <script defer src="usersGraph.js"></script>
+    
+
 </head>
 <body>
-    <div id="navbarContainer"></div>
-    <aside>
-        <nav>
-            <form action="/cart" method="get">
-                <button id="cart">My Cart</button>
-            </form>
-            <form action="/orders" method="get">
-                <button id="orders">My Orders</button>
-            </form>
-            <form action="/allRestaurants" method="get">
-                <button id="AllRestaunrants">All Restaurants</button>
-            </form>
-            <a href="/settings">
-                <button id="settingsBtn">settings</button>
-            </a>
-            <a href="/contactusPage">
-                <button id="contactusBtn">Contact Us</button>
-            </a>
-        </nav>
-    </aside>
-
-    <div id="adminModeBtns">
-        <a href="/allUsersPage"><button id="allusersBtn">Users</button></a>
-        <a href="/allOrdersPage"><button id="allOrdersBtn">Orders</button></a>
-    </div>
+    <header id="navbarContainer"></header>
 
     <div id="graphContainer">
         <h3>New users throughout the year</h3>
