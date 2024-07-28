@@ -1,6 +1,5 @@
 const restServices = require("../Services/restaurantsServices");
 const prodServices = require("../Services/productsServices");
-const usersServices = require("../Services/usersServices");
 
 async function getProduct(req,res){
     const product = await prodServices.findProductById(req.body.id);

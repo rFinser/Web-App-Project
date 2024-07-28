@@ -1,11 +1,26 @@
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: sans-serif;
     background-color: #292836;
     margin: 0;
     padding: 20px;
     color: #fff;
 }
-
+#arrow{
+    position: absolute;
+    top:10px;
+    left: 10px;
+    background-color: transparent;
+}
+#arrow a{
+    color: #fff;
+    background-color: transparent;
+    text-decoration: none;
+    font-size: 40px;
+}
+#arrow a:hover{
+    cursor: pointer;
+    color: rgb(193, 193, 193);
+}
 h1 {
     text-align: center;
     font-size: 40px;

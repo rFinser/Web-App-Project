@@ -158,10 +158,10 @@ function loadAdminBtns(){
         url: "/isAdmin",
         success: function (response) {
             if (response.isAdmin){
-                $("#adminModeBtns").show();
+                $(".adminModeBtns").show();
             }
             else {
-                $("#adminModeBtns").hide();
+                $(".adminModeBtns").hide();
             }
         }
     });

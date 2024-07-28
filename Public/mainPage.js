@@ -27,8 +27,8 @@ function loadTags(){
         const $li = $(this).closest('li') 
         $.ajax({
             type: 'post',
-            url: 'saveTags',
-            data: {tags: [$li.attr('id')]},
+            url: '/saveFilters',
+            data: {selectedTags: [$li.attr('id')]},
             success: function(){
                 location.href='/searchedRestaurants'
             }

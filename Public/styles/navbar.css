@@ -19,7 +19,6 @@
     justify-content: space-between;
     width: 100%;
     background: #202020;
-    padding: 0 20px;
 }
 .navbar-section{
     display: flex;
@@ -33,12 +32,10 @@
     transition: 0.3s;
 }
 .navbarBtn{
-    text-overflow:initial;
     position: relative;
     color: #fff ;
     text-decoration:none;
     display: flex;
-    align-items: center !important;
     gap: 4px;
 }
 .navbarBtn i{
@@ -89,20 +86,16 @@
     align-items: center;
     color: #fff;
     gap:10px
-    
 }
 #logo{
-    width: 100px;
+    width: 150px;
     height: 100px;
-    margin-right: 100px;
 }
 .search{
     display: flex;
     align-items: center;
     background: transparent;
     flex-direction: column;
-    gap:10px;
-    font-weight: 500;
 }
 .search-box{
     width: 300px;
@@ -136,7 +129,6 @@
     border-radius: 5px;
     font-size: 18px;
     color: #fff;
-    z-index: 10;
 }
 #results.active{
     display: flex;
@@ -148,7 +140,6 @@
     color:#fff;
     border: 1px solid #fff;
     border-radius: 5px;
-    padding: 10px;
 
 }
 .resultsItem img{
@@ -167,19 +158,10 @@
     color: #fff;
     top:50%;
     transform: translateY(-50%);
-    margin-left:10px;
-}
-.lastSection{
-    position: relative;
-    right:30px;
-    gap:20px;
-    padding: 0 10px;
+    left: 10px;
 }
 #filtersContainer{
-    display: flex;
-    align-items: center;
     margin-left: 24px;
-
 }
 
 #filtersBtn{
@@ -209,7 +191,7 @@
     flex-direction: column;
     top: 100%;
     gap:20px;
-    z-index: 99;
+    z-index: 10;
 }
 .filter{
     display: flex;
@@ -268,9 +250,12 @@
     font-weight: 500;
     margin: 10px 0;
 }
-.lastSection i{
-    font-size: 1.1em;
-}  
+.lastSection{
+    position: relative;
+    right:30px;
+    gap:20px;
+}
+ 
 #sidebar{
     position: fixed;
     background-color: #2f2f2f;
@@ -332,6 +317,7 @@
     cursor: pointer;
 }
 .sidebar-item a{
+    width: 100%;
     color: #fff;
     font-family: 'Poppins';
     text-decoration: none;

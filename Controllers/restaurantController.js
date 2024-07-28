@@ -85,11 +85,9 @@ var selectedTags;
 var selectedLocation;
 var selectedRating;
 function saveFilters(req,res){
-
     selectedTags = req.body.selectedTags;
     selectedLocation = req.body.selectedLocation;
     selectedRating = req.body.selectedRating;
-    
     res.end();
 }
 function getRestaurantsFilters(req,res){
@@ -98,15 +96,22 @@ function getRestaurantsFilters(req,res){
 
 async function getRestaurantByFilters(req,res){
     const restaurantsTags = await restServices.searchByTags(selectedTags);
-    const restaurantsLocation = await restServices.searchByLocation(selectedLocation);
-    const restaurantsRating = await reviewsServices.getRestaurantsByRating(selectedRating);
-
     const restaurantsSearched = [];
-    restaurantsTags.forEach(rest => {
-        if (isInRestaurnats(restaurantsLocation, rest.r_name) && isInRestaurnats(restaurantsRating, rest.r_name)) {
+    if(selectedLocation != null && selectedRating!= null){
+        const restaurantsLocation = await restServices.searchByLocation(selectedLocation);
+        const restaurantsRating = await reviewsServices.getRestaurantsByRating(selectedRating);
+        
+        restaurantsTags.forEach(rest => {
+            if (isInRestaurnats(restaurantsLocation, rest.r_name) && isInRestaurnats(restaurantsRating, rest.r_name)) {
+                restaurantsSearched.push(rest);
+            }
+        });
+    }
+    else{
+        restaurantsTags.forEach(rest => {
             restaurantsSearched.push(rest);
-        }
-      });
+        })
+    }
     
     res.json(restaurantsSearched);
 }
