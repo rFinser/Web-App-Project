@@ -9,11 +9,29 @@
     <script defer src="mainPage.js"></script>
     <script defer src="navbarScript.js"></script>
     <script defer src="usersGraph.js"></script>
+    <link rel="stylesheet" href="http://localhost/styles/mainPage.css">
     
 
 </head>
 <body>
     <header id="navbarContainer"></header>
+
+    <div id="store-info">
+        <label for="store-info"><h1>About Us</h1></label>
+        <div id="aboutUs">
+            <p id="aboutUs-paragraph">
+                <strong id="welcome">Welcome</strong> to Super Express, your ultimate food adventure hub! 
+                We've brought together the best restaurants in town, all in one convenient place. 
+                Want pizza? Sushi? Burgers? We've got it all! Join us and get the tastiest food without
+                breaking the bank. It's super easy to use, and you'll find tons of yummy options. 
+                Why bother cooking when you can get the best grub delivered right to you? 
+                Hop on Super Express and treat yourself to some seriously good eats!
+            </p>
+            <div><video id="aboutUs-video" width="400" height="260" controls>
+                <source src="http://localhost/logoPicture/superExpress-video.mp4" type="video/mp4">
+              </video></div>
+        </div>
+    </div>
 
     <div id="graphContainer" style="margin-top: 300px;">
         <h3>New users throughout the year</h3>
@@ -23,7 +41,7 @@
     
     <div>
         <h3>I feel like eating..</h3>
-        <ul id="tagsList"></ul>
+        <div id="tagsSlider"></div>
     </div>
     <div>
         <h3>Our top rated restaurants</h3>

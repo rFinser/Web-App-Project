@@ -7,10 +7,12 @@
 
 #navbarContainer {
     position: fixed;
+    margin-bottom: 300px;
     top: 0;
     left: 0;
     width: 100%;
     font-family: 'Poppins', sans-serif;
+    z-index: 900;
 }
 
 #navbar {
@@ -161,6 +163,7 @@
     left: 10px;
 }
 #filtersContainer{
+    display: flex;
     margin-left: 24px;
 }
 
@@ -191,7 +194,7 @@
     flex-direction: column;
     top: 100%;
     gap:20px;
-    z-index: 10;
+    z-index: 99;
 }
 .filter{
     display: flex;

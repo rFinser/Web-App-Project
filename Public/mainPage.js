@@ -17,18 +17,16 @@ $(function () {
 });
 
 function loadTags(){
-    const $list = $('#tagsList');
-
     $.each(tags, (i,tag) =>{
-            $list.append(createTagScheme(tag));
+            $('#tagsSlider').append(createTagScheme(tag));
     })
 
     $('.tagForm').click(function() {
-        const $li = $(this).closest('li') 
+        const $div = $(this).closest('div') 
         $.ajax({
             type: 'post',
             url: '/saveFilters',
-            data: {selectedTags: [$li.attr('id')]},
+            data: {selectedTags: [$div.attr('id')]},
             success: function(){
                 location.href='/searchedRestaurants'
             }
@@ -38,10 +36,10 @@ function loadTags(){
 
 function createTagScheme(tag){
     return `
-        <li id="${tag}" class="tagForm">
+        <div id="${tag}" class="tagForm">
             <h4>${tag}</h4>
             <img src="./tagsPictures/${tag}.png" alt="not found">
-        </li>
+        </div>
     `
 }
 
