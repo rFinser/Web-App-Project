@@ -45,6 +45,19 @@ async function updateProduct(req,res){
     res.end();
 }
 
+function intersection(array1, array2){
+    let intersectionSet = new Set();
+    for(let i = 0; i<array1.length; i++){
+        for(let j = 0; j<array2.length; j++){
+            if(array1[i]._id.toString() == array2[j]._id.toString()){
+                intersectionSet.add(array1[i]._id.toString());
+                break;
+            }
+        }
+    }
+    return intersectionSet;
+}
+
 async function productsFilter(req,res){
     const {tags, minPrice, maxPrice} = req.body;
     const rest = await restServices.findRestaurantByName(req.params.name)
@@ -52,21 +65,23 @@ async function productsFilter(req,res){
     const priceFilter = await prodServices.findByPrice(minPrice,maxPrice);
     const tagsFilter = await prodServices.findByTags(tags);
 
-    const productsSet = new Set(priceFilter.concat(tagsFilter));
-    const Allproducts = Array.from(productsSet);
+    let productsFilters = intersection(priceFilter, tagsFilter);
+    let ArrayProductsFilters = Array.from(productsFilters);
 
     let products = [];
-    for(let i =0; i<rest.r_productsId.length; i++){
-        for(let j =0; j<Allproducts.length-1; j++){
-            if(Allproducts[j]._id.toString() == rest.r_productsId[i]){
-                products.push(Allproducts[j]);
-                break;
-            }
-        }
-    }
 
+    for(let i =0; i<rest.r_productsId.length; i++){
+       for(let j = 0; j<ArrayProductsFilters.length; j++){
+           if(rest.r_productsId[i] == ArrayProductsFilters[j]){
+               products.push(await prodServices.findProductById(rest.r_productsId[i]));
+               break;
+           }
+       }
+    }
     res.json(products);
 }
+
+
 
 module.exports = {
     addProduct,

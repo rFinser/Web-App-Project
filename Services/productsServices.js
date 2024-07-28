@@ -45,13 +45,13 @@ function isSubArray(array, subArray) {
 }
 
 async function findByTags(tags) {
-    let foundProducts = new Set();
+    let foundProducts = [];
     const products = await getAllProducts();
     for (const product of products) {
         if (product.p_tags == null)
             continue;
         if (isSubArray(product.p_tags, tags))
-            foundProducts.add(product);
+            foundProducts.push(product);
     }
     return foundProducts;
 }
