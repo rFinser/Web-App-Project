@@ -13,9 +13,8 @@ $(async function () {
 });
 
 function renderGraph(productsData) {
-
     const width = 800;
-    const height = 400;
+    const height = 900;
     const margin = {top: 50, bottom: 50, left: 50, right: 50};
 
     const svg = d3.select("#graph")
@@ -30,18 +29,31 @@ function renderGraph(productsData) {
         .padding(0.1);
 
     const y = d3.scaleLinear()
-        .domain([0, findMax(productsData) + 10])
+        .domain([0, findMax(productsData) + 5])
         .range([height - margin.bottom, margin.top]);
     
-    svg.append("g")
-        .attr("fill", "royalblue")
-        .selectAll("rect")
+    const tooltip = d3.select("#tooltip");
+
+    svg.selectAll("rect")
         .data(productsData.sort((a, b) => d3.descending(a.count, b.count)))
         .join("rect")
-          .attr("x", (d, i) => x(i))
-          .attr("y", d => y(d.count))
-          .attr("height", d => y(0) - y(d.count))
-          .attr("width", x.bandwidth())
+        .attr("x", (d, i) => x(i))
+        .attr("y", d => y(d.count))
+        .attr("height", d => y(0) - y(d.count))
+        .attr("width", x.bandwidth())
+        .attr("fill", "green")
+        .on("mouseover", function(event, d) {
+            tooltip.style("opacity", 1);
+        })
+        .on("mousemove", function(event, d) {
+            tooltip
+                .html(`${d.count}`)
+                .style("left", (event.pageX - 30) + "px")
+                .style("top", (event.pageY - 10) + "px");
+        })
+        .on("mouseout", function(d) {
+            tooltip.style("opacity", 0);
+        });
     
     function xAxis(g){
         g.attr("transform", `translate(0, ${height - margin.bottom})`);

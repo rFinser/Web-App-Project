@@ -69,7 +69,7 @@ function makeRestaurant(restaurantJson) {
         $("#products").append(makeProduct(product))
     }
     if(isAdmin){
-        $("#products").append('<li class="newProduct adminBtn"><button id="addProduct">add product</button></li>')
+        $("#products").append('<li class="newProduct"><button id="addProduct">+</button></li>')
     }
 }
 
@@ -106,7 +106,7 @@ function createProductData(){
         <label for="p-price">price:</label>
         <input id="p-price" /></br>
         <label for="tagsForm">tags:</label>
-        `+tagsScheme()+`
+        `+addProductTagsSchema()+`
         <label for="p-img">image:</label>
         <input id="p-img" /></br>
         <button class="p-save">save</button>
@@ -124,7 +124,7 @@ function updateProductData(){
         <label for="p-price">price:</label>
         <input id="p-price" /></br>
         <label for="tagsForm">tags:</label>
-        `+tagsScheme()+`
+        `+addProductTagsSchema()+`
         <label for="p-img">image:</label>
         <input id="p-img" /></br>
         <button class="u-save">save</button>
@@ -135,7 +135,16 @@ function tagsScheme(){
     var tagsHtml = "";
     tagsHtml+=`<section id="tagsForm">`
     for(tag of tags){
-        tagsHtml+=`<input type="checkbox" id="${tag}"><label for="${tag}">${tag}</label><br>`
+        tagsHtml+=`<input type="checkbox" id="tag-${tag}"><label for="tag-${tag}">${tag}</label><br>`
+    }
+    tagsHtml += `</section>`;
+    return tagsHtml;
+}
+function addProductTagsSchema(){
+    var tagsHtml = "";
+    tagsHtml+=`<section id="tagsForm">`
+    for(tag of tags){
+        tagsHtml+=`<input type="checkbox" id="product-tag-${tag}"><label for="product-tag-${tag}">${tag}</label><br>`
     }
     tagsHtml += `</section>`;
     return tagsHtml;
@@ -149,7 +158,7 @@ $('#products').delegate('#addProduct', 'click', function(){
 $('#products').delegate('.p-cancel', 'click', function(){
     const $li = $(this).closest('li')
     $('.newProductForm').remove();
-    $li.append('<li class="newProduct"><button id="addProduct">add product</button></li>')
+    $li.append('<button id="addProduct">+</button>')
 })
 
 $('#products').delegate('.p-save', 'click', function(){
@@ -163,7 +172,7 @@ $('#products').delegate('.p-save', 'click', function(){
     var p_tags = [];
 
     $li.find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
-        p_tags.push($(this).attr('id'));
+        p_tags.push($(this).attr('id').replace('product-tag-', ''));
     });
     if(!validProduct(p_name,p_description,p_price,p_tags))
     {
@@ -183,7 +192,7 @@ $('#products').delegate('.p-save', 'click', function(){
               postProduct(getRestaurantName(), p_name)
               $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id, p_img: img}))
               $li.remove();
-              $("#products").append('<li class="newProduct"><button id="addProduct">add product</button></li>')
+              $("#products").append('<li class="newProduct"><button id="addProduct">+</button></li>')
             }
         }
 
@@ -258,7 +267,7 @@ $('#products').delegate('.u-save', 'click', function(){
     var tags = [];
 
     $li.find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
-        tags.push($(this).attr('id'));
+        tags.push($(this).attr('id').replace('product-tag-', ''));
     });
     if(!validProduct(name,desc,price,tags))
     {
@@ -325,7 +334,8 @@ $(document).ready(function () {
         }
         else{
             checkedTags.each(function() {
-                selectedTags.push($(this).attr('id'));
+                let tagName = $(this).attr("id").replace("tag-", "");
+                selectedTags.push(tagName);
                 countFilters++;
             });
         }
@@ -376,7 +386,7 @@ $(document).ready(function () {
                     $("#products").append(makeProduct(product))
                 }
                 if(isAdmin){
-                    $("#products").append('<li class="newProduct adminBtn"><button id="addProduct">add product</button></li>')
+                    $("#products").append('<li class="newProduct"><button id="addProduct">+</button></li>')
                 }
             }
         });
