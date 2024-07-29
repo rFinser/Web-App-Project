@@ -126,7 +126,7 @@ function updateProductData(){
         <label for="tagsForm">tags:</label>
         `+addProductTagsSchema()+`
         <label for="p-img">image:</label>
-        <input id="p-img" /></br>
+        <input id="p-img"/></br>
         <button class="u-save">save</button>
         <button class="u-cancel">cancel</button>
     </div>`
@@ -190,7 +190,7 @@ $('#products').delegate('.p-save', 'click', function(){
             }
             else{
               postProduct(getRestaurantName(), p_name)
-              $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id, p_img: img}))
+              $("#products").append(makeProduct({p_name, p_description, p_price, p_tags, _id:data.id, p_img}))
               $li.remove();
               $("#products").append('<li class="newProduct"><button id="addProduct">+</button></li>')
             }
@@ -240,7 +240,7 @@ $('#products').delegate('.updateProduct', 'click', function(){
             $('#p-description').val(product.p_description);
             $('#p-price').val(product.p_price);
             $.each(product.p_tags, (i, tag) => {
-                $li.find(`#${tag}`).prop('checked', true);;
+                $li.find(`#product-tag-${tag}`).prop('checked', true);;
             })
             $("#p-img").val(product.p_img);
         }
