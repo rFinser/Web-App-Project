@@ -3,7 +3,7 @@ const router = express.Router();
 
 const usersController = require("../Controllers/usersController");
 
-router.route("/users/:month").get(usersController.getUsersByRegistrationMonth);
+router.route("/users/:month").post(usersController.getUsersByRegistrationMonth);
 router.route('/settings').get(usersController.isLoggedIn, usersController.getSettingsPage);
 router.route('/userData').post(usersController.getUserData);
 router.route('/deleteUserFromSettings').post(usersController.deleteUserFromSettings);

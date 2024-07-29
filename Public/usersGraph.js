@@ -64,6 +64,7 @@ async function getUsersData(){
 
 async function getUsersRegisteredOnMonth(month){
     return $.ajax({
+        type: 'POST',
         url: `/users/${month}`,
         success: (data) => {return data}
     })

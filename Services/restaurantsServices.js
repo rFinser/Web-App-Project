@@ -15,7 +15,7 @@ async function findRestaurantByName(name) {
 }
 
 async function findRestaurantIncludesName(name) {
-    let foundRestaurant = await Restaurant.find({r_name: {$regex: new RegExp('^.*'+name+'.*$')} });
+    let foundRestaurant = await Restaurant.find({r_name: {$regex: new RegExp('^.*'+name+'.*$', 'i')}});
     return foundRestaurant;
 }
 
@@ -40,6 +40,9 @@ async function deleteRestaurant(restaurant_to_delete) {
 
 
 async function searchByTags(tags) {
+    if(tags == null){
+        return {};
+    }
     let foundRestaurant = new Set();
     let restaurants = await listAllRestaurants();
     for (rest of restaurants) {
@@ -59,6 +62,9 @@ async function searchByTags(tags) {
 
 async function searchByLocation(location) //location is array contains north, south, center
 {
+    if(location == null){
+        return {};
+    }
     let foundRestaurant = new Set();
     let restaurants = await listAllRestaurants();
 

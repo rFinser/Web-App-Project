@@ -67,7 +67,6 @@ function filters(){
     $('#save-filters').click(function(){
         
         const {selectedTags, selectedLocation, selectedRating} = selectedFilters();
-
         $('#filters').slideToggle();
         
         $.ajax({
@@ -104,7 +103,7 @@ function login(){
 function selectedFilters(){
     var selectedTags = [];
 
-    const checkedTags =$('#tagsForm').find('input[type="checkbox"]:checked')
+    const checkedTags =$('#tags').find('input[type="checkbox"]:checked')
     if (checkedTags.length==0){
         selectedTags = filtersTags;
     }
