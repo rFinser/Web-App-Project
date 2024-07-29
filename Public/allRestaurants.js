@@ -20,7 +20,7 @@ function loadRestaurants(){
       url: "/restaurants",
       success: function (restaurants){
             if(isAdmin == true){
-            $list.append(`<li id="newRes"><button id="addRes" class="adminBtn">add restaurant</button></li>`);
+            $list.append(`<li id="newRestaurant"><div id="newRes"><button id="addRes" class="adminBtn">+</button></div></li>`);
             }
             $.each(restaurants, async (i, rest) => {
               $list.append(await restaurantScheme(rest));
@@ -32,12 +32,14 @@ function loadRestaurants(){
   
   $('#restaurantList').delegate('#addRes', 'click', function(){
       $('.adminBtn').hide();
+      $(this).parent().parent().attr("id", "a");
       $('#newRes').append(createRestaurantScheme())
       $('.tooltip').hide()
   
   })
   
   $('#restaurantList').delegate('#cancelRes', 'click', function () {
+      $(this).closest("li").attr("id", "newRestaurant");
       $('#addingData').remove();
       $('.adminBtn').show();
   });
@@ -47,7 +49,7 @@ function loadRestaurants(){
   
       var selectedTags = [];
       $('#newRes').find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
-          selectedTags.push($(this).attr('id'));
+          selectedTags.push($(this).attr('id').replace("tag-", ""));
       });
   
       var tags = []
@@ -59,7 +61,6 @@ function loadRestaurants(){
       const name = $('#resName').val();
       const desc = $('#desc').val();
       const icon = $('#icon').val();
-    //   const address = $('#address').val();
 
     let addresses = [];
     $('#addressContainer').find('input').each(function(){
@@ -86,6 +87,7 @@ function loadRestaurants(){
         data: restaurant,
         success: async function (data) {
             if (data.status == 1) {
+                $(this).parent().closest("li").attr("id", "newRestaurant");
                 $('#addingData').remove();
                 $("#restaurantList").append(await restaurantScheme(restaurant));
                 $('.adminBtn').show();
@@ -146,6 +148,7 @@ function loadRestaurants(){
   
   $('#restaurantList').delegate('.updateRes', 'click', function () {
       let $li = $(this).closest('li');
+      $li.addClass("updating");
       $li.find('.restaurant').hide();
       $('.adminBtn').hide()
       $.ajax({
@@ -162,7 +165,7 @@ function loadRestaurants(){
                   $('#u_address').val(location.address);
               })
               $.each(rest.r_tags, (i, tag) => {
-                  $('#tagsForm').find(`#${tag}`).prop('checked', true);
+                  $('#tagsForm').find(`#tag-${tag}`).prop('checked', true);
               })
           }
       })
@@ -170,7 +173,7 @@ function loadRestaurants(){
   
   $('#restaurantList').delegate('.u_cancel','click', function(){
       let $li = $(this).closest('li');
-  
+      $li.removeClass("updating");
       $('#updateData').remove();
       $li.find('.restaurant').show();
       $('.adminBtn').show()
@@ -179,10 +182,11 @@ function loadRestaurants(){
   $('#restaurantList').delegate('.u_save', 'click', async function () {
       $('.tooltip').hide();
       let $li = $(this).closest('li');
+      $li.removeClass("updating");
   
       var selectedTags = [];
       $('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
-          selectedTags.push($(this).attr('id'));
+          selectedTags.push($(this).attr('id').replace("tag-", ""));
       });
   
       var tags = []
@@ -194,7 +198,6 @@ function loadRestaurants(){
       const name = $('#u_resName').val();
       const desc = $('#u_desc').val();
       const icon = $('#u_icon').val();
-    //   const address = $('#u_address').val()
 
     let addresses = [];
     $('#u_addressContainer').find('input').each(function(){
@@ -228,39 +231,10 @@ function loadRestaurants(){
                   $li.attr('id', name)
                   $li.append(await restaurantScheme(restaurant))
                   $('.adminBtn').show();
+                  window.location.reload(); //temporary!
               }
           }
-      })
-
-    //   $.ajax({
-    //       type: "post",
-    //       url: "/openCageLatLng",
-    //       data: {address},
-    //       success: function (response) {
-    //               $.ajax({
-    //                   type: 'PUT',
-    //                   url: 'updateRestaurant',
-    //                   data: { id, name, desc, icon, tags, r_geolocation: {address:response.address, lat :response.lat, lng: response.lng}},
-    //                   success: function (data) {
-    //                       if (data.status == 1) {
-    //                           $('#updateData').remove()
-    //                           $li.find('.restaurant').remove();
-    //                           $li.attr('id', name)
-    //                           $li.append(updatedRestaurantScheme({ r_name: name, r_icon: icon, r_description: desc }))
-    //                           $('.adminBtn').show()
-    //                       }
-    //                       else {
-    //                           $('#nameTooltip').html('restaurant name already exist, try a diffrent one');
-    //                           $('#nameTooltip').show();
-    //                       }
-    //                   }
-    //               })
-    //       },
-    //       error: function(){
-    //           $('#addressTooltip').show();
-    //       }
-    //   });
-      
+      }) 
   });
   
   async function getRating(restaurantName) {
@@ -414,9 +388,10 @@ function loadRestaurants(){
   
       const rating = await getRating(restaurant.r_name);
   
-      return `
+      return`
       <li id="${restaurant.r_name}">
       <div class = "restaurant" data-ratingOpen="false">
+        ${Admin()}
       <p id="restRating">${rating}</p>
       <a href="restaurants/${restaurant.r_name}">
           <p class="restName">${restaurant.r_name} </p>
@@ -426,8 +401,6 @@ function loadRestaurants(){
             +
             await didReview(restaurant.r_name)
             +
-          Admin()
-          + 
           `</div>
       </li>
       `
@@ -437,6 +410,7 @@ function loadRestaurants(){
   
       return `
       <div class = "restaurant">
+         ${Admin()}
           <p id="rating"></p>
           <a href="restaurants/${restaurant.r_name}">
               <p class="restName">${restaurant.r_name} </p>
@@ -445,8 +419,6 @@ function loadRestaurants(){
           </a>`
           +
           didReview(restaurant.r_name)
-          +
-          Admin()
           +
       `</div>`
   }
@@ -516,7 +488,7 @@ function loadRestaurants(){
       var tagsHtml = "";
       tagsHtml+=`<section id="tagsForm">`
       for(tag of tags){
-          tagsHtml+=`<input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label><br>`
+          tagsHtml+=`<input type="checkbox" id="tag-${tag}"><label for="tag-${tag}">`+firstLetterUppercase(tag)+`</label><br>`
       }
       tagsHtml += `</section>`;
       return tagsHtml;
