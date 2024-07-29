@@ -24,7 +24,7 @@ async function getRestaurant(req, res){
         const user = await usersServices.findUser(req.session.username);
         isAdmin = user.u_admin;
     }
-    const restaurantName = req.body.restaurantName.replace('%20',' ');
+    const restaurantName = req.body.restaurantName.split("%20").join(" ");
     const restaurant = await restServices.findRestaurantByName(restaurantName);
     if (restaurant == null){
         res.status(404)

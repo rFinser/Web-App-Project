@@ -37,7 +37,8 @@ async function getAllOrdersPage(req, res){
 
 async function getProductsAndQuantity(req, res) {
     const orders = await ordersServices.showAllOrders();
-    const restName = req.body.restaurant.replace('%20', ' ');
+    const restName = req.body.restaurant.split("%20").join(" ");
+    console.log(restName);
     const rest = await restaurantServices.findRestaurantByName(restName);
 
     let productsData = [];
