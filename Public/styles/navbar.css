@@ -87,7 +87,7 @@
     display: flex;
     align-items: center;
     color: #fff;
-    gap:10px
+    gap:4px
 }
 #logo{
     width: 150px;
@@ -142,6 +142,7 @@
     color:#fff;
     border: 1px solid #fff;
     border-radius: 5px;
+    padding: 8px;
 
 }
 .resultsItem img{
