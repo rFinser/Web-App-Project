@@ -10,6 +10,7 @@
     <script defer src="navbarScript.js"></script>
     <script defer src="usersGraph.js"></script>
     <link rel="stylesheet" href="http://localhost/styles/mainPage.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     
 
 </head>
@@ -41,14 +42,24 @@
     
     <div>
         <h3>I feel like eating..</h3>
-        <div id="tagsSlider"></div>
+        <div class="tags-container">
+            <div id="tagsSlider"></div>
+        </div>
     </div>
     <div>
         <h3>Our top rated restaurants</h3>
-        <ul id="restaurantList"></ul>
+        <div id="restaurantPodium">
+            <div id="podiumSteps">
+                <div class="step" id="secondStep"><i class="bi bi-trophy-fill trophy"><h4 class="placement">2</h4></i></div>
+                <div class="step" id="firstStep"><i class="bi bi-trophy-fill trophy"><h4 class="placement">1</h4></i></div>
+                <div class="step" id="thirdStep"><i class="bi bi-trophy-fill trophy"><h4 class="placement">3</h4></i></div>
+            </div>
+
+            <div id="secondPlace" class="podiumSpot"></div>
+            <div id="firstPlace" class="podiumSpot"></div>
+            <div id="thirdPlace" class="podiumSpot"></div>
+        </div>
     </div>
    
-
-
 </body>
 </html>

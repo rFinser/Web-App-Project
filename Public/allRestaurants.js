@@ -1,6 +1,6 @@
 let isAdmin = false;
 
-const tags = ["meat","salad","vegan","seafood","dessert","sandwiches","burgers","bbq","sushi","pastries","soups","ice-cream","spicy","smoothies","fast-food","gourmet-food","asian","italian","mexican"]
+const tags = ["meat","salad","vegan","seafood","dessert","sandwiches","burgers","bbq","sushi","pastries","soups","ice-cream","smoothies","fast-food","gourmet-food","asian","italian","mexican"]
 
 $(function () {
     $.ajax({

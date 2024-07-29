@@ -2,7 +2,7 @@ let isAdmin = false;
 const TOP_RESTS = 2; //number of restaurants to be in main page section top reated restaurants
 
 
-const tags = ["meat","salad","vegan","seafood","dessert","sandwiches","burgers","bbq","sushi","pastries","soups","ice-cream","spicy","smoothies","fast-food","gourmet-food","asian","italian","mexican"]
+const tags = ["meat","salad","vegan","seafood","dessert","sandwiches","burgers","bbq","sushi","pastries","soups","ice-cream","smoothies","fast-food","gourmet-food","asian","italian","mexican"]
 
 $(function () {
     $.ajax({
@@ -16,11 +16,19 @@ $(function () {
 
 });
 
-function loadTags(){
-    $.each(tags, (i,tag) =>{
-            $('#tagsSlider').append(createTagScheme(tag));
-    })
 
+
+function loadTags() {
+    const $slider = $('#tagsSlider');
+    const tagsPerSlide = 6;
+    
+    for (let i = 0; i < tags.length; i += tagsPerSlide) {
+        const $slide = $('<div class="slide"></div>');
+        tags.slice(i, i + tagsPerSlide).forEach(tag => {
+            $slide.append(createTagScheme(tag));
+        });
+        $slider.append($slide);
+    }
     $('.tagForm').click(function() {
         const $div = $(this).closest('div') 
         $.ajax({
@@ -32,6 +40,47 @@ function loadTags(){
             }
         })
     });
+    
+    
+    $('.tags-container').append('<button class="prev"><</button>');
+    $('.tags-container').append('<button class="next">></button>');
+
+    initSlider();
+}
+
+function initSlider() {
+    let currentSlide = 0;
+    const $slider = $('#tagsSlider');
+    const $slides = $('.slide');
+    const totalSlides = $slides.length;
+    const $prevBtn = $('.prev');
+    const $nextBtn = $('.next');
+
+    function showSlide(index) {
+        $slider.css('transform', `translateX(-${index * 100}%)`);
+        updateArrowVisibility();
+    }
+
+    function updateArrowVisibility() {
+        $prevBtn.toggle(currentSlide > 0);
+        $nextBtn.toggle(currentSlide < totalSlides - 1);
+    }
+
+    $nextBtn.click(() => {
+        if (currentSlide < totalSlides - 1) {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+    });
+
+    $prevBtn.click(() => {
+        if (currentSlide > 0) {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+    });
+
+    showSlide(currentSlide);
 }
 
 function createTagScheme(tag){
@@ -47,20 +96,19 @@ function createTagScheme(tag){
 
 //loading the top rated section of restaurants
 function loadTopRatedRestaurants(){
-  const $list = $("#restaurantList");
-  $.ajax({
-    url: "/TopRatedRestaurants",
-    type: 'post',
-    data: {top: 3},
-    success: function (restaurants){
-        $.each(restaurants, async (i, rest) => {
-            $list.append(await restaurantScheme(rest));
-        })
-        
-    }
-    })
+    $.ajax({
+        url: "/TopRatedRestaurants",
+        type: 'post',
+        data: {top: 3},
+        success: async function (restaurants){
+            const podiumOrder = ['firstPlace', 'secondPlace', 'thirdPlace'];
+            for (let i = 0; i < restaurants.length; i++) {
+                const restaurantHtml = await restaurantScheme(restaurants[i]);
+                $(`#${podiumOrder[i]}`).html(restaurantHtml);
+            }
+        }
+    });
 }
-
 async function getRating(restaurantName) {
     let rating;
     await $.ajax({
@@ -82,15 +130,13 @@ async function restaurantScheme(restaurant) {
     const rating = await getRating(restaurant.r_name);
 
     return `
-    <li id="${restaurant.r_name}">
-    <div class = "restaurant" data-ratingOpen="false">
-    <p id="restRating">${rating}</p>
-    <a href="restaurants/${restaurant.r_name}">
-        <p class="restName">${restaurant.r_name} </p>
-        <img class="restImg" src="${restaurant.r_icon}" onerror="this.src = '${defaultRestIcon}'" alt="not Found">
-        <p class="restDesc">${restaurant.r_description}</p>
-    </a>
+    <div class="restaurant" data-ratingOpen="false">
+        <p class="restRating">${rating}</p>
+        <a href="restaurants/${restaurant.r_name}">
+            <p class="restName">${restaurant.r_name}</p>
+            <img class="restImg" src="${restaurant.r_icon}" onerror="this.src = '${defaultRestIcon}'" alt="not Found">
+            <p class="restDesc">${restaurant.r_description}</p>
+        </a>
     </div>
-    </li>
-    `
+    `;
 }

@@ -4,6 +4,7 @@ body {
     margin: 0;
     background-color: #292836;
     padding-top: 100px;
+    color: #fff;
 }
 #store-info{
     position: relative;
@@ -51,4 +52,224 @@ body {
 #aboutUs-video{
     border-radius: 15px;
     cursor: pointer;
+}
+
+.tags-container {
+    position: relative;
+    width: 100%;
+    max-width: 1550px;
+    margin: 0 auto;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tagForm {
+    margin: 0 5px;
+    padding: 0 15px;
+    border-radius: 10px;
+    background-color: #201f2b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#tagsSlider {
+    padding: 15px 3px;
+    border-radius: 10px;
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.slide {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.prev:hover,.next:hover {
+    background-color: white;
+    color: #292836;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+#restaurantPodium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 500px;
+    margin-top: 50px;
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.podiumSpot {
+    width: 200px;
+    position: absolute;
+    bottom: 0;
+}
+
+#firstPlace {
+    height: 300px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+}
+
+#secondPlace {
+    height: 250px;
+    right: 50%;
+    margin-right: 110px;
+    z-index: 2;
+}
+
+#thirdPlace {
+    height: 200px;
+    left: 50%;
+    margin-left: 110px;
+    z-index: 1;
+}
+
+.podiumBase {
+    width: 100%;
+    background-color: #45a049;
+    position: absolute;
+    bottom: 0;
+    border-radius: 10px 10px 0 0;
+}
+
+#firstPlace .podiumBase { height: 100%; }
+#secondPlace .podiumBase { height: 100%; }
+#thirdPlace .podiumBase { height: 100%; }
+
+#restaurantPodium .restaurant {
+    position: absolute;
+    top: -200px;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background-color: #201f2b;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+    transition: 0.15s;
+}
+
+#restaurantPodium .restaurant:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+#restaurantPodium .restaurant a {
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#restaurantPodium .restImg {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+#restaurantPodium .restName {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+#restaurantPodium .restDesc {
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+#restaurantPodium .restRating {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#podiumSteps {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.step {
+    width: 200px;
+    background-color: #201f2b;
+    border-radius: 10px 10px 0 0;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+}
+
+#firstStep {
+    height: 250px;
+}
+
+#secondStep {
+    height: 200px;
+}
+
+#thirdStep {
+    height: 150px;
+}
+
+.trophy {
+    position: relative;
+}
+
+.placement {
+    position: absolute;
+    top: -0.5rem;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #000;
 }
