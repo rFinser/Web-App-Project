@@ -15,7 +15,7 @@ $(async function (){
 
     const y = d3.scaleLinear()
         .range([height, 0])
-        .domain([0, d3.max(usersData, e => e.users) + 50]) // the *50* here is a placeholder until we will have more data https://stackoverflow.com/questions/13599118/how-to-remove-decimal-point-from-my-y-axis-scale-in-d3js-graph
+        .domain([0, d3.max(usersData, e => e.users) + 20]) // the *20* here is a placeholder until we will have more data https://stackoverflow.com/questions/13599118/how-to-remove-decimal-point-from-my-y-axis-scale-in-d3js-graph
 
     const svg = d3.select("#graph")
         .append("svg")
@@ -37,15 +37,23 @@ $(async function (){
         .tickFormat(d3.format(".0f")));
 
     svg.append("g")
-        .attr("fill", "royalblue")
+        .attr("fill", "#fff")
         .selectAll("rect")
         .data(usersData)
         .join("rect")
+          .attr("class", "bar")
           .attr("x", (d, i) => x(i))
           .attr("y", d => y(d.users))
           .attr("height", d => y(0) - y(d.users))
           .attr("width", x.bandwidth())
 
+    svg.append("style")
+        .text(`
+            .bar:hover {
+              fill: #C8C8C8;
+              transition: fill 0.3s ease;
+            }
+        `);
 })
 
 function getDate(i){
