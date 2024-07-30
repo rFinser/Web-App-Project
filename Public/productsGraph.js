@@ -31,8 +31,6 @@ function renderGraph(productsData) {
     const y = d3.scaleLinear()
         .domain([0, findMax(productsData) + 5])
         .range([height - margin.bottom, margin.top]);
-    
-    const tooltip = d3.select("#tooltip");
 
     svg.selectAll("rect")
         .data(productsData.sort((a, b) => d3.descending(a.count, b.count)))
@@ -42,18 +40,6 @@ function renderGraph(productsData) {
         .attr("height", d => y(0) - y(d.count))
         .attr("width", x.bandwidth())
         .attr("fill", "green")
-        .on("mouseover", function(event, d) {
-            tooltip.style("opacity", 1);
-        })
-        .on("mousemove", function(event, d) {
-            tooltip
-                .html(`${d.count}`)
-                .style("left", (event.pageX - 30) + "px")
-                .style("top", (event.pageY - 10) + "px");
-        })
-        .on("mouseout", function(d) {
-            tooltip.style("opacity", 0);
-        });
     
     function xAxis(g){
         g.attr("transform", `translate(0, ${height - margin.bottom})`);
