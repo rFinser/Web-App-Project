@@ -20,11 +20,10 @@ $(async function(){
 
 function searchBar(){
     $("#searchBar").keyup(function() {
-        if($("#searchBar").val() == "" || !$("#searchBar").is(":focus")){
+        if($("#searchBar").val() == ""){
             $('#results').removeClass('active');
             return;
         }
-    
         $('#results').addClass('active');
         $.ajax({
             type: 'POST',
@@ -50,8 +49,15 @@ function filters(){
     $('#filters').hide();
     $('#tags').append(SchemeTags());
 
-    $('#filtersBtn').click(function () {
+    $('#filtersBtn').click(function (event) {
         $('#filters').slideToggle();
+        event.stopPropagation();
+    });
+    $('#filters').click(function(event){
+        event.stopPropagation();
+    });
+    $(document).click(function(event){
+        $('#filters').slideUp();
     });
 
     $('#cancel-filters').click(function(){

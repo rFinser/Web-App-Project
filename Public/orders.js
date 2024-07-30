@@ -25,7 +25,7 @@ function renderOrders(orders) {
                     <p>Total: ${calculateTotal(order)}</p>
                 </div>
             `;
-            $("#orders").append(orderString);
+            $("#myOrders").append(orderString);
     }
 }
 

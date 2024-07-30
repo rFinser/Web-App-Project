@@ -182,7 +182,6 @@
 }
 #filtersBtn:hover{
     background-color: #393838;
-    color: #fff;
 }
 #filters{
     background-color: #000000;
@@ -194,6 +193,7 @@
     display: flex;
     flex-direction: column;
     top: 100%;
+    left:50px;
     gap:20px;
     z-index: 99;
 }
@@ -332,4 +332,17 @@
     display: flex;
     align-items: center;
     margin:10px
+}
+
+.responsive{
+    display:none;
+}
+
+@media screen and (max-width: 1200px){
+    .responsive{
+        display:flex;
+    }
+    .isResponsive{
+        display:none;
+    }
 }

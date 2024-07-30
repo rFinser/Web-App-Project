@@ -3,8 +3,8 @@ const TOP_RESTS = 2; //number of restaurants to be in main page section top reat
 
 
 const tags = ["meat","salad","vegan","seafood","dessert","sandwiches","burgers","bbq","sushi","pastries","soups","ice-cream","smoothies","fast-food","gourmet-food","asian","italian","mexican"]
-
 $(function () {
+    
     $.ajax({
         url: '/isAdmin',
         success: function(data){
@@ -13,14 +13,17 @@ $(function () {
             loadTopRatedRestaurants();
         }
     })
+    $(window).on('resize', function() {
+        loadTags();
+    });
 
 });
 
-
-
-function loadTags() {
+function updateTagLayout() {
     const $slider = $('#tagsSlider');
-    const tagsPerSlide = 6;
+    let tagsPerSlide = window.innerWidth < 1200 ? 3 : 6;
+    
+    $slider.empty();
     
     for (let i = 0; i < tags.length; i += tagsPerSlide) {
         const $slide = $('<div class="slide"></div>');
@@ -29,8 +32,18 @@ function loadTags() {
         });
         $slider.append($slide);
     }
+
+    $('.tags-container').append('<button class="prev"><</button>');
+    $('.tags-container').append('<button class="next">></button>');
+    
+    initSlider(); // Reinitialize the slider
+}
+function loadTags() {
+    updateTagLayout();
+
     $('.tagForm').click(function() {
         const $div = $(this).closest('div') 
+        console.log($div.attr('id'))
         $.ajax({
             type: 'post',
             url: '/saveFilters',
@@ -40,12 +53,7 @@ function loadTags() {
             }
         })
     });
-    
-    
-    $('.tags-container').append('<button class="prev"><</button>');
-    $('.tags-container').append('<button class="next">></button>');
 
-    initSlider();
 }
 
 function initSlider() {

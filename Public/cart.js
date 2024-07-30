@@ -1,5 +1,6 @@
 $(function getProducts() {
     $.ajax({
+        type: 'post',
         url: '/cart/products',
         success: function (data) {
             console.log(data);
