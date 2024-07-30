@@ -54,9 +54,23 @@ body {
     cursor: pointer;
 }
 #graphContainer{
-    margin-top: 100px;
-    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+#graphData{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background: #201f2b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
 .tags-container {
     position: relative;
     width: 100%;
