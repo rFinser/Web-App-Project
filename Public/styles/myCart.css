@@ -10,6 +10,10 @@ h3 {
     text-align: center;
 }
 
+#container{
+    margin-top: 130px;
+}
+
 #emptyCart{
     color: #fff;
     text-align: center;
@@ -116,4 +120,82 @@ h3 {
     font-size: 18px;
     font-weight: bold;
     color: #fff;
+}
+
+#confirmModel{
+    overflow-y: hidden;
+    width: 400px;
+    height: 350px;
+    background-color: #201f2b;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border:none;
+    color:#fff;
+    font-size: 1.5em;
+    font-weight: 500;
+    text-align: center;
+    border:2px solid #fff;
+}
+#confirm-title{
+    margin: 10px;
+}
+#canvas-title{
+    margin:0;
+}
+#canvas-container{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:15px;
+}
+#signatureCanvas{
+    border: 1px dashed #fff5f5; 
+    cursor: crosshair;
+    color:#fff;
+    border-radius: 10px;
+}
+
+.dialog-btn{
+    width: 130px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: transparent;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    transition: .3s ease;
+    margin-bottom: 30px;
+}
+
+#confirm-purchase{
+    border:2px solid  #45a049;
+}
+#confirm-purchase:hover{
+    background-color: #45a049;
+}
+
+#cancel-purchase{
+    border:2px solid  #c90303;
+}
+#cancel-purchase:hover{
+    background-color: #c90303;
+}
+
+#clearCanvas{
+    border:2px solid #1405b3;
+}
+#clearCanvas:hover{
+    background-color: #1405b3;
+}
+#confirm-purchase:disabled{
+    background-color: #5d5d5d;
+    color: #c6c6c668;
+    border: 1px solid #c6c6c668;
+    cursor:default;
 }

@@ -4,18 +4,33 @@
     <title>Your Cart</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script defer src="cart.js"></script>
+    <script defer src="http://localhost/navbarScript.js"></script>
     <link rel="stylesheet" href="http://localhost/styles/myCart.css">
 </head>
 
 <body>
-    <h3>Here is your cart:</h3>
-    <h2 id="emptyCart"></h2>
+    <header id="navbarContainer"></header>
+    <div id="container">
+        <h3>Here is Your Cart:</h3>
+        <h2 id="emptyCart"></h2>
 
-    <ul id="productsList"></ul>
+        <ul id="productsList"></ul>
 
-    <input id="purchaseBtn" type="button" value="Purchase">
-    <h3 id="totalPrice"></h3>
-
+        <input id="purchaseBtn" type="button" value="Purchase">
+        <h3 id="totalPrice"></h3>
+        <dialog id="confirmModel">
+            <h3 id="confirm-title">Before Purchase</h3>
+            <div id="canvas-container">
+                <h5 id="canvas-title">Please Sign Here:</h5>
+                <canvas id="signatureCanvas" width="250" height="90"></canvas>
+                <button id="clearCanvas" class="dialog-btn">clear</button>
+            </div>
+            <div>
+                <button id="cancel-purchase" class="dialog-btn">cancel</button>
+                <button id="confirm-purchase" class="dialog-btn" disabled>confirm</button>
+            </div>
+        </dialog>
+    </div>
 </body>
 
 </html>

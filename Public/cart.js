@@ -12,12 +12,14 @@ $(function getProducts() {
             $("#emptyCart").hide();
             renderProducts(data.products)
             $("#totalPrice").html(`Total: ₪${calculateTotal(data.products)}`);
+            canvasScript()
         }
     })
 });
 
 function handleEmptyCart(){
     $("#emptyCart").html("Your Cart is Currently Empty")
+    $("#emptyCart").show();
     $("#totalPrice").hide();
     $("#purchaseBtn").hide();
 }
@@ -45,9 +47,9 @@ function renderProducts(products) {
 
 $(document).on("click", ".add-product", function() {
     const productId = $(this).parent().parent().attr('data-productId');
-    let currentQuantity = parseInt($(this).parent().attr("data-quantity"));
-    
-    $(this).parent().attr("data-quantity", currentQuantity + 1);
+    let currentQuantity = parseInt($(this).parent().parent().attr("data-quantity"));
+    const Quantity = $(this).parent().find(".product-quantity");
+    $(this).parent().parent().attr("data-quantity", currentQuantity + 1);
 
     $.ajax({
         type: 'POST',
@@ -56,35 +58,33 @@ $(document).on("click", ".add-product", function() {
             productId: productId
         },
         success: function (data) {
-            location.reload();
+            Quantity.html(currentQuantity + 1);
         }
     });
 });
 
 $(document).on("click", ".remove-product", function() {
     const productId = $(this).parent().parent().attr('data-productId');
-    let currentQuantity = parseInt($(this).parent().attr("data-quantity"));
+    let currentQuantity = parseInt($(this).parent().parent().attr("data-quantity"));
+    const Quantity = $(this).parent().find(".product-quantity");
+    $(this).parent().parent().attr("data-quantity", currentQuantity - 1);
 
-        $(this).parent().attr("data-quantity", currentQuantity - 1);
-        $.ajax({
-            type: 'DELETE',
-            url: `/cart${productId}`,
-            success: function () {
-                location.reload();
-            }
-        });
-
-})
-
-function deleteProduct(productId){
     $.ajax({
         type: 'DELETE',
         url: `/cart${productId}`,
         success: function () {
-            location.reload();
+            if(currentQuantity - 1 == 0){
+                $('#productsList').find(`[data-productId="${productId}"]`).remove();
+                if($('#productsList').children().length == 0){
+                    handleEmptyCart();
+                }
+                return;
+            }
+            Quantity.html(currentQuantity - 1);
         }
     });
-}
+
+})
 
 function formatProducts(products){
     let productDict = [];
@@ -111,14 +111,96 @@ function calculateTotal(products){
     return total;
 }
 
+$('#purchaseBtn').on('click', () => {
 
-
-$("#purchaseBtn").on('click', () => {
-    $.ajax({
-        type: 'POST',
-        url: '/cart/purchase',
-        success: () => {
-            location.reload();
-        }
-    });
+    document.getElementById("confirmModel").showModal()
 });
+
+$('#cancel-purchase').on('click', () => {
+    document.getElementById("confirmModel").close();
+    $('#confirm-purchase').prop('disabled', true)
+    clearCanvas();
+});
+$('#clearCanvas').on('click', () => {
+    $('#confirm-purchase').prop('disabled', true)
+    clearCanvas();
+});
+
+$('#confirm-purchase').on('click', () => {
+    if(hasDrawn()){
+        $.ajax({
+            type: 'POST',
+            url: '/cart/purchase',
+            success: function () {
+                window.location.reload();
+            }
+        });
+    }
+});
+
+$('#confirm-purchase').on('click', hasDrawn)
+function canvasScript(){
+    const canvas = $('#signatureCanvas');
+    const context = canvas[0].getContext('2d');
+    let isDrawing = false;
+
+    function startPosition(e) {
+        isDrawing = true;
+        draw(e);
+    }
+
+    function endPosition() {
+        isDrawing = false;
+        context.beginPath();
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+
+        context.lineWidth = 2;
+        context.lineCap = 'round';
+        context.strokeStyle = '#fff';
+
+        const x = e.offsetX;
+        const y = e.offsetY;
+
+        context.lineTo(x, y);
+        context.stroke();
+        context.beginPath();
+        context.moveTo(x, y);
+
+        if(hasDrawn()){
+            $('#confirm-purchase').prop('disabled', false)
+        }
+        else{
+            $('#confirm-purchase').prop('disabled', true)
+        }
+    }
+
+    canvas.on('mousedown', startPosition);
+    canvas.on('mouseup', endPosition);
+    canvas.on('mousemove', draw);
+    canvas.on('mouseleave', endPosition);
+
+}
+
+function clearCanvas(){
+    const canvas = document.getElementById('signatureCanvas');
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height)
+}
+
+function hasDrawn() {
+    const canvas = document.getElementById('signatureCanvas');
+    const context = canvas.getContext('2d');
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    let counter = 0;
+
+    for (let i = 0; i < data.length; i += 4) {
+        if (data[i] == 255 || data[i + 1] == 255 || data[i + 2] == 255 || data[i + 3] == 255) {
+            counter++;
+        }
+    }
+    return counter > 400;
+}
