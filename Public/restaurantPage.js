@@ -60,7 +60,6 @@ function makeRestaurant(restaurantJson) {
     $("#address").html(`${restaurant.r_address}`);
     $("#icon").attr("src", `${restaurant.r_icon}`);
     $("#icon").attr('onerror', `this.src = '${defaultRestIcon}'`);
-    console.log(restaurant.r_tags)
     for (tag of restaurant.r_tags) {
         $("#res-tags").append(`<li>${tag.name}</li>`)
     }
@@ -83,7 +82,7 @@ function makeProduct(product) {
          <img src="${product.p_img}" onerror="this.src='${defaultProductIcon}'">
          <p>${product.p_description}</p>
          <p>${product.p_price}</p>
-         <input class="addBtn" type="button" value="Add To Cart"></input></br>`
+         <button class="addBtn">Add To Cart</button></br>`
          +Admin()+`
         </section>
        </li> 
@@ -311,11 +310,11 @@ $(document).ready(function () {
     
     $('#filter-tags').append(tagsScheme());
     $('#get-filters').click(function() { 
-        $('#filtersForm').toggle(200);
+        $('#filtersForm').slideDown();
     });
     $('#cancel-filters').click(function(){
         $('#rangeTooltip').empty();
-        $('#filtersForm').toggle(100);
+        $('#filtersForm').slideUp();
         $('input[type="checkbox"]').prop('checked', false);
         $('.rangeBtn').prop("value", "");
     });
@@ -341,11 +340,10 @@ $(document).ready(function () {
                 countFilters++;
             });
         }
-
+        
         var min = $('#minPrice').val();
         var max = $('#maxPrice').val();
-        
-        console.log(min,max)
+
         if(min == ''){
             min = '0';
         }
@@ -358,7 +356,6 @@ $(document).ready(function () {
         else{
             countFilters++;
         }
-        console.log(countFilters)
         if(!validRange(min,max))
         {
             $('#rangeTooltip').html('invalid range, price should be a Natural number');
@@ -366,15 +363,14 @@ $(document).ready(function () {
             return;
         }
 
-
-
         if(countFilters > 0)
             $('#get-filters').html(`(${countFilters}) filters`)
-        else
-            $('#get-filters').html(`filters`)
+        else{
+            $('#get-filters').html(`filters`);
+            return;
+        }
 
         $('#filtersForm').toggle();
-        
         $.ajax({
             type: "post",
             url: "/productsSearched/" + getRestaurantName(),
@@ -396,7 +392,6 @@ $(document).ready(function () {
 });
 
 function validRange(min,max){
-    console.log(min,max)
     if(min>max || min < 0 || max < 1){
         return false;
     }

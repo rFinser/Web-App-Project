@@ -195,3 +195,78 @@ body {
     margin:0;
     max-width: 400px;
 }
+#confirmDelete-dialog{
+    padding: 10px 30px;
+    border-radius: 10px;
+    background-color: #282645;
+    border:none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: #ffffff;
+}
+#confirm-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    
+}
+#confirm-input{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+#confirm-delete{
+
+    background-color: transparent;
+    border: 2px solid #fff;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 400;
+    border-radius: 10px;
+    height: 30px;
+    width: 200px;
+}
+#confirm-delete::placeholder{
+    opacity: 0.5;
+}
+#actionsContainer{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialog-btn{
+    width: 110px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: transparent;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    transition: .3s ease;
+    margin-bottom: 30px;
+}
+
+#confirmDeleteBtn{
+    border: 2px solid #f44336;
+}
+#confirmDeleteBtn:hover{
+    background-color: #f44336;
+}
+#confirmDeleteBtn:disabled{
+    background-color: #5d5d5d;
+    color: #c6c6c668;
+    border: 1px solid #c6c6c668;
+    cursor:default;
+}
+
+#cancelBtn{
+    border: 2px solid #013ab6;
+}
+#cancelBtn:hover{
+    background-color: #013ab6;
+}

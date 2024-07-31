@@ -60,13 +60,13 @@ function filters(){
         $('#filters').slideUp();
     });
 
-    $('#cancel-filters').click(function(){
+    $('#cancel-filters-nav').click(function(){
         $('#filters').slideToggle(function(){
             $('input[type="checkbox"]').prop('checked', false);
             $('#ratingFilter').val($('#defaultValue').val())
         });
     });
-    $('#reset-filters').click(function(){
+    $('#reset-filters-nav').click(function(){
         $('input[type="checkbox"]').prop('checked', false);
         $('#ratingFilter').val($('#defaultValue').val());
     });

@@ -15,7 +15,34 @@ $(document).ready(function(){
         }
     });
 })
+$('#deleteBtn').on('click',function(){
+    document.getElementById('confirmDelete-dialog').showModal();
+})
 
+$('#confirm-delete').keyup(function() { 
+    if($('#confirm-delete').val() != 'delete user'){
+        $('#confirmDeleteBtn').prop('disabled', true);
+    }
+    else{
+        $('#confirmDeleteBtn').prop('disabled', false);
+    }
+});
+
+$('#confirmDeleteBtn').on('click',function(){
+    $.ajax({
+        type: "post",
+        url: "/deleteUserFromSettings",
+        success: function () {
+            window.alert('user deleted');
+            window.location.href = '/';
+        }
+    });
+});
+
+$('#cancelBtn').on('click',function(){
+    $('#confirm-delete').val('');
+    document.getElementById('confirmDelete-dialog').close();
+})
 
 $('#updateUserBtn').on('click',function(){
     $('#user-data').hide();

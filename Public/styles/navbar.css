@@ -33,13 +33,19 @@
     text-decoration: none;
     transition: 0.3s;
 }
+
 .navbarBtn{
     position: relative;
+    cursor: pointer;
     color: #fff ;
     text-decoration:none;
     display: flex;
     gap: 4px;
 }
+.navbarBtn label{
+    cursor: pointer;
+}
+
 .navbarBtn i{
     display: flex;
     align-items: center;

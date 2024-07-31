@@ -36,12 +36,22 @@
             <form action="/logout" method="post">
                 <button class="dataBtn" id="logoutBtn">Logout</button>
             </form>
-            <form action="/deleteUserFromSettings" method="post">
-                <button class="dataBtn" id="deleteBtn">Delete user</button>
-            </form>
+            <button class="dataBtn" id="deleteBtn">Delete user</button>
         </div>
     </div>
-
+    <dialog id="confirmDelete-dialog">
+        <div id="confirm-container">
+            <h4>Are you sure you want to delete your account?</h4>
+            <div id="confirm-input">
+                <label for="confirm-delete">Type 'delete user' to confirm</label>
+                <input type="text" id="confirm-delete" placeholder="delete user">
+            </div>
+            <div id="actionsContainer">
+                <button id="cancelBtn" class="dialog-btn">Cancel</button>
+                <button id="confirmDeleteBtn" class="dialog-btn" disabled>Confirm</button>
+            </div>
+        </div>
+    </dialog>
     <template id="updateUser-template">
         <div id="updateUser">
             <p id="statusTooltip"  class="tooltip"></p>
