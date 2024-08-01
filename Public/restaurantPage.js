@@ -336,10 +336,7 @@ $(document).ready(function () {
         var countFilters = 0;
 
         const checkedTags =$('#filter-tags').find('input[type="checkbox"]:checked')
-        if (checkedTags.length==0){
-            selectedTags = tags;
-        }
-        else{
+        if (checkedTags.length>0){
             checkedTags.each(function() {
                 let tagName = $(this).attr("id").replace("tag-", "");
                 selectedTags.push(tagName);
@@ -373,7 +370,6 @@ $(document).ready(function () {
             $('#get-filters').html(`(${countFilters}) filters`)
         else{
             $('#get-filters').html(`filters`);
-            return;
         }
 
         $('#filtersForm').toggle();
