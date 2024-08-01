@@ -10,15 +10,21 @@ $(document).ready(function () {
             type: 'POST',
             url: `/cart/add`,
             data: { productId },
-            success: function () {
-                console.log("added product");
-            },
+            success: handleProductAdded,
             error: function (e) {
                 window.location.href = '/login'
             }
         });
     })
 })
+
+function handleProductAdded(){
+    const popup = $('#addToCartPopup');
+    popup.css('display', 'block');
+    setTimeout(() => {
+        popup.css('display', 'none');
+    }, 2000);
+}
 
 $(function () {
     $.ajax({
