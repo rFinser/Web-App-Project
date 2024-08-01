@@ -61,12 +61,19 @@ function intersection(array1, array2){
 async function productsFilter(req,res){
     const {tags, minPrice, maxPrice} = req.body;
     const rest = await restServices.findRestaurantByName(req.params.name)
-
     const priceFilter = await prodServices.findByPrice(minPrice,maxPrice);
-    const tagsFilter = await prodServices.findByTags(tags);
 
-    let productsFilters = intersection(priceFilter, tagsFilter);
-    let ArrayProductsFilters = Array.from(productsFilters);
+    let ArrayProductsFilters =[];
+    
+    if(tags!=null){
+        const tagsFilter = await prodServices.findByTags(tags);
+        let productsFilters = intersection(priceFilter, tagsFilter);
+        ArrayProductsFilters = Array.from(productsFilters);
+    }
+    else{
+        let productsFilters = intersection(priceFilter, priceFilter);
+        ArrayProductsFilters = Array.from(productsFilters);
+    }
 
     let products = [];
 
