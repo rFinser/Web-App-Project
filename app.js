@@ -14,9 +14,7 @@ Mongoose.connect(process.env.CONNECTION_STRING, {
 const app = express();
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
-app.use(express.static("public"));
-
-app.set('view engine', 'ejs');
+app.use(express.static("Public"));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,

@@ -9,7 +9,7 @@ async function getOrdersPage(req, res) {
         res.redirect("/login");
         return;
     }
-    res.render('orders.ejs')
+    res.sendFile('orders.html', { root: './Views' });
 }
 
 async function getOrders(req, res) {
@@ -32,7 +32,7 @@ async function getAllOrdersPage(req, res){
         return;
     }
 
-    res.render("ordersPage");
+    res.sendFile("ordersPage.html", {root: "./Views"});
 }
 
 async function getProductsAndQuantity(req, res) {
