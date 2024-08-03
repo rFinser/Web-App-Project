@@ -6,15 +6,15 @@ const reviewsServices = require("../Services/reviewsServices");
 async function getRestaurantPage(req, res) {
     const restaurant = await restServices.findRestaurantByName(req.params.name);
     if (restaurant == null) {
-        res.render('restaurantNotFound');
+        res.sendFile('restaurantNotFound.html', { root: './Views' });
     }
     else {
-        res.render('restaurantView');
+        res.sendFile('restaurantView.html', { root: './Views' });
     }
 }
 
 function getAllRestaurantsPage(req,res){
-    res.render('allRestaurants.ejs');
+    res.sendFile('allRestaurants.html', { root: './Views' });
 }
 
 async function getRestaurant(req, res){
@@ -91,7 +91,7 @@ function saveFilters(req,res){
     res.end();
 }
 function getRestaurantsFilters(req,res){
-    res.render('restaurantsFilters.ejs');
+    res.sendFile('restaurantsFilters.html', {root: './Views'});
 }
 
 async function getRestaurantByFilters(req,res){

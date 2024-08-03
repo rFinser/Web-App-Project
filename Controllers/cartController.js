@@ -15,7 +15,7 @@ function isLoggedIn(req,res, next){
 
 async function getCartPage(req, res) {
     if(req.session.username != null){
-        res.render('cartView');
+        res.sendFile("cartView.html", {root: "./Views"});
     }
     else{
         res.redirect('/login')

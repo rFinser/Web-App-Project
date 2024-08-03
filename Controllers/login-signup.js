@@ -1,11 +1,11 @@
 const users = require('../Services/usersServices')
 
 function showSignupPage(req,res){
-    res.render('signup.ejs')
+    res.sendFile("signup.html", {root: "./Views"});
 }
 
 function showLoginPage(req,res){
-    res.render('login.ejs')
+    res.sendFile('login.html', {root: './Views'})
 }
 
 async function signup(req,res){

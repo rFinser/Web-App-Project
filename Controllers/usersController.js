@@ -16,7 +16,7 @@ async function getUsersByRegistrationMonth(req, res){
 }
 
 function getSettingsPage(req,res){
-    res.render('settings.ejs')
+    res.sendFile('settings.html', {root: './Views'});
 }
 async function getUserData(req,res){
     const user = await userServices.findUser(req.session.username);
@@ -78,7 +78,7 @@ async function getAllUsersPage(req, res){
         res.end();
         return;
     }
-    res.render("usersPage");
+    res.sendFile("usersPage.html", {root: "./Views"});
 }
 
 module.exports = {

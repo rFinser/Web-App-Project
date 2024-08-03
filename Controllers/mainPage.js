@@ -2,7 +2,7 @@ const users = require('../Services/usersServices')
 const restaurants = require('../Services/restaurantsServices')
 
 function getMainPage(req,res){
-    res.render('index.ejs');
+    res.sendFile("index.html", {root: "./Views"});
 }
 
 async function getMainPageUser(req,res){
