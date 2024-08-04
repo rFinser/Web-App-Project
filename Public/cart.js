@@ -30,7 +30,7 @@ function renderProducts(products) {
     for(const productId in formattedProducts){
         const product = formattedProducts[productId];
         const productString = `
-            <div class="product-container" data-productId="${productId}" data-quantity="${product.quantity}">
+            <div class="product-container" data-productId="${productId}" data-name="${product.name}" data-quantity="${product.quantity}" data-price="${product.price}">
                 <div class="product-info">
                     <img src="${product.img}">
                     <p class="product">${product.name} - ₪${product.price * product.quantity}</p>
@@ -39,14 +39,31 @@ function renderProducts(products) {
                     <button class="add-product">+</button>
                     <p class="product-quantity">${product.quantity}</p>
                     <button class="remove-product">-</button>
+                    <button class="delete-product">X</button>
                 </div>
             </div>
         `;
         $("#productsList").append(productString);
     }
 }
+$(document).on("click", ".delete-product", function() {
+    const productId = $(this).parent().parent().attr('data-productId');
+    console.log(productId);
+    $.ajax({
+        type: 'DELETE',
+        url: '/cart/remove',
+        data: {
+            productId: productId
+        },
+        success: function (data) {
+            $(`[data-productId="${productId}"]`).remove();
+            updateTotal();
+        }
+    });
+});
 
 $(document).on("click", ".add-product", function() {
+    const productContainer = $(this).closest(".product-container");
     const productId = $(this).parent().parent().attr('data-productId');
     let currentQuantity = parseInt($(this).parent().parent().attr("data-quantity"));
     const Quantity = $(this).parent().find(".product-quantity");
@@ -60,11 +77,15 @@ $(document).on("click", ".add-product", function() {
         },
         success: function (data) {
             Quantity.html(currentQuantity + 1);
+            updateTotal();
+
+            productContainer.find(".product").html(`${productContainer.attr("data-name")} - ₪${productContainer.attr("data-price") * (currentQuantity + 1)}`);
         }
     });
 });
 
 $(document).on("click", ".remove-product", function() {
+    const productContainer = $(this).closest(".product-container");
     const productId = $(this).parent().parent().attr('data-productId');
     let currentQuantity = parseInt($(this).parent().parent().attr("data-quantity"));
     const Quantity = $(this).parent().find(".product-quantity");
@@ -82,6 +103,9 @@ $(document).on("click", ".remove-product", function() {
                 return;
             }
             Quantity.html(currentQuantity - 1);
+            updateTotal();
+
+            productContainer.find(".product").html(`${productContainer.attr("data-name")} - ₪${productContainer.attr("data-price") * (currentQuantity - 1)}`);
         }
     });
 
@@ -112,6 +136,16 @@ function calculateTotal(products){
         total += product.p_price;
     }
     return total;
+}
+
+function updateTotal() {
+    $.ajax({
+        type: 'post',
+        url: '/cart/products',
+        success: function (data) {
+            $("#totalPrice").html(`Total: ₪${calculateTotal(data.products)}`);
+        }
+    });
 }
 
 $('#purchaseBtn').on('click', () => {

@@ -37,6 +37,11 @@ async function deleteProduct(req,res){
     res.end()
 }
 
+async function removeProduct(req,res){
+    await userServices.removeFromCart(req.session.username,req.body.productId);
+    res.end()
+}
+
 async function addProduct(req, res){
     await userServices.addToCart(req.session.username, req.body.productId);
     res.end();
@@ -54,5 +59,5 @@ async function makePurchase(req, res){
 }
 
 module.exports = {
-    isLoggedIn, getCartPage, deleteProduct, makePurchase, getCartProducts, addProduct
+    isLoggedIn, getCartPage, deleteProduct, makePurchase, getCartProducts, addProduct, removeProduct
 }

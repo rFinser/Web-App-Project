@@ -102,9 +102,13 @@ $('#restaurantList').delegate('#saveRes', 'click', async function () {
 async function checkAddresses(addresses) {
     let validAddresses = [];
 
+    if(addresses.length === 1 && addresses[0] === "") { //if only have one address and it's empty
+        return { allValid: false, validAddresses: [] };
+    }
+
     for (const address of addresses) {
         if (address === "") {
-            return { allValid: false, validAddresses: [] };
+            continue; //any empty address is not considered
         }
 
         try {
@@ -113,7 +117,6 @@ async function checkAddresses(addresses) {
                 url: "/openCageLatLng",
                 data: { address }
             });
-            console.log(response);
             validAddresses.push(response);
         } catch (error) {
             console.error("Error validating address:", address, error);
@@ -169,7 +172,7 @@ $('#restaurantList').delegate('.updateRes', 'click', function () {
             $('#u_icon').val(rest.r_icon);
 
             $.each(rest.r_geolocation, (i, location) => {
-                $('#u_address').val(location.address);
+                $('#u_addressContainer').append(`<input id="u_address" value="${location.address}" placeholder="Format: Address, City(optional), Country(optional)" style="width: 300px;"/>`);
             })
             $.each(rest.r_tags, (i, tag) => {
                 $('#tagsForm').find(`#tag-${tag}`).prop('checked', true);
@@ -187,6 +190,7 @@ $('#restaurantList').delegate('.u_cancel', 'click', function () {
 });
 
 $('#restaurantList').delegate('.u_save', 'click', async function () {
+    const updateButton = $(this);
     $('.tooltip').hide();
     let $li = $(this).closest('li');
     $li.removeClass("updating");
@@ -205,6 +209,12 @@ $('#restaurantList').delegate('.u_save', 'click', async function () {
     const name = $('#u_resName').val();
     const desc = $('#u_desc').val();
     const icon = $('#u_icon').val();
+    
+    if (!validInputs(name, desc)) {
+        $('#inputsTooltip').html('please fill all the required fields');
+        $('#inputsTooltip').show();
+        return;
+    }
 
     let addresses = [];
     $('#u_addressContainer').find('input').each(function () {
@@ -213,13 +223,7 @@ $('#restaurantList').delegate('.u_save', 'click', async function () {
 
     const { allValid, validAddresses } = await checkAddresses(addresses);
     if (!allValid) {
-        $("#addressTooltip").show();
-        return;
-    }
-
-    if (!validInputs(name, desc)) {
-        $('#inputsTooltip').html('please fill all the required fields');
-        $('#inputsTooltip').show();
+        $("#u_addressTooltip").show();
         return;
     }
 
@@ -229,8 +233,8 @@ $('#restaurantList').delegate('.u_save', 'click', async function () {
 
     $.ajax({
         type: 'PUT',
-        url: 'updateRestaurant',
-        data: { id, name, desc, icon, tags, r_geolocation: validAddresses },
+        url: '/updateRestaurant',
+        data: { id, name, desc, icon, tags, geo: validAddresses },
         success: async function (data) {
             if (data.status == 1) {
                 $('#updateData').remove()
@@ -455,9 +459,9 @@ function createRestaurantScheme() {
           <label for="icon">Icon(url):</label>
           <input id="icon"/></br>
           `+ tagsScheme() + `
-          <label for="address">Address(hebrew):</label>
+          <label for="address">Address(Hebrew):</label>
           <div id="addressContainer">
-            <input id="address" placeholder="format: address, city(optional), country(optional)" style="width: 300px;"/>
+            <input id="address" placeholder="Format: Address, City(optional), Country(optional)" style="width: 300px;"/>
             <button id="addAddress">Add Address</button></br>
           </div>
           <p id="addressTooltip" class="tooltip">invalid address</p>
@@ -478,10 +482,11 @@ function updateRestaurantScheme() {
           <label for="u_icon">Icon(url):</label>
           <input id="u_icon"/></br>
           `+ tagsScheme() + `
-          <label for="u_address">Address:</label>
-          <input id="u_address"/>
-          <button id="addAddress">Add Address</button></br>
-          <p id="u_addressTooltip" class="tooltip"></p>
+          <label for="u_address">Address(Hebrew):</label>
+          <div id="u_addressContainer">
+            <button id="addAddress">Add Address</button></br>
+          </div>
+          <p id="u_addressTooltip" class="tooltip" style="display:none;">Invalid Address</p>
           <button class="u_save">save</button>
           <button class="u_cancel">cancel</button>
       </div>
