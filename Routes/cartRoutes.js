@@ -8,5 +8,6 @@ router.route("/cart:id").delete(cartController.deleteProduct);
 router.route("/cart/purchase").post(cartController.makePurchase);
 router.route("/cart/products").post(cartController.getCartProducts);
 router.route("/cart/add").post(cartController.isLoggedIn, cartController.addProduct);
+router.route("/cart/remove").delete(cartController.removeProduct);
 
 module.exports = router;

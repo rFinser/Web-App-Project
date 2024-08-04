@@ -73,7 +73,7 @@ async function deleteRestaurant(req,res){
 
 async function updateRestaurant(req,res){
     try{
-        await restServices.updateRestaurant(req.body.id,req.body.name,req.body.desc,req.body.icon,req.body.tags,req.body.address,req.body.geo)
+        await restServices.updateRestaurant(req.body.id,req.body.name,req.body.desc,req.body.icon,req.body.tags,req.body.geo)
         res.json({status: 1});
     }
     catch(e){
