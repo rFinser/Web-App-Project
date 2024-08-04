@@ -87,7 +87,7 @@ function makeProduct(product) {
          <h5>${product.p_name}</h5>
          <img src="${product.p_img}" onerror="this.src='${defaultProductIcon}'">
          <p>${product.p_description}</p>
-         <p>${product.p_price}</p>
+         <p>${product.p_price}₪</p>
          <button class="addBtn">Add To Cart</button></br>`
          +Admin()+`
         </section>

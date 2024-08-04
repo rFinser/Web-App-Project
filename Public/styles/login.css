@@ -138,6 +138,7 @@ body{
     margin-top: -10px;
     display:flex;
     justify-content: center;
+    flex-direction: column;
 }
 
 .signup-link p a{
