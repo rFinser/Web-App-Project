@@ -81,6 +81,8 @@ async function updateRestaurant(req,res){
     }
     res.end()
 }
+
+
 var selectedTags;
 var selectedLocation;
 var selectedRating;
@@ -95,9 +97,12 @@ function getRestaurantsFilters(req,res){
 }
 
 async function getRestaurantByFilters(req,res){
+    if(selectedTags == null)
+        return
+    
     const restaurantsTags = await restServices.searchByTags(selectedTags);
     const restaurantsSearched = [];
-    if(selectedLocation != null && selectedRating!= null){
+    if(selectedLocation != null && selectedRating != null){
         const restaurantsLocation = await restServices.searchByLocation(selectedLocation);
         const restaurantsRating = await reviewsServices.getRestaurantsByRating(selectedRating);
         
