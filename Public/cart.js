@@ -31,7 +31,9 @@ function renderProducts(products) {
         const product = formattedProducts[productId];
         const productString = `
             <div class="product-container" data-productId="${productId}" data-name="${product.name}" data-quantity="${product.quantity}" data-price="${product.price}">
+                
                 <div class="product-info">
+                    <button class="delete-product">X</button>
                     <img src="${product.img}"  onerror="this.src='${defaultProductIcon}'">
                     <p class="product">${product.name} - ₪${product.price * product.quantity}</p>
                 </div>
@@ -39,7 +41,7 @@ function renderProducts(products) {
                     <button class="add-product">+</button>
                     <p class="product-quantity">${product.quantity}</p>
                     <button class="remove-product">-</button>
-                    <button class="delete-product">X</button>
+                    
                 </div>
             </div>
         `;

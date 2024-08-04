@@ -1,18 +1,16 @@
 $(function () {
-    $('#showPassword').on('click', function() {
-        showPassword();
-    });
+    $('#showPassword').on('click', showPassword)
     
     checkFormValidity();
     $('input, select').on('input change', checkFormValidity);
-    $('#submitBtn').on('click', async function(){
-        console.log(validCheck())
-        if(await validCheck()){
-            window.location.href = '/'
-        }
-    });
+    
 });
 
+$('#submitBtn').on('click', async function(){
+    if(await validCheck()){
+        window.location.href = '/';
+    }
+});
 
 function checkFormValidity() {
     let isValid = true;
@@ -29,7 +27,7 @@ function checkFormValidity() {
     $('#submitBtn').prop('disabled', !isValid);
 }
 
-function validCheck(){
+async function validCheck(){
     clearErrors();
     const username = $('#username');
     const email = $('#email');
@@ -61,20 +59,21 @@ function validCheck(){
 
     const birthdate= {day:day.val(),month:month.val(),year:year.val()};
     const user = {username:username.val(), birthdate, email:email.val(), password:password.val()};
-    return new Promise(function(resolve){
-        $.ajax({
-            type: "post",
-            url: "/signup",
-            data: user,
-            success: function(response){
-                resolve(true);
-            },
-            error: function(response){
-                showError('username', 'username already in use, please try a diffrent one');
-                resolve(false);
-            }
-        });
+
+    let status = false;
+    await $.ajax({
+        type: "post",
+        url: "/signup",
+        data: user,
+        success: function () {
+            status = true;
+        },
+        error: function(){
+            showError('username', 'username already in use, please try a diffrent one');
+            status = false;
+        }
     });
+    return status;
 }
 
 function validPassword(password){

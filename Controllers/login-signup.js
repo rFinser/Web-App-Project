@@ -7,7 +7,12 @@ function showSignupPage(req,res){
 function showLoginPage(req,res){
     res.sendFile('login.html', {root: './Views'})
 }
-
+function isLoggedOut(req,res, next){
+    if(req.session.username == null){
+        return next();
+    }
+    res.redirect('/')
+}
 async function signup(req,res){
     try{
         await users.register(req.body.username,req.body.email,req.body.password,req.body.birthdate,false)
@@ -44,5 +49,5 @@ function logout(req,res){
 
 
 module.exports={
-    showSignupPage,showLoginPage,signup,login,logout
+    showSignupPage,showLoginPage,isLoggedOut,signup,login,logout
 }

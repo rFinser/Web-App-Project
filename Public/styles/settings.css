@@ -270,3 +270,14 @@ body {
 #cancelBtn:hover{
     background-color: #013ab6;
 }
+
+.show-password-container{
+    color: #fff;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+}
+#showPassword{
+    margin-left: 5px;
+    cursor: pointer;
+}

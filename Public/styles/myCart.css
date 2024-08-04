@@ -79,13 +79,14 @@ h3 {
 }
 
 .delete-product {
-    background-color: #fff;
-    border: 1px solid #000;
-    color: #000;
+    background-color: transparent;
+    border: none;
+    color: #ff0000;
     padding: 10px 10px;
     font-size: 12px;
     border-radius: 50rem;
     transition: 0.15s;
+    cursor: pointer;
 }
 
 .remove-product {
@@ -101,9 +102,7 @@ h3 {
 }
 
 .delete-product:hover {
-    border: 1px solid #fff;
-    background-color: #5d5d5d;
-    color: #fff;
+    background-color: #4e4e4e;
 }
 .product-quantity {
     margin: 0 10px;
