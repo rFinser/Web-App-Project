@@ -118,7 +118,7 @@ async function addProduct(restaurantName, productId) {
         throw Error(`The product: "${productId}" is already in the restaurant: "${restaurantName}"`);
 
     rest.r_productsId.push(productId);
-    await updateRestaurant(restaurantName, restaurantName, rest.r_description, rest.r_icon, rest.r_tags, rest.r_address, rest.r_geolocation, rest.r_productsId);
+    await updateRestaurant(restaurantName, restaurantName, rest.r_description, rest.r_icon, rest.r_tags, rest.r_geolocation, rest.r_productsId);
 }
 
 async function removeProduct(restaurantName, productId) {
