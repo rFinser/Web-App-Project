@@ -124,7 +124,6 @@ async function checkAddresses(addresses) {
         }
     }
 
-    console.log(true, validAddresses);
     return { allValid: true, validAddresses };
 }
 
@@ -279,7 +278,6 @@ async function sendRating(restaurantName, rating) {
                     location.href = "/login";
                     break;
                 case 0:
-                    console.log("Success");
                     break;
             }
         }

@@ -3,8 +3,6 @@ $(function getProducts() {
         type: 'post',
         url: '/cart/products',
         success: function (data) {
-            console.log(data);
-
             if(data.products.length == 0){
                 handleEmptyCart();
                 return;
@@ -50,7 +48,6 @@ function renderProducts(products) {
 }
 $(document).on("click", ".delete-product", function() {
     const productId = $(this).parent().parent().attr('data-productId');
-    console.log(productId);
     $.ajax({
         type: 'DELETE',
         url: '/cart/remove',

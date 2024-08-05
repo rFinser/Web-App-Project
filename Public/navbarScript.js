@@ -31,7 +31,6 @@ function searchBar(){
             url: '/search',
             data: {name: $("#searchBar").val()},
             success: function(restaurants) {
-                console.log(restaurants)
                 $('#results').empty();
                 if(restaurants.length == 0){
                     $('#results').append('<p>no results found</p>')

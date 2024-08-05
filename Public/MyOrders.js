@@ -3,7 +3,6 @@ $(function () {
         type: 'post',
         url: '/MyOrders',
         success: function(data){
-            console.log(data);
             $("#name").html(data.orders._id);
             renderOrders(data.orders.orders);
         }            

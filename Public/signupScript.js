@@ -118,7 +118,6 @@ function validDate(day,month,year){
 }
 
 function showError(element, msg){
-    console.log(element);
     $(`#${element}`).addClass('errorInput');
     $(`label[for="${element}"]`).addClass('errorLabel');
     $(`.${element}-error`).addClass('display-error');

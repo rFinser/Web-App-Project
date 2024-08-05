@@ -4,7 +4,6 @@ $(async function(){
 
 
 function renderOrders(data){
-    console.log(data.ordersData);
     for(const groupedOrder of data.ordersData){
         createOrderSchema(groupedOrder);
     }

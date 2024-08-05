@@ -43,7 +43,6 @@ function loadTags() {
 
     $('.tagForm').click(function() {
         const $div = $(this).closest('div') 
-        console.log($div.attr('id'))
         $.ajax({
             type: 'post',
             url: '/saveFilters',

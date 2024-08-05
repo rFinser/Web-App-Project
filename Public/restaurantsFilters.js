@@ -33,7 +33,6 @@ async function getRating(restaurantName) {
         url: "/reviews/getAvgRating",
         data: { restaurantName: restaurantName },
         success: function (data) {
-            console.log(data)
             rating = data.avgRating;
         },
     })
