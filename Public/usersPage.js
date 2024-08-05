@@ -24,7 +24,7 @@ function createUserSchema(user) {
             <p> Registered: ${formatDate(user.u_registrationDate)}</p>
             <p> Cart items: ${user.u_cart.length}</p>
             <div class="user-actions">
-                <button class="delete-user">Delete</button>
+                ${user.u_admin ? '' : '<button class="delete-user">Delete</button>'}
             </div>
         </div>
     </div>

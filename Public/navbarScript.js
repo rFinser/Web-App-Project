@@ -57,7 +57,7 @@ function filters(){
     $('#filters').click(function(event){
         event.stopPropagation();
     });
-    $(document).click(function(event){
+    $(document).click(function(){
         $('#filters').slideUp();
     });
 
@@ -147,12 +147,12 @@ function SchemeTags(){
     const firstSection = filtersTags.slice(0, Math.ceil(filtersTags.length/2));
     const secondSection = filtersTags.slice(Math.ceil(filtersTags.length/2), filtersTags.length);
     for(tag of firstSection){
-        tagsHtml+=`<div><input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label></div>`
+        tagsHtml+=`<div class="filter-input"><input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label></div>`
     }
     tagsHtml+= "</section>";
     tagsHtml+= "<section class='tags-section2'>";
     for(tag of secondSection){
-        tagsHtml+=`<div><input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label></div>`
+        tagsHtml+=`<div class="filter-input"><input type="checkbox" id="${tag}"><label for="${tag}">`+firstLetterUppercase(tag)+`</label></div>`
     }
     tagsHtml+= "</section>";
     return tagsHtml;
