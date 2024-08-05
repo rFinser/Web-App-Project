@@ -93,7 +93,7 @@ $('#restaurantList').delegate('#saveRes', 'click', async function () {
                 $('#addingData').remove();
                 $('.adminBtn').show();
                 $("#restaurantList").append(await restaurantScheme(restaurant));
-                postRestaurant(restaurant);
+                await postRestaurant(restaurant.r_name);
             }
         }
     })
