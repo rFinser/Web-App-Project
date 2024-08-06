@@ -28,7 +28,7 @@ function makeMarker(lat, lng, address){
     })
 
     let info = new google.maps.InfoWindow({
-        content: `<p>${address}</p>`
+        content: `<p style="color: black;">${address}</p>`
     })
 
     marker.addListener('click', ()=>{

@@ -15,7 +15,7 @@ async function restaurantScheme(restaurant){
     return `
     <li id=${restaurant.r_name}>
     <div class = "restaurant">
-        <p id="restRating">${await getRating(restaurant.r_name)} / 5</p>
+        <p id="restRating">${await formatRating(await getRating(restaurant.r_name))}</p>
         <a href="restaurants/${restaurant.r_name}">
             <p class="restName">${restaurant.r_name} </p>
             <img class="restImg" src=${restaurant.r_icon} alt="not Found" onerror="this.src = '${defaultRestIcon}'">
@@ -37,4 +37,11 @@ async function getRating(restaurantName) {
         },
     })
     return rating;
+}
+
+async function formatRating(rating) {
+    if (rating === 0) {
+        return "No Reviews Yet";
+    }
+    return `${rating} / 5`;
 }

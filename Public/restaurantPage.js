@@ -214,7 +214,7 @@ function postProduct(restaurantName, productName){
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            message: `A New Product Has Been Added To The ${restaurantName} Restaurant: "${productName}" `,
+            message: `A New Product Has Been Added To The ${restaurantName.split("%20").join(" ")} Restaurant: "${productName}" `,
         })
     })
 }
