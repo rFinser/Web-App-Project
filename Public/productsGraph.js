@@ -7,10 +7,16 @@ $(async function () {
         type: 'POST',
         url: '/restaurantOrders',
         data: { restaurant: getRestaurantName() },
-        success: data => { renderGraph(data.products) },
+        success: data => { renderGraph( getTopProducts(data.products) ) },
         error: () => { console.error(`Error getting data for: ${getRestaurantName()}`) }
     })
 });
+
+function getTopProducts(productsData) {
+    return productsData
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 3);
+}
 
 function renderGraph(productsData) {
     const width = 800;

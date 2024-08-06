@@ -133,7 +133,7 @@ async function removeProduct(restaurantName, productId) {
         throw Error(`The product: "${productId}" is not in the restaurant: "${restaurantName}"`);
 
     rest.r_productsId = rest.r_productsId.filter(val => val !== productId);
-    await updateRestaurant(restaurantName, restaurantName, rest.r_description, rest.r_icon, rest.r_tags, rest.r_address, rest.r_geolocation, rest.r_productsId);
+    await updateRestaurant(restaurantName, restaurantName, rest.r_description, rest.r_icon, rest.r_tags, rest.r_geolocation, rest.r_productsId);
 }
 
 module.exports = {

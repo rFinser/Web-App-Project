@@ -304,7 +304,7 @@ $('#products').delegate('.u-save', 'click', function(){
 
 function validProduct(name, desc, price, tags){
     const isNumber = /^[0-9]+$/;
-    if(name =='' || desc == ''|| !isNumber.test(price) || price.length>6 || tags.length < 1){
+    if(name == '' || desc == ''|| !isNumber.test(price) || price.length > 6 || name.length > 18 || desc.length > 200){
         return false;
     }
     return true;

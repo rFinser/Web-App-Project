@@ -64,7 +64,7 @@ $('#restaurantList').delegate('#saveRes', 'click', async function () {
     const icon = $('#icon').val();
 
     if (!validInputs(name, desc)) {
-        $('#inputsTooltip').html('please fill all the required fields');
+        $('#inputsTooltip').html('Please fill all the required fields correctly');;
         $('#inputsTooltip').show();
         return;
     }
@@ -138,7 +138,7 @@ function postRestaurant(restaurantName) {
 }
 
 function validInputs(name, desc) {
-    if (name == '' || desc == '') {
+    if (name.length < 4 || desc.length < 8 || desc.length > 70 || name.length > 20) {
         return false;
     }
     return true;
