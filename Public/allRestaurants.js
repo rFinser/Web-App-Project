@@ -138,7 +138,7 @@ function postRestaurant(restaurantName) {
 }
 
 function validInputs(name, desc) {
-    if (name.length < 4 || desc.length < 8 || desc.length > 70 || name.length > 20) {
+    if (name.length < 4 || desc.length < 8 || desc.length > 70 || name.length > 30) {
         return false;
     }
     return true;

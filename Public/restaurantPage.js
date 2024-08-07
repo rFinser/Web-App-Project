@@ -181,9 +181,9 @@ $('#products').delegate('.p-save', 'click', function(){
     $li.find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
         p_tags.push($(this).attr('id').replace('product-tag-', ''));
     });
-    if(!validProduct(p_name,p_description,p_price,p_tags))
+    if(!validProduct(p_name,p_description,p_price))
     {
-            $('.tooltip').html('please fill the fields correctly and choose at least one tag')
+            $('.tooltip').html('please fill the fields correctly')
             return;
     }
 
@@ -276,9 +276,9 @@ $('#products').delegate('.u-save', 'click', function(){
     $li.find('#tagsForm').find('input[type="checkbox"]:checked').each(function() {
         tags.push($(this).attr('id').replace('product-tag-', ''));
     });
-    if(!validProduct(name,desc,price,tags))
+    if(!validProduct(name,desc,price))
     {
-        $('.tooltip').html('please fill the fields correctly and choose at least 1 tags')
+        $('.tooltip').html('please fill the fields correctly')
         return;
     }
 
@@ -302,9 +302,9 @@ $('#products').delegate('.u-save', 'click', function(){
     })
 })
 
-function validProduct(name, desc, price, tags){
+function validProduct(name, desc, price){
     const isNumber = /^[0-9]+$/;
-    if(name == '' || desc == ''|| !isNumber.test(price) || price.length > 6 || name.length > 18 || desc.length > 200){
+    if(name.length < 3 || desc.length < 6 || !isNumber.test(price) || price.length > 6 || name.length > 30 || desc.length > 200){
         return false;
     }
     return true;
@@ -316,7 +316,7 @@ $(document).ready(function () {
     
     $('#filter-tags').append(tagsScheme());
     $('#get-filters').click(function() { 
-        $('#filtersForm').slideDown();
+        $('#filtersForm').slideToggle();
     });
     $('#cancel-filters').click(function(){
         $('#rangeTooltip').empty();

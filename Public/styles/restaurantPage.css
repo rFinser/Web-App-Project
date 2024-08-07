@@ -248,6 +248,9 @@ h1, h2 {
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #filter-tags {
@@ -282,7 +285,7 @@ h1, h2 {
 }
 
 #price {
-    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 #price label {
