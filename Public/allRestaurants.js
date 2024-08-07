@@ -316,6 +316,7 @@ async function didReview(restaurantName) {
     else {
         return `
             <button class="addRatingBtn">Add Rating</button>
+            <button class="removeRating" style="display: none;">Delete Review</button>
         `
     }
 }
